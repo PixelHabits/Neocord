@@ -1,19 +1,17 @@
 {
-  "name": "Neocord",
+  "name": "neocord",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "lint": "turbo lint"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
     "turbo": "^2.2.3",
     "typescript": "5.5.4"
   },
   "engines": {
-    "node": ">=18"
+    "bun": ">=1.0.0"
   },
   "packageManager": "bun@1.1.34",
   "workspaces": [
