@@ -1,0 +1,16 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install": "uv sync",
+    "dev": "uv sync && uv run flask run --debug",
+    "db:setup": "uv run flask db upgrade && uv run flask seed all",
+    "build": "uv sync && uv build",
+    "start": "uv run flask run",
+    "migrate": "uv run flask db upgrade",
+    "seed": "uv run flask seed all",
+    "clean": "git clean -fX .venv",
+    "db:reset": "git clean -fX instance && uv run flask db upgrade && uv run flask seed all"
+  }
+}
