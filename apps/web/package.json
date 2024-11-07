@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "git clean -fX .next node_modules next-env.d.ts"
   },
   "dependencies": {
     "@repo/ui": "*",
@@ -16,9 +17,9 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
     "typescript": "5.5.4"
   }
 }

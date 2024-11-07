@@ -3,9 +3,13 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
+		"clean": "turbo run clean",
+		"_clean": "git clean -fX node_modules .turbo",
 		"dev": "turbo run dev",
 		"fix": "turbo run fix",
-		"_fix": "biome check --write ."
+		"_fix": "biome check --write .",
+		"lint:ws": "bunx sherif@latest -f && turbo run install",
+		"postinstall": "bun lint:ws"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
@@ -16,5 +20,6 @@
 		"bun": ">=1.0.0"
 	},
 	"packageManager": "bun@1.1.34",
-	"workspaces": ["apps/*", "packages/*", "backend"]
+	"workspaces": ["apps/*", "packages/*", "backend"],
+	"trustedDependencies": ["backend"]
 }
