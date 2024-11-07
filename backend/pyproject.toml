@@ -1,7 +1,7 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "Flask-based backend API for Neocord - a modern real-time communication platform. Features user authentication, instant messaging, community server management, and channel organization. Built with SQLAlchemy and Alembic for robust data management and migrations."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
