@@ -3,7 +3,9 @@ from flask.cli import AppGroup
 from app.models.db import SCHEMA, db, environment
 
 from .channels import seed_channels, undo_channels
+from .messages import seed_messages, undo_messages
 from .servers import seed_servers, undo_servers
+from .threads import seed_threads, undo_threads
 from .users import seed_users, undo_users
 
 # Creates a seed group to hold our commands
@@ -22,9 +24,13 @@ def seed():
         undo_users()
         undo_servers()
         undo_channels()
+        undo_messages()
+        undo_threads()
     seed_users()
     seed_servers()
     seed_channels()
+    seed_messages()
+    seed_threads()
     # Add other seed functions here
 
 
@@ -34,4 +40,6 @@ def undo():
     undo_users()
     undo_servers()
     undo_channels()
+    undo_messages()
+    undo_threads()
     # Add other undo functions here

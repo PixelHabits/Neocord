@@ -14,8 +14,12 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+
     owned_servers = db.relationship(
         "Server", back_populates="owner", cascade="all, delete-orphan"
+    )
+    messages = db.relationship(
+        "Message", back_populates="user", cascade="all, delete-orphan"
     )
 
     @property
