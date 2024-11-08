@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "uv sync && uv build",
-    "clean": "git clean -fX .venv",
+    "clean": "git clean -fX .venv app/__pycache__ app/api/__pycache__ app/forms/__pycache__ app/models/__pycache__ app/seeds/__pycache__ migrations/__pycache__ migrations/versions/__pycache__",
     "db:reset": "git clean -fX instance && uv run flask db upgrade && uv run flask seed all",
     "db:setup": "uv run flask db upgrade && uv run flask seed all",
     "dev": "uv sync && uv run flask run --debug",
