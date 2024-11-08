@@ -10,6 +10,7 @@
     "dev": "uv sync && uv run flask run --debug",
     "install": "uv sync",
     "migrate": "uv run flask db upgrade",
+    "migrate:add": "uv run flask db migrate -m",
     "seed": "uv run flask seed all",
     "start": "uv run flask run"
   }

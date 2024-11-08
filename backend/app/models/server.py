@@ -16,6 +16,9 @@ class Server(db.Model):
 
     # Relationships
     owner = db.relationship("User", back_populates="owned_servers")
+    channels = db.relationship(
+        "Channel", back_populates="server", cascade="all, delete-orphan"
+    )
 
     def to_dict(self):
         return {
