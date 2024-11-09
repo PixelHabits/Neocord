@@ -22,7 +22,10 @@ class Channel(db.Model):
     visibility = db.Column(
         db.Enum(ChannelVisibility), nullable=False, default=ChannelVisibility.PUBLIC
     )
-
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.now())
+    updated_at = db.Column(
+        db.DateTime, nullable=False, default=db.func.now(), onupdate=db.func.now()
+    )
     # Relationships
     server = db.relationship("Server", back_populates="channels")
     messages = db.relationship("Message", back_populates="channel")

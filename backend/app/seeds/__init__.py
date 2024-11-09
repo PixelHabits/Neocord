@@ -34,6 +34,22 @@ def seed():
     # Add other seed functions here
 
 
+@seed_commands.command("run")
+def seed_selected(*args):
+    """Seed selected tables."""
+    for table in args:
+        if table == "users":
+            seed_users()
+        elif table == "servers":
+            seed_servers()
+        elif table == "channels":
+            seed_channels()
+        elif table == "messages":
+            seed_messages()
+        elif table == "threads":
+            seed_threads()
+
+
 # Creates the `flask seed undo` command
 @seed_commands.command("undo")
 def undo():

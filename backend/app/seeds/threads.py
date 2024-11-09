@@ -1,42 +1,40 @@
 from sqlalchemy.sql import text
 
-from app.models import SCHEMA, Channel, Message, Thread, db, environment
+from app.models import SCHEMA, db, environment
+from app.models.message import Message
+from app.models.threads import Thread
 
 
 def seed_threads():
-    # Get the first message to create a thread from
-    first_message = Message.query.first()
-    if not first_message:
-        return  # Exit if no messages exist
+    # Get specific messages to attach threads to
+    first_message = Message.query.filter(
+        Message.body == "Hey everyone! Welcome to the channel!"
+    ).first()
 
-    channel = Channel.query.first()
-    if not channel:
-        return  # Exit if no channels exist
+    second_message = Message.query.filter(
+        Message.body == "Thanks for having us here!"
+    ).first()
 
-    thread = Thread(
-        channel_id=channel.id,
-        message_id=first_message.id,
-        start_message_id=first_message.id,
-    )
+    threads = [
+        Thread(
+            channel_id=first_message.channel_id,
+            start_message_id=first_message.id,
+        ),
+        Thread(
+            channel_id=first_message.channel_id,
+            message_id=second_message.id,
+        ),
+    ]
 
-    db.session.add(thread)
-    db.session.commit()
+    for thread in threads:
+        db.session.add(thread)
 
-    # Add a reply message to the thread
-    thread_message = Message(
-        body="This is a reply in the thread!",
-        user_id=first_message.user_id,
-        channel_id=channel.id,
-        thread_id=thread.id,
-    )
-
-    db.session.add(thread_message)
     db.session.commit()
 
 
 def undo_threads():
     if environment == "production":
-        db.session.execute(f"TRUNCATE table {SCHEMA}.threads RESTART IDENTITY CASCADE;")
+        db.session.execute(f"TRUNCATE TABLE {SCHEMA}.threads RESTART IDENTITY CASCADE;")
     else:
         db.session.execute(text("DELETE FROM threads"))
 

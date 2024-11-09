@@ -22,12 +22,7 @@ class Message(db.Model):
     updated_at = db.Column(
         db.DateTime, nullable=False, default=db.func.now(), onupdate=db.func.now()
     )
+
     # Relationships
     user = db.relationship("User", back_populates="messages")
     channel = db.relationship("Channel", back_populates="messages")
-    thread = db.relationship(
-        "Thread",
-        back_populates="thread_messages",
-        foreign_keys=[thread_id],
-        primaryjoin="Message.thread_id == Thread.id",
-    )
