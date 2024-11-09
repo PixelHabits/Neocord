@@ -4,6 +4,7 @@ from app.models.db import SCHEMA, db, environment
 
 from .channels import seed_channels, undo_channels
 from .messages import seed_messages, undo_messages
+from .reactions import seed_reactions, undo_reactions
 from .servers import seed_servers, undo_servers
 from .threads import seed_threads, undo_threads
 from .users import seed_users, undo_users
@@ -26,28 +27,15 @@ def seed():
         undo_channels()
         undo_messages()
         undo_threads()
+        undo_reactions()
+
     seed_users()
     seed_servers()
     seed_channels()
     seed_messages()
     seed_threads()
+    seed_reactions()
     # Add other seed functions here
-
-
-@seed_commands.command("run")
-def seed_selected(*args):
-    """Seed selected tables."""
-    for table in args:
-        if table == "users":
-            seed_users()
-        elif table == "servers":
-            seed_servers()
-        elif table == "channels":
-            seed_channels()
-        elif table == "messages":
-            seed_messages()
-        elif table == "threads":
-            seed_threads()
 
 
 # Creates the `flask seed undo` command
@@ -58,4 +46,5 @@ def undo():
     undo_channels()
     undo_messages()
     undo_threads()
+    undo_reactions()
     # Add other undo functions here

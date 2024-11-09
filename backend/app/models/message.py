@@ -26,3 +26,6 @@ class Message(db.Model):
     # Relationships
     user = db.relationship("User", back_populates="messages")
     channel = db.relationship("Channel", back_populates="messages")
+    reactions = db.relationship(
+        "Reaction", back_populates="message", cascade="all, delete-orphan"
+    )
