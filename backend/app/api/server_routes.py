@@ -1,6 +1,6 @@
 from app.forms.channel_form import ChannelForm
 from app.forms.server_form import ServerForm
-from app.models import Channel, Server, db
+from app.models import Channel, Server, ServerMember, db
 from flask import Blueprint, request
 from flask_login import current_user
 
@@ -14,7 +14,9 @@ def index():
     *** need to check if user is a member of the server ***
     """
     if current_user.is_authenticated:
-        servers = Server.query.filter(Server.owner_id == current_user.id).all()
+        servers = ServerMember.query.filter(
+            ServerMember.user_id == current_user.id
+        ).all()
         return [server.to_dict() for server in servers], 200
     else:
         return {"errors": {"message": "Unauthorized"}}, 401
@@ -32,7 +34,12 @@ def create_new_server():
             server = Server(
                 name=form.data["name"],
                 description=form.data["description"],
-                owner_id=current_user.id,
+                server_members=[
+                    ServerMember(
+                        user=current_user,
+                        isOwner=True,
+                    )
+                ],
             )
             db.session.add(server)
             db.session.commit()
@@ -61,7 +68,13 @@ def update_server(id):
     if current_user.is_authenticated:
         server = Server.query.get(id)
         if server:
-            if server.owner_id == current_user.id:
+            if (
+                ServerMember.query.filter(
+                    ServerMember.user_id == current_user.id,
+                    ServerMember.server_id == server.id,
+                ).first()
+                is not None
+            ):
                 form = ServerForm()
                 form["csrf_token"].data = request.cookies["csrf_token"]
                 if form.validate_on_submit():
