@@ -24,6 +24,9 @@ class User(db.Model, UserMixin):
     reactions = db.relationship(
         "Reaction", back_populates="user", cascade="all, delete-orphan"
     )
+    server_members = db.relationship(
+        "ServerMember", back_populates="user", cascade="all, delete-orphan"
+    )
 
     @property
     def password(self):
