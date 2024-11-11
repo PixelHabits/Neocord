@@ -26,4 +26,5 @@ dependencies = [
     "sqlalchemy>=2.0.36",
     "werkzeug>=3.1.2",
     "wtforms>=3.2.1",
+    "flask-socketio>=5.4.1",
 ]
