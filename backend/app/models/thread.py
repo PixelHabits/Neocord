@@ -26,19 +26,16 @@ class Thread(db.Model):
     parent_message = db.relationship(
         "Message",
         foreign_keys=[parent_message_id],
-        backref=db.backref(
-            "parent_thread",
-            uselist=False,
-            cascade="all, delete-orphan",
-            passive_deletes=True,
-        ),
+        back_populates="parent_thread",
+        passive_deletes=True,
+        single_parent=True
     )
     replies = db.relationship(
         "Message",
         back_populates="thread",
-        primaryjoin="Message.thread_id==Thread.id",
-        lazy="select",
-        order_by="Message.created_at",
-        cascade="all, delete-orphan",
+        foreign_keys="Message.thread_id",
+        cascade="all, delete",
         passive_deletes=True,
+        lazy="joined",
+        primaryjoin="Message.thread_id==Thread.id"
     )

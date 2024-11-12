@@ -32,8 +32,19 @@ class Channel(db.Model):
     )
     # Relationships
     server = db.relationship("Server", back_populates="channels")
-    messages = db.relationship("Message", back_populates="channel")
-    threads = db.relationship("Thread", back_populates="channel")
+    messages = db.relationship(
+        "Message", 
+        back_populates="channel",
+        cascade="all, delete-orphan",
+        passive_deletes=False
+    )
+    threads = db.relationship(
+        "Thread", 
+        back_populates="channel",
+        cascade="all, delete-orphan",
+        passive_deletes=False,
+        primaryjoin="Channel.id==Thread.channel_id"
+    )
 
     def to_dict(self):
         return {
