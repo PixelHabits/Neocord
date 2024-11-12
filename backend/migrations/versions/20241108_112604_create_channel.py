@@ -28,6 +28,8 @@ def upgrade():
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sa.String(length=100), nullable=False),
         sa.Column("server_id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.Column(
             "visibility",
             sa.Enum("PUBLIC", "PRIVATE", name="channelvisibility"),
@@ -36,6 +38,7 @@ def upgrade():
         sa.ForeignKeyConstraint(
             ["server_id"],
             ["servers.id"],
+            ondelete="CASCADE"
         ),
         sa.PrimaryKeyConstraint("id"),
     )
