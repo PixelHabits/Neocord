@@ -35,18 +35,18 @@ class Channel(db.Model):
     # Relationships
     server = db.relationship("Server", back_populates="channels")
     messages = db.relationship(
-        "Message", 
+        "Message",
         back_populates="channel",
         cascade="all, delete-orphan",
         passive_deletes=True,
-        lazy='joined'
+        lazy="selectin",
     )
     threads = db.relationship(
         "Thread", 
         back_populates="channel",
         cascade="all, delete-orphan",
         passive_deletes=True,
-        lazy='joined',
+        lazy="selectin",
         primaryjoin="Channel.id==Thread.channel_id"
     )
 

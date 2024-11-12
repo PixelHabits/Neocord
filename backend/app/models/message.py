@@ -42,7 +42,7 @@ class Message(db.Model):
         "Reaction",
         back_populates="message",
         cascade="all, delete-orphan",
-        lazy="joined",
+        lazy="selectin"
     )
     thread = db.relationship(
         "Thread",

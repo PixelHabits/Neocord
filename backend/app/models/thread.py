@@ -22,17 +22,13 @@ class Thread(db.Model):
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     # Relationships
-    channel = db.relationship(
-        "Channel", 
-        back_populates="threads",
-        passive_deletes=True
-    )
+    channel = db.relationship("Channel", back_populates="threads", passive_deletes=True)
     parent_message = db.relationship(
         "Message",
         foreign_keys=[parent_message_id],
         back_populates="parent_thread",
         passive_deletes=True,
-        single_parent=True
+        single_parent=True,
     )
     replies = db.relationship(
         "Message",
@@ -40,6 +36,6 @@ class Thread(db.Model):
         foreign_keys="Message.thread_id",
         cascade="all, delete",
         passive_deletes=True,
-        lazy="joined",
-        primaryjoin="Message.thread_id==Thread.id"
+        lazy="selectin",
+        primaryjoin="Message.thread_id==Thread.id",
     )
