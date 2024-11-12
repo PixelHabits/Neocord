@@ -38,6 +38,7 @@ def upgrade():
         sa.ForeignKeyConstraint(
             ["server_id"],
             ["servers.id"],
+            ondelete="CASCADE"
         ),
         sa.PrimaryKeyConstraint("id"),
     )

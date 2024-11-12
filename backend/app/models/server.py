@@ -20,10 +20,10 @@ class Server(db.Model):
         "User", secondary="server_members", back_populates="servers", viewonly=True
     )
     server_members = db.relationship(
-        "ServerMember", back_populates="server", cascade="all, delete-orphan"
+        "ServerMember", back_populates="server", cascade="all, delete-orphan", lazy='joined'
     )
     channels = db.relationship(
-        "Channel", back_populates="server", cascade="all, delete-orphan"
+        "Channel", back_populates="server", cascade="all, delete-orphan", lazy='joined'
     )
 
     @classmethod

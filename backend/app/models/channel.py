@@ -21,7 +21,9 @@ class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     server_id = db.Column(
-        db.Integer, db.ForeignKey(add_prefix_for_prod("servers.id")), nullable=False
+        db.Integer, 
+        db.ForeignKey(add_prefix_for_prod("servers.id"), ondelete="CASCADE"), 
+        nullable=False
     )
     visibility = db.Column(
         db.Enum(ChannelVisibility), nullable=False, default=ChannelVisibility.PUBLIC
@@ -36,13 +38,15 @@ class Channel(db.Model):
         "Message", 
         back_populates="channel",
         cascade="all, delete-orphan",
-        passive_deletes=False
+        passive_deletes=True,
+        lazy='joined'
     )
     threads = db.relationship(
         "Thread", 
         back_populates="channel",
         cascade="all, delete-orphan",
-        passive_deletes=False,
+        passive_deletes=True,
+        lazy='joined',
         primaryjoin="Channel.id==Thread.channel_id"
     )
 

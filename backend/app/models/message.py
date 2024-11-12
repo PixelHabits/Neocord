@@ -13,8 +13,8 @@ class Message(db.Model):
         db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False
     )
     channel_id = db.Column(
-        db.Integer,
-        db.ForeignKey("channels.id", ondelete="CASCADE"),
+        db.Integer, 
+        db.ForeignKey(add_prefix_for_prod("channels.id"), ondelete="CASCADE"), 
         nullable=False
     )
     thread_id = db.Column(
@@ -36,7 +36,7 @@ class Message(db.Model):
         "Channel",
         back_populates="messages",
         cascade="all, delete",
-        passive_deletes=True
+        passive_deletes=True,
     )
     reactions = db.relationship(
         "Reaction",
@@ -54,9 +54,10 @@ class Message(db.Model):
         "Thread",
         back_populates="parent_message",
         foreign_keys="Thread.parent_message_id",
-        cascade="all, delete",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
         single_parent=True,
-        uselist=False
+        uselist=False,
     )
 
     def to_dict(self):

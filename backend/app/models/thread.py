@@ -10,7 +10,7 @@ class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     channel_id = db.Column(
         db.Integer,
-        db.ForeignKey(add_prefix_for_prod("channels.id")),
+        db.ForeignKey(add_prefix_for_prod("channels.id"), ondelete="CASCADE"),
         nullable=False,
     )
     parent_message_id = db.Column(
@@ -22,7 +22,11 @@ class Thread(db.Model):
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     # Relationships
-    channel = db.relationship("Channel", back_populates="threads")
+    channel = db.relationship(
+        "Channel", 
+        back_populates="threads",
+        passive_deletes=True
+    )
     parent_message = db.relationship(
         "Message",
         foreign_keys=[parent_message_id],
