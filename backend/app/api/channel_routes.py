@@ -1,6 +1,7 @@
 from app.forms.channel_form import ChannelForm
-from app.models import Channel, db
+from app.models import Channel, Message, ServerMember, db
 from flask import Blueprint, request
+from flask_login import current_user
 
 channel_routes = Blueprint("channels", __name__)
 
@@ -11,6 +12,21 @@ def get_channel(id):
     Get a channel by it's ID
     """
     channel = Channel.query.get(id)
+
+    if not current_user.is_authenticated:
+        return {"errors": {"message": "Unauthorized"}}, 401
+
+    # Check if user is member of server that owns this channel
+    server_member = (
+        ServerMember.query.filter(
+            ServerMember.server_id == channel.server_id,
+            ServerMember.user_id == current_user.id,
+        ).first()
+        if channel
+        else None
+    )
+    if not server_member:
+        return {"errors": {"message": "Unauthorized"}}, 401
     if channel:
         return channel.to_dict(), 200
     else:
@@ -27,6 +43,18 @@ def update_channel(id):
     if form.validate_on_submit():
         channel = Channel.query.get(id)
         if channel:
+            # Check if user is the owner of the server that owns this channel
+            server_member = ServerMember.query.filter(
+                ServerMember.server_id == channel.server_id,
+                ServerMember.user_id == current_user.id,
+            ).first()
+            if not server_member.is_owner:
+                return {
+                    "errors": {
+                        "message": "You must be the owner of the server to update this channel"
+                    }
+                }, 401
+
             if form.data["name"] is not None:
                 channel.name = form.data["name"]
             if form.data["visibility"] is not None:
@@ -46,6 +74,16 @@ def delete_channel(id):
     """
     channel = Channel.query.get(id)
     if channel:
+        server_member = ServerMember.query.filter(
+            ServerMember.server_id == channel.server_id,
+            ServerMember.user_id == current_user.id,
+        ).first()
+        if not server_member.is_owner:
+            return {
+                "errors": {
+                    "message": "You must be the owner of the server to delete this channel"
+                }
+            }, 401
         db.session.delete(channel)
         db.session.commit()
         return {"message": "Channel successfully deleted"}, 200
@@ -53,9 +91,25 @@ def delete_channel(id):
         return {"errors": {"message": "Channel not found"}}, 404
 
 
-@channel_routes.route("/<int:id>/messages")
-def get_channel_messages(id):
-    """
-    Get all messages for a channel by it's ID
-    """
-    return f"Channel {id} messages"
+# @channel_routes.route("/<int:id>/messages")
+# def get_channel_messages(id):
+#     """
+#     Get all messages for a channel by it's ID
+#     """
+#     if not current_user.is_authenticated:
+#         return {"errors": {"message": "Unauthorized"}}, 401
+
+#     channel = Channel.query.get(id)
+#     if not channel:
+#         return {"errors": {"message": "Channel not found"}}, 404
+
+#     # Check if user is member of server that owns this channel
+#     server_member = ServerMember.query.filter(
+#         ServerMember.server_id == channel.server_id,
+#         ServerMember.user_id == current_user.id,
+#     ).first()
+#     if not server_member:
+#         return {"errors": {"message": "Unauthorized"}}, 401
+
+#     messages = Message.query.filter(Message.channel_id == id).all()
+#     return [message.to_dict() for message in messages], 200
