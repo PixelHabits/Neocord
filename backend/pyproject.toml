@@ -27,4 +27,5 @@ dependencies = [
     "werkzeug>=3.1.2",
     "wtforms>=3.2.1",
     "flask-socketio>=5.4.1",
+    "eventlet==0.30.2",
 ]

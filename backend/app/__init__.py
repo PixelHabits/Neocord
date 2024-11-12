@@ -4,7 +4,6 @@ from flask import Flask, redirect, render_template, request, session
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_socketio import SocketIO
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 from .api.auth_routes import auth_routes
@@ -19,6 +18,7 @@ from .models import User, db
 from .seeds import seed_commands
 
 app = Flask(__name__, static_folder="../react-vite/dist", static_url_path="/")
+
 # Setup login manager
 login = LoginManager(app)
 login.login_view = "auth.unauthorized"
@@ -44,11 +44,11 @@ app.register_blueprint(reaction_routes, url_prefix="/api/reactions")
 db.init_app(app)
 Migrate(app, db)
 
-# Application Security
-CORS(app)
-
 # Initialize socketio from socket routes (wraps entire app)
 socketio.init_app(app)
+
+# Application Security
+CORS(app)
 
 
 # Since we are deploying with Docker and Flask,
