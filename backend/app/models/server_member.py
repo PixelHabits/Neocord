@@ -35,8 +35,9 @@ class ServerMember(db.Model):
     server = db.relationship("Server", back_populates="server_members")
 
     def to_dict(self):
+        user_dict = self.user.to_dict()
+        user_dict["is_owner"] = self.is_owner
         return {
-            "is_owner": self.is_owner,
-            "user": self.user.to_dict(),
+            "user": user_dict,
             "join_date": self.created_at,
         }
