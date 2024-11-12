@@ -14,14 +14,14 @@ def seed_server_members():
 
     server_members = [
         # Demo is a member of all servers (already owner of their own)
-        ServerMember(user_id=demo.id, server_id=marnie_server.id),
-        ServerMember(user_id=demo.id, server_id=bobbie_server.id),
+        ServerMember(user_id=demo.id, server_id=marnie_server.id, is_owner=False),
+        ServerMember(user_id=demo.id, server_id=bobbie_server.id, is_owner=False),
         # Marnie is a member of Demo's and Bobbie's servers
-        ServerMember(user_id=marnie.id, server_id=demo_server.id),
-        ServerMember(user_id=marnie.id, server_id=bobbie_server.id),
+        ServerMember(user_id=marnie.id, server_id=demo_server.id, is_owner=False),
+        ServerMember(user_id=marnie.id, server_id=bobbie_server.id, is_owner=False),
         # Bobbie is a member of Demo's and Marnie's servers
-        ServerMember(user_id=bobbie.id, server_id=demo_server.id),
-        ServerMember(user_id=bobbie.id, server_id=marnie_server.id),
+        ServerMember(user_id=bobbie.id, server_id=demo_server.id, is_owner=False),
+        ServerMember(user_id=bobbie.id, server_id=marnie_server.id, is_owner=False),
     ]
 
     db.session.add_all(server_members)

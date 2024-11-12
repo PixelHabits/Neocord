@@ -1,6 +1,10 @@
 import enum
 
+from sqlalchemy import func
+
 from .db import SCHEMA, add_prefix_for_prod, db, environment
+from .message import Message
+from .thread import Thread
 
 
 class ChannelVisibility(enum.Enum):
@@ -38,3 +42,23 @@ class Channel(db.Model):
             "server_id": self.server_id,
             "visibility": self.visibility.value,
         }
+
+    def get_messages_with_threads(self):
+        """Get channel messages with their thread info organized"""
+        from sqlalchemy.orm import joinedload
+
+        # Get all channel messages that aren't replies (thread_id is None)
+        messages = (
+            Message.query.filter(
+                Message.channel_id == self.id, Message.thread_id.is_(None)
+            )
+            .join(Message.thread, isouter=True)  # Left join with thread
+            .join(Thread.replies, isouter=True)  # Left join with replies
+            .options(joinedload(Message.thread).joinedload(Thread.replies))
+            # Order by the latest activity (either message creation or latest reply)
+            .order_by(func.coalesce(func.max(Message.created_at), Message.created_at))
+            .group_by(Message.id)
+            .all()
+        )
+
+        return [message.to_dict_with_thread() for message in messages]

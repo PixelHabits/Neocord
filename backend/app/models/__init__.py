@@ -4,5 +4,5 @@ from .message import Message
 from .reaction import Reaction
 from .server import Server
 from .server_member import ServerMember
-from .threads import Thread
+from .thread import Thread
 from .user import User

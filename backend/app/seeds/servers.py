@@ -1,6 +1,6 @@
 from sqlalchemy.sql import text
 
-from app.models import SCHEMA, Server, User, db, environment
+from app.models import SCHEMA, Server, ServerMember, User, db, environment
 
 
 def seed_servers():
@@ -11,19 +11,19 @@ def seed_servers():
     demo_server = Server(
         name="Demo's Server",
         description="Demo's server for general discussions",
-        owner_id=demo.id,
+        server_members=[ServerMember(user_id=demo.id, is_owner=True)],
     )
 
     marnie_server = Server(
         name="Marnie's Server",
         description="Marnie's server for gaming and fun",
-        owner_id=marnie.id,
+        server_members=[ServerMember(user_id=marnie.id, is_owner=True)],
     )
 
     bobbie_server = Server(
         name="Bobbie's Server",
         description="Bobbie's server for work and collaboration",
-        owner_id=bobbie.id,
+        server_members=[ServerMember(user_id=bobbie.id, is_owner=True)],
     )
 
     db.session.add(demo_server)
