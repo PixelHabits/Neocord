@@ -91,25 +91,25 @@ def delete_channel(id):
         return {"errors": {"message": "Channel not found"}}, 404
 
 
-# @channel_routes.route("/<int:id>/messages")
-# def get_channel_messages(id):
-#     """
-#     Get all messages for a channel by it's ID
-#     """
-#     if not current_user.is_authenticated:
-#         return {"errors": {"message": "Unauthorized"}}, 401
+@channel_routes.route("/<int:id>/messages")
+def get_channel_messages(id):
+    """
+    Get all messages for a channel by it's ID
+    """
+    if not current_user.is_authenticated:
+        return {"errors": {"message": "Unauthorized"}}, 401
 
-#     channel = Channel.query.get(id)
-#     if not channel:
-#         return {"errors": {"message": "Channel not found"}}, 404
+    channel = Channel.query.get(id)
+    if not channel:
+        return {"errors": {"message": "Channel not found"}}, 404
 
-#     # Check if user is member of server that owns this channel
-#     server_member = ServerMember.query.filter(
-#         ServerMember.server_id == channel.server_id,
-#         ServerMember.user_id == current_user.id,
-#     ).first()
-#     if not server_member:
-#         return {"errors": {"message": "Unauthorized"}}, 401
+    # Check if user is member of server that owns this channel
+    server_member = ServerMember.query.filter(
+        ServerMember.server_id == channel.server_id,
+        ServerMember.user_id == current_user.id,
+    ).first()
+    if not server_member:
+        return {"errors": {"message": "Unauthorized"}}, 401
 
-#     messages = Message.query.filter(Message.channel_id == id).all()
-#     return [message.to_dict() for message in messages], 200
+    messages = Message.query.filter(Message.channel_id == id).all()
+    return [message.to_dict() for message in messages], 200
