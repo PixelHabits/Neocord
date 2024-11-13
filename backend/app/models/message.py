@@ -87,15 +87,15 @@ class Message(db.Model):
                 }
                 message_dict["reply_count"] = len(self.parent_thread.replies)
             # If this is a reply, include thread info only if specifically needed
-            elif self.thread:
-                message_dict["thread"] = {
-                    "id": self.thread.id,
-                    "reply_count": len(self.thread.replies),
-                    "latest_replies": [
-                        reply.to_dict(include_replies=False)
-                        for reply in self.thread.replies[-3:]
-                    ],
-                    "created_at": self.thread.created_at,
-                }
+            # elif self.thread:
+            #     message_dict["thread"] = {
+            #         "id": self.thread.id,
+            #         "reply_count": len(self.thread.replies),
+            #         "latest_replies": [
+            #             reply.to_dict(include_replies=False)
+            #             for reply in self.thread.replies[-3:]
+            #         ],
+            #         "created_at": self.thread.created_at,
+            #     }
 
         return message_dict

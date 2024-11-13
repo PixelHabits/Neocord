@@ -1,10 +1,15 @@
+from app.models import Reaction
 from flask import Blueprint, request
 
-reaction_routes = Blueprint('reactions', __name__)
+reaction_routes = Blueprint("reactions", __name__)
 
-@reaction_routes.route('/<int:id>')
+
+@reaction_routes.route("/<int:id>")
 def get_reaction(id):
     """
     Get a reaction by it's ID
     """
-    return f'Reaction {id}'
+    reaction = Reaction.query.get(id)
+    if not reaction:
+        return {"errors": {"message": "Reaction not found"}}, 404
+    return reaction.to_dict()
