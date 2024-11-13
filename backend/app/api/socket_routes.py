@@ -24,6 +24,15 @@ def handle_disconnect():
     print("Client disconnected")
 
 
+# Route to (maybe) reconnect to a specific channel
+@socketio.on("reconnect_channel")
+def handle_reconnect_channel(data):
+    """Reconnect to a specific channel"""
+    # data should contain: channel_id, user_id
+    channel_room = f"channel_{data['channel_id']}"
+    socketio.join_room(channel_room)
+
+
 # Route to send a message to the socket
 @socketio.on("message")
 def handle_message(data):
