@@ -4,33 +4,65 @@ from app.models import SCHEMA, Server, db, environment
 from app.models.channel import Channel, ChannelVisibility
 
 
+def generate_channels():
+    return [
+        {
+            "name": "announcements",
+            "visibility": ChannelVisibility.PUBLIC,
+        },
+        {
+            "name": "introductions",
+            "visibility": ChannelVisibility.PUBLIC,
+        },
+        {
+            "name": "random",
+            "visibility": ChannelVisibility.PUBLIC,
+        },
+        {
+            "name": "help",
+            "visibility": ChannelVisibility.PUBLIC,
+        },
+        {
+            "name": "resources",
+            "visibility": ChannelVisibility.PUBLIC,
+        },
+        {
+            "name": "projects",
+            "visibility": ChannelVisibility.PUBLIC,
+        },
+        {
+            "name": "events",
+            "visibility": ChannelVisibility.PUBLIC,
+        },
+        {
+            "name": "moderators-only",
+            "visibility": ChannelVisibility.PRIVATE,
+        },
+        {
+            "name": "admin-announcements",
+            "visibility": ChannelVisibility.PRIVATE,
+        },
+    ]
+
+
 def seed_channels():
-    demo_server = Server.query.filter(Server.name == "Demo's Server").first()
-    marnie_server = Server.query.filter(Server.name == "Marnie's Server").first()
-    bobbie_server = Server.query.filter(Server.name == "Bobbie's Server").first()
+    # Get all servers
+    servers = Server.query.all()
+    channels_to_add = []
+    channels_template = generate_channels()
 
-    demo_general_channel = Channel(
-        name="general",
-        server_id=demo_server.id,
-        visibility=ChannelVisibility.PUBLIC,
-    )
+    # Create channels for each server
+    for server in servers:
+        for channel_data in channels_template:
+            channel = Channel(
+                name=channel_data["name"],
+                server_id=server.id,
+                visibility=channel_data["visibility"],
+            )
+            channels_to_add.append(channel)
 
-    marnie_general_channel = Channel(
-        name="general",
-        server_id=marnie_server.id,
-        visibility=ChannelVisibility.PUBLIC,
-    )
-
-    bobbie_general_channel = Channel(
-        name="general",
-        server_id=bobbie_server.id,
-        visibility=ChannelVisibility.PUBLIC,
-    )
-
-    db.session.add(demo_general_channel)
-    db.session.add(marnie_general_channel)
-    db.session.add(bobbie_general_channel)
-
+    # Add all channels to session and commit
+    db.session.add_all(channels_to_add)
     db.session.commit()
 
 
