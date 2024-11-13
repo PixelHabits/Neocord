@@ -1,5 +1,5 @@
 from app.forms.channel_form import ChannelForm
-from app.models import Channel, Message, ServerMember, db
+from app.models import Channel, Message, ServerMember, Thread, db
 from flask import Blueprint, request
 from flask_login import current_user
 
@@ -120,10 +120,13 @@ def get_channel_messages(id):
 
 
 @channel_routes.route("/<int:id>/messages", methods=["POST"])
-def create_channel_message(id):
+def create_channel_message(id, parent_message_id=None):
     """
     Create a new message for a channel by it's ID
     """
+    parent_message_id = request.args.get("parent_message_id")
+    thread = None
+
     if not current_user.is_authenticated:
         return {"errors": {"message": "Unauthorized"}}, 401
 
@@ -137,16 +140,37 @@ def create_channel_message(id):
     ).first()
 
     if not server_member:
-        return {"errors": {"message": "Unauthorized"}}, 401
+        return {
+            "errors": {
+                "message": "You must be a member of the server to create a message"
+            }
+        }, 401
 
     data = request.get_json()
     if not data or "body" not in data:
         return {"errors": {"message": "body is required"}}, 400
 
+    if parent_message_id:
+        parent_message = Message.query.get(parent_message_id)
+        if not parent_message:
+            return {"errors": {"message": "Parent message not found"}}, 404
+
+        if parent_message.channel_id != id:
+            return {"errors": {"message": "Parent message is not in this channel"}}, 400
+        else:
+            thread = Thread.query.filter(
+                Thread.parent_message_id == parent_message_id
+            ).first()
+            if not thread:
+                thread = Thread(channel_id=id, parent_message_id=parent_message_id)
+                db.session.add(thread)
+                db.session.commit()
+
     message = Message(
         body=data["body"],
         channel_id=id,
         user_id=current_user.id,
+        thread_id=thread.id if thread and parent_message_id else None,
     )
 
     db.session.add(message)

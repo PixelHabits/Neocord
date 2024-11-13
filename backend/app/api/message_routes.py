@@ -42,18 +42,14 @@ def update_message(id):
     if not message:
         return {"errors": {"message": "Message not found"}}, 404
 
-    form = MessageForm()
-    form["csrf_token"].data = request.cookies["csrf_token"]
-
     # User must be the author of the message to update it
     if message.user_id != current_user.id:
         return {"errors": {"message": "You are not the author of this message"}}, 403
 
-    if form.validate_on_submit():
-        message.body = form.data["body"]
-        db.session.commit()
-        return message.to_dict()
-    return {"errors": form.errors}, 400
+    data = request.get_json()
+    message.body = data["body"]
+    db.session.commit()
+    return message.to_dict()
 
 
 @message_routes.route("/<int:id>", methods=["DELETE"])
@@ -148,9 +144,8 @@ def remove_reaction_from_message(messageId, reactionId):
         return {"errors": {"message": "Reaction not found"}}, 404
 
     if existing_reaction.user_id != current_user.id:
-        return {"errors": {"message": "You already reacted with this emoji"}}, 400
+        return {"errors": {"message": "You cannot remove another user's reaction"}}, 400
 
     db.session.delete(existing_reaction)
     db.session.commit()
-
     return {"message": "Reaction removed successfully"}
