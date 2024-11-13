@@ -13,9 +13,9 @@ class Message(db.Model):
         db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False
     )
     channel_id = db.Column(
-        db.Integer, 
-        db.ForeignKey(add_prefix_for_prod("channels.id"), ondelete="CASCADE"), 
-        nullable=False
+        db.Integer,
+        db.ForeignKey(add_prefix_for_prod("channels.id"), ondelete="CASCADE"),
+        nullable=False,
     )
     thread_id = db.Column(
         db.Integer,
@@ -42,7 +42,7 @@ class Message(db.Model):
         "Reaction",
         back_populates="message",
         cascade="all, delete-orphan",
-        lazy="selectin"
+        lazy="selectin",
     )
     thread = db.relationship(
         "Thread",
@@ -60,7 +60,7 @@ class Message(db.Model):
         uselist=False,
     )
 
-    def to_dict(self):
+    def to_dict(self, include_replies=True):
         """Return message data with thread info if it exists"""
         message_dict = {
             "id": self.id,
@@ -74,15 +74,28 @@ class Message(db.Model):
             "reactions": [reaction.to_dict() for reaction in self.reactions],
         }
 
-        if hasattr(self, "thread") and self.thread is not None:
-            message_dict["thread"] = {
-                "id": self.thread.id,
-                "reply_count": len(self.thread.replies),
-                "latest_replies": [
-                    reply.to_dict()
-                    for reply in self.thread.replies[-3:]  # Last 3 replies
-                ],
-                "created_at": self.thread.created_at,
-            }
+        if include_replies:
+            # Check if this message has replies (is a parent message)
+            if self.parent_thread:
+                message_dict["thread"] = {
+                    "id": self.parent_thread.id,
+                    "replies": [
+                        reply.to_dict(include_replies=False)
+                        for reply in self.parent_thread.replies
+                    ],
+                    "created_at": self.parent_thread.created_at,
+                }
+                message_dict["reply_count"] = len(self.parent_thread.replies)
+            # If this is a reply, include thread info only if specifically needed
+            elif self.thread:
+                message_dict["thread"] = {
+                    "id": self.thread.id,
+                    "reply_count": len(self.thread.replies),
+                    "latest_replies": [
+                        reply.to_dict(include_replies=False)
+                        for reply in self.thread.replies[-3:]
+                    ],
+                    "created_at": self.thread.created_at,
+                }
 
         return message_dict
