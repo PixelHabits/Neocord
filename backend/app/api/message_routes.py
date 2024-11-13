@@ -1,7 +1,4 @@
-from app.forms.message_form import MessageForm
-from app.models import Message, db
 from flask import Blueprint, request
-from flask_login import current_user
 
 message_routes = Blueprint("messages", __name__)
 
@@ -11,23 +8,15 @@ def get_message(id):
     """
     Get a message by it's ID
     """
-    if not current_user.is_authenticated:
-        return {"errors": {"message": "Unauthorized"}}, 401
+    return f"Message {id}"
 
-    message = Message.query.get(id)
-    if not message:
-        return {"errors": {"message": "Message not found"}}, 404
 
-    # Check if user is member of server that contains the channel
-    server = message.channel.server
-    if not any(member.id == current_user.id for member in server.members):
-        return {
-            "errors": {
-                "message": "You must be a member of the server to view this message"
-            }
-        }, 403
-
-    return message.to_dict()
+@message_routes.route("/", methods=["POST"])
+def create_message():
+    """
+    Create a new message
+    """
+    return "Create a new message"
 
 
 @message_routes.route("/<int:id>", methods=["PUT"])
@@ -35,25 +24,7 @@ def update_message(id):
     """
     Update a message by it's ID
     """
-    if not current_user.is_authenticated:
-        return {"errors": {"message": "Unauthorized"}}, 401
-
-    message = Message.query.get(id)
-    if not message:
-        return {"errors": {"message": "Message not found"}}, 404
-
-    form = MessageForm()
-    form["csrf_token"].data = request.cookies["csrf_token"]
-
-    # User must be the author of the message to update it
-    if message.user_id != current_user.id:
-        return {"errors": {"message": "You are not the author of this message"}}, 403
-
-    if form.validate_on_submit():
-        message.body = form.data["body"]
-        db.session.commit()
-        return message.to_dict()
-    return {"errors": form.errors}, 400
+    return f"Update message {id}"
 
 
 @message_routes.route("/<int:id>", methods=["DELETE"])
@@ -61,20 +32,7 @@ def delete_message(id):
     """
     Delete a message by it's ID
     """
-    if not current_user.is_authenticated:
-        return {"errors": {"message": "Unauthorized"}}, 401
-
-    message = Message.query.get(id)
-    if not message:
-        return {"errors": {"message": "Message not found"}}, 404
-
-    # User must be the author of the message to delete it
-    if message.user_id != current_user.id:
-        return {"errors": {"message": "You are not the author of this message"}}, 403
-
-    db.session.delete(message)
-    db.session.commit()
-    return {"message": "Message deleted successfully"}
+    return f"Delete message {id}"
 
 
 @message_routes.route("/<int:messageId>/reactions")
@@ -82,14 +40,7 @@ def get_message_reactions(messageId):
     """
     Get all reactions for a message by it's ID
     """
-    if not current_user.is_authenticated:
-        return {"errors": {"message": "Unauthorized"}}, 401
-
-    message = Message.query.get(messageId)
-    if not message:
-        return {"errors": {"message": "Message not found"}}, 404
-
-    return [reaction.to_dict() for reaction in message.reactions]
+    return f"Message {messageId} reactions"
 
 
 @message_routes.route("/<int:messageId>/reactions", methods=["POST"])
