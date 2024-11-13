@@ -134,4 +134,23 @@ def remove_reaction_from_message(messageId, reactionId):
     """
     Remove a reaction from a message by it's ID
     """
-    return f"Remove reaction from message {messageId}"
+    if not current_user.is_authenticated:
+        return {"errors": {"message": "Unauthorized"}}, 401
+
+    message = Message.query.get(messageId)
+    if not message:
+        return {"errors": {"message": "Message not found"}}, 404
+
+    # Check if user already reacted with this emoji
+    existing_reaction = Reaction.query.get(reactionId)
+
+    if not existing_reaction:
+        return {"errors": {"message": "Reaction not found"}}, 404
+
+    if existing_reaction.user_id != current_user.id:
+        return {"errors": {"message": "You already reacted with this emoji"}}, 400
+
+    db.session.delete(existing_reaction)
+    db.session.commit()
+
+    return {"message": "Reaction removed successfully"}
