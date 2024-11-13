@@ -115,3 +115,38 @@ def get_channel_messages(id):
 
     messages = Message.query.filter(Message.channel_id == id).all()
     return [message.to_dict() for message in messages], 200
+
+
+@channel_routes.route("/<int:id>/messages", methods=["POST"])
+def create_channel_message(id):
+    """
+    Create a new message for a channel by it's ID
+    """
+    if not current_user.is_authenticated:
+        return {"errors": {"message": "Unauthorized"}}, 401
+
+    channel = Channel.query.get(id)
+    if not channel:
+        return {"errors": {"message": "Channel not found"}}, 404
+
+    server_member = ServerMember.query.filter(
+        ServerMember.server_id == channel.server_id,
+        ServerMember.user_id == current_user.id,
+    ).first()
+
+    if not server_member:
+        return {"errors": {"message": "Unauthorized"}}, 401
+
+    data = request.get_json()
+    if not data or "body" not in data:
+        return {"errors": {"message": "body is required"}}, 400
+
+    message = Message(
+        body=data["body"],
+        channel_id=id,
+        user_id=current_user.id,
+    )
+
+    db.session.add(message)
+    db.session.commit()
+    return message.to_dict(), 201
