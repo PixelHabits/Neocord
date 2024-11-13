@@ -1,25 +1,72 @@
+from random import choice, sample
+
 from sqlalchemy.sql import text
 
 from app.models import SCHEMA, Message, Reaction, User, db, environment
 
 
-def seed_reactions():
-    demo = User.query.filter(User.username == "Demo").first()
-    marnie = User.query.filter(User.username == "marnie").first()
-    bobbie = User.query.filter(User.username == "bobbie").first()
-
-    messages = Message.query.limit(3).all()
-
-    reactions = [
-        Reaction(user_id=demo.id, message_id=messages[0].id, emoji="👋"),
-        Reaction(user_id=marnie.id, message_id=messages[1].id, emoji="❤️"),
-        Reaction(user_id=bobbie.id, message_id=messages[2].id, emoji="🎉"),
+def generate_reactions():
+    return [
+        "👋",
+        "❤️",
+        "🎉",
+        "👍",
+        "🔥",
+        "😊",
+        "🚀",
+        "💯",
+        "✨",
+        "🙌",
+        "😂",
+        "💪",
+        "🎮",
+        "💻",
+        "📚",
+        "🤔",
+        "👀",
+        "💡",
+        "🌟",
+        "🙏",
     ]
 
-    for reaction in reactions:
-        db.session.add(reaction)
 
-    db.session.commit()
+def seed_reactions():
+    try:
+        demo = User.query.filter(User.username == "Demo").first()
+        marnie = User.query.filter(User.username == "marnie").first()
+        bobbie = User.query.filter(User.username == "bobbie").first()
+
+        if not all([demo, marnie, bobbie]):
+            print("Error: Could not find all required users")
+            return
+
+        users = [demo, marnie, bobbie]
+        messages = Message.query.all()
+
+        if not messages:
+            print("Error: No messages found to add reactions to")
+            return
+
+        messages_to_react = sample(messages, min(len(messages), 15))
+        reactions = []
+
+        for message in messages_to_react:
+            reacting_users = sample(users, choice(range(1, 4)))
+            for user in reacting_users:
+                reaction = Reaction(
+                    user_id=user.id,
+                    message_id=message.id,
+                    emoji=choice(generate_reactions()),
+                )
+                reactions.append(reaction)
+
+        db.session.add_all(reactions)
+        db.session.commit()
+        print(f"Successfully added {len(reactions)} reactions!")
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error seeding reactions: {str(e)}")
 
 
 def undo_reactions():

@@ -4,27 +4,40 @@ from app.models import SCHEMA, Server, ServerMember, User, db, environment
 
 
 def seed_server_members():
+    # Get users
     demo = User.query.filter(User.username == "Demo").first()
     marnie = User.query.filter(User.username == "marnie").first()
     bobbie = User.query.filter(User.username == "bobbie").first()
 
+    # Get servers
     demo_server = Server.query.filter(Server.name == "Demo's Server").first()
+    clubhouse = Server.query.filter(Server.name == "the clubhouse").first()
     marnie_server = Server.query.filter(Server.name == "Marnie's Server").first()
     bobbie_server = Server.query.filter(Server.name == "Bobbie's Server").first()
 
-    server_members = [
-        # Demo is a member of all servers (already owner of their own)
-        ServerMember(user_id=demo.id, server_id=marnie_server.id, is_owner=False),
-        ServerMember(user_id=demo.id, server_id=bobbie_server.id, is_owner=False),
-        # Marnie is a member of Demo's and Bobbie's servers
-        ServerMember(user_id=marnie.id, server_id=demo_server.id, is_owner=False),
-        ServerMember(user_id=marnie.id, server_id=bobbie_server.id, is_owner=False),
-        # Bobbie is a member of Demo's and Marnie's servers
-        ServerMember(user_id=bobbie.id, server_id=demo_server.id, is_owner=False),
-        ServerMember(user_id=bobbie.id, server_id=marnie_server.id, is_owner=False),
+    # Define non-owner memberships
+    member_data = [
+        # The clubhouse members (Demo already owner)
+        {"user": marnie, "server": clubhouse},
+        {"user": bobbie, "server": clubhouse},
+        # Demo's server members (Demo already owner)
+        {"user": marnie, "server": demo_server},
+        {"user": bobbie, "server": demo_server},
+        # Marnie's server members (Marnie already owner)
+        {"user": demo, "server": marnie_server},
+        {"user": bobbie, "server": marnie_server},
+        # Bobbie's server members (Bobbie already owner)
+        {"user": demo, "server": bobbie_server},
+        {"user": marnie, "server": bobbie_server},
     ]
 
-    db.session.add_all(server_members)
+    # Create non-owner memberships
+    for data in member_data:
+        member = ServerMember(
+            user_id=data["user"].id, server_id=data["server"].id, is_owner=False
+        )
+        db.session.add(member)
+
     db.session.commit()
 
 
