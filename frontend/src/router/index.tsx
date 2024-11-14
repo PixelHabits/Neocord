@@ -3,6 +3,7 @@ import { LoginFormPage } from '../components/LoginFormPage/LoginFormPage.tsx';
 import { ServerPage } from '../components/ServerPage/ServerPage.tsx';
 import { ServerLayout } from '../components/ServerPage/components/ServerLayout.tsx';
 import { SignupFormPage } from '../components/SignupFormPage/SignupFormPage.tsx';
+import { LandingPage } from '../components/LandingPage/LandingPage.tsx';
 import { Layout } from './Layout.tsx';
 
 export const router = createBrowserRouter([
@@ -11,7 +12,7 @@ export const router = createBrowserRouter([
 		children: [
 			{
 				path: '/',
-				element: <h1>Welcome!</h1>,
+				element: <LandingPage />,
 			},
 			{
 				path: 'login',
