@@ -11,14 +11,14 @@
     "generate:component": "turbo gen react-component"
   },
   "devDependencies": {
-    "@repo/typescript-config": "*",
-    "@turbo/gen": "^1.12.4",
-    "@types/node": "^20.11.24",
-    "@types/react": "^18.2.61",
-    "@types/react-dom": "^18.2.19",
-    "typescript": "5.5.4"
+    "@repo/typescript-config": "workspace:*",
+    "@turbo/gen": "^2.2.3",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "~5.6.3"
   },
   "dependencies": {
-    "react": "18.3.1"
+    "react": "^18.3.1"
   }
 }
