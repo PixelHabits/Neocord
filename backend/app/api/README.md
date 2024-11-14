@@ -16,7 +16,7 @@ All endpoints that require a current user to be logged in.
 
     ```json
     {
-    	"message": "Authentication required"
+    	"errors": {"message": "User must be logged in"}
     }
     ```
 
@@ -35,7 +35,7 @@ correct role(s) or permission(s).
 
     ```json
     {
-    	"message": "Forbidden"
+    	"errors": {"message": "Forbidden"}
     }
     ```
 
@@ -61,25 +61,22 @@ Returns the information about the current user that is logged in.
     {
     	"user": {
     		"id": 1,
-    		"first_name": "John",
-    		"last_name": "Smith",
-    		"email": "john.smith@gmail.com",
-    		"username": "JohnSmith",
-    		"profile_image": "http://website.com/image.jpg"
+    		"email": "demo@aa.io",
+    		"username": "Demo"
     	}
     }
     ```
 
 - Successful Response when there is no logged in user
 
-  - Status Code: 200
+  - Status Code: 401
   - Headers:
     - Content-Type: application/json
   - Body:
 
     ```json
     {
-    	"user": null
+    	"errors": {"message": "No user logged in"}
     }
     ```
 
@@ -99,8 +96,8 @@ information.
 
     ```json
     {
-    	"credential": "john.smith@gmail.com",
-    	"password": "secret password"
+    	"email": "demo@aa.io",
+    	"password": "password"
     }
     ```
 
@@ -115,11 +112,8 @@ information.
     {
     	"user": {
     		"id": 1,
-    		"first_name": "John",
-    		"last_name": "Smith",
-    		"email": "john.smith@gmail.com",
-    		"username": "JohnSmith",
-    		"profile_image": "http://website.com/image.jpg"
+    		"email": "demo@aa.io",
+    		"username": "Demo"
     	}
     }
     ```
@@ -133,7 +127,7 @@ information.
 
     ```json
     {
-    	"message": "Invalid credentials"
+    	"errors": {"message": "Invalid credentials"}
     }
     ```
 
@@ -170,12 +164,8 @@ user's information.
 
     ```json
     {
-    	"id": 1,
-    	"first_name": "John",
-    	"last_name": "Smith",
-    	"email": "john.smith@gmail.com",
-    	"username": "JohnSmith",
-    	"profile_image": "http://website.com/image.jpg"
+    	"email": "demo@aa.io",
+    	"username": "Demo"
     }
     ```
 
@@ -190,11 +180,8 @@ user's information.
     {
     	"user": {
     		"id": 1,
-    		"first_name": "John",
-    		"last_name": "Smith",
-    		"email": "john.smith@gmail.com",
-    		"username": "JohnSmith",
-    		"profile_image": "http://website.com/image.jpg"
+    		"email": "demo@aa.io",
+    		"username": "Demo"
     	}
     }
     ```
@@ -208,7 +195,6 @@ user's information.
 
     ```json
     {
-    	"message": "Email is already in use.",
     	"errors": {
     		"email": "Email address is already in use."
     	}
@@ -224,7 +210,6 @@ user's information.
 
     ```json
     {
-    	"message": "Username is already in use.",
     	"errors": {
     		"username": "User with that username already exists"
     	}
@@ -243,10 +228,7 @@ user's information.
     	"message": "Bad Request",
     	"errors": {
     		"email": "Invalid email",
-    		"username": "Username is required",
-    		"first_name": "First Name is required",
-    		"last_name": "Last Name is required",
-    		"profile_picture": "Must be a valid URL"
+    		"username": "Username is required"
     	}
     }
     ```
@@ -274,21 +256,11 @@ Returns all the current Users Servers
     ```json
     [
     	{
-    		"id": 1,
-    		"name": "App Academy",
-    		"owner_id": 1,
-    		"is_public": true,
-    		"server_icon": "image.png",
-    		"members": [
-    			{
-    				"id": 1,
-    				"username": "JohnSmith",
-    				"joined_at": "11-01-2024"
-    			}
-    		],
-
-    		"created_at": "11-01-2024",
-    		"updated_at": "11-01-2024"
+        "id": 1,
+        "name": "Demo's Server",
+        "description": "Demo's server for general discussions",
+        "created_at": "Wed, 13 Nov 2024 18:23:51 GMT",
+        "updated_at": "Wed, 13 Nov 2024 18:23:51 GMT"
     	}
     ]
     ```
@@ -312,32 +284,55 @@ Returns the details of a Server specified by its ID.
   - Body:
 
     ```json
-    [
-    	{
-    		"id": 1,
-    		"name": "App Academy",
-    		"owner_id": 1,
-    		"is_public": true,
-    		"server_icon": "image.png",
-    		"members": [
-    			{
-    				"id": 1,
-    				"username": "JohnSmith",
-    				"profile_picture": "image.png",
-    				"joined_at": "11-01-2024"
-    			}
-    		],
-    		"Owner": [
-    			{
-    				"id": 1,
-    				"username": "JohnSmith",
-    				"profile_picture": "image.png"
-    			}
-    		],
-    		"created_at": "11-01-2024",
-    		"updated_at": "11-01-2024"
-    	}
-    ]
+    {
+    "channels": [
+        {
+            "id": 1,
+            "name": "general",
+            "server_id": 1,
+            "visibility": "public"
+        }
+    ],
+    "created_at": "Wed, 13 Nov 2024 18:23:51 GMT",
+    "description": "Demo's server for general discussions",
+    "id": 1,
+    "members": [
+        {
+            "join_date": "Wed, 13 Nov 2024 18:23:51 GMT",
+            "user": {
+                "email": "demo@aa.io",
+                "id": 1,
+                "is_owner": true,
+                "username": "Demo"
+            }
+        },
+        {
+            "join_date": "Wed, 13 Nov 2024 18:23:51 GMT",
+            "user": {
+                "email": "marnie@aa.io",
+                "id": 2,
+                "is_owner": false,
+                "username": "marnie"
+            }
+        },
+        {
+            "join_date": "Wed, 13 Nov 2024 18:23:51 GMT",
+            "user": {
+                "email": "bobbie@aa.io",
+                "id": 3,
+                "is_owner": false,
+                "username": "bobbie"
+            }
+        }
+    ],
+    "name": "Demo's Server",
+    "owner": {
+        "email": "demo@aa.io",
+        "id": 1,
+        "username": "Demo"
+    },
+    "updated_at": "Wed, 13 Nov 2024 18:23:51 GMT"
+    }
     ```
 
 - Error response: Couldn't find a Server with the specified id
@@ -349,7 +344,7 @@ Returns the details of a Server specified by its ID.
 
     ```json
     {
-      "message": "Server not found"
+      "errors": {"message": "Server not found"}
     }
     ```
 
@@ -369,7 +364,7 @@ Creates and returns a new Server
   ```json
   {
   	"name": "Learners Hub",
-  	"is_public": true
+  	"description": "A server for learners to discuss and share their learning experiences"
   }
   ```
 
@@ -381,17 +376,30 @@ Creates and returns a new Server
   - Body:
 
     ```json
-    [
-    	{
-    		"id": 1,
-    		"name": "App Academy",
-    		"owner_id": 1,
-    		"is_public": true,
-    		"server_icon": "image.png",
-    		"created_at": "11-01-2024",
-    		"updated_at": "11-01-2024"
-    	}
-    ]
+    {
+    "channels": [],
+    "created_at": "Wed, 13 Nov 2024 22:36:18 GMT",
+    "description": "A server for learners to discuss and share their learning experiences",
+    "id": 4,
+    "members": [
+        {
+            "join_date": "Wed, 13 Nov 2024 22:36:18 GMT",
+            "user": {
+                "email": "demo@aa.io",
+                "id": 1,
+                "is_owner": true,
+                "username": "Demo"
+            }
+        }
+    ],
+    "name": "Learners Hub",
+    "owner": {
+        "email": "demo@aa.io",
+        "id": 1,
+        "username": "Demo"
+    },
+    "updated_at": "Wed, 13 Nov 2024 22:36:18 GMT"
+    }
     ```
 
 - Error Response: Body validation errors
@@ -426,8 +434,7 @@ Updates and returns an existing server.
     ```json
     {
     	"name": "Updated Server Name",
-    	"is_public": false,
-    	"server_icon": "new_image.png"
+    	"description": "A server for learners to discuss and share their learning experiences"
     }
     ```
 
@@ -439,17 +446,55 @@ Updates and returns an existing server.
   - Body:
 
     ```json
-    [
-    	{
-    		"id": 1,
-    		"name": "Updated Server Name",
-    		"owner_id": 1,
-    		"is_public": false,
-    		"server_icon": "new_image.png",
-    		"created_at": "11-01-2024",
-    		"updated_at": "11-05-2024"
-    	}
-    ]
+    {
+    "channels": [
+        {
+            "id": 1,
+            "name": "general",
+            "server_id": 1,
+            "visibility": "public"
+        }
+    ],
+    "created_at": "Wed, 13 Nov 2024 22:37:45 GMT",
+    "description": "A server for learners to discuss and share their learning experiences",
+    "id": 1,
+    "members": [
+        {
+            "join_date": "Wed, 13 Nov 2024 22:37:45 GMT",
+            "user": {
+                "email": "demo@aa.io",
+                "id": 1,
+                "is_owner": true,
+                "username": "Demo"
+            }
+        },
+        {
+            "join_date": "Wed, 13 Nov 2024 22:37:45 GMT",
+            "user": {
+                "email": "marnie@aa.io",
+                "id": 2,
+                "is_owner": false,
+                "username": "marnie"
+            }
+        },
+        {
+            "join_date": "Wed, 13 Nov 2024 22:37:45 GMT",
+            "user": {
+                "email": "bobbie@aa.io",
+                "id": 3,
+                "is_owner": false,
+                "username": "bobbie"
+            }
+        }
+    ],
+    "name": "Updated Server Name",
+    "owner": {
+        "email": "demo@aa.io",
+        "id": 1,
+        "username": "Demo"
+    },
+    "updated_at": "Wed, 13 Nov 2024 22:37:45 GMT"
+    }
     ```
 
 - Error Response: Body validation errors
@@ -519,7 +564,66 @@ Deletes a existing server
     }
     ```
 
-## Channel Routes
+### Join a server
+
+Adds the current user to the server
+
+- Require Authentication: true
+- Request
+
+  - Method: POST
+  - URL: /api/servers/:serverId/members
+  - Body: none
+
+- Successful Response
+
+  - Status Code: 200
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "User added to server"
+    }
+    ```
+
+- Error response: Couldn't find a Server with the specified id
+
+  - Status Code: 404
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "Server not found"
+    }
+    ```
+
+### Leave a server
+
+Removes the current user from the server
+
+- Require Authentication: true
+- Request
+
+  - Method: DELETE
+  - URL: /api/servers/:serverId/members
+  - Body: none
+
+- Successful Response
+
+  - Status Code: 200
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "Left server successfully"
+    }
+    ```
 
 ### Get Channels from server
 
@@ -530,7 +634,7 @@ Returns all of the channels inside a specified server.
 - Request
 
   - Method: GET
-  - URL: /api/channels/:channelId
+  - URL: /api/servers/:serverId/channels
   - Body: none
 
 - Successful Response
@@ -542,10 +646,12 @@ Returns all of the channels inside a specified server.
 
   ```json
   [
-  	{
-  		"id": 1,
-  		"name": "general"
-  	}
+    {
+        "id": 1,
+        "name": "general",
+        "server_id": 1,
+        "visibility": "public"
+    }
   ]
   ```
 
@@ -571,9 +677,60 @@ Returns all of the channels inside a specified server.
 
     ```json
     {
-      "message": "Forbidden"
+      "message": "User is not a member of the server"
     }
     ```
+
+### Create a new channel
+
+Creates and returns a new channel.
+
+- Require Authentication: true
+- Require proper authorization: Server must belong to the current user
+- Request
+
+  - Method: POST
+  - URL: /api/servers/:serverId/channels
+  - Headers: Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "name": "new channel",
+      "visibility": "public"
+    }
+    ```
+
+- Successful Response
+
+  - Status Code: 201
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "id": 4,
+      "name": "new channel",
+      "server_id": 1,
+      "visibility": "public"
+    }
+    ```
+
+- Error Response: Couldn't find a Server with the specified id
+
+  - Status Code: 404
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "Server not found"
+    }
+    ```
+
+## Channel Routes
 
 ### Get a channel by it's ID
 
@@ -594,16 +751,25 @@ Returns the details of a channel specified by its ID.
   - Body:
 
     ```json
-    [
-    	{
-    		"id": 1,
-    		"name": "general",
-    		"visibility": "public",
-    		"server_id": 1,
-    		"created_at": "11-01-2024",
-    		"updated_at": "11-05-2024"
-    	}
-    ]
+    {
+      "id": 1,
+      "name": "general",
+      "server_id": 1,
+      "visibility": "public"
+    }
+    ```
+
+- Error response: User is not a member of the server
+
+  - Status Code: 403
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "User is not a member of the server"
+    }
     ```
 
 - Error response: Couldn't find a Channel with the specified id
@@ -628,7 +794,7 @@ Edits and returns a channel.
 - Request
 
   - Method: PUT
-  - URL: /api/server/:serverId/:channelId
+  - URL: /api/channels/:channelId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -636,7 +802,7 @@ Edits and returns a channel.
     ```json
     {
     	"name": "Updated Channel Name",
-    	"visibility": "private"
+    	"visibility": "PRIVATE"
     }
     ```
 
@@ -648,16 +814,12 @@ Edits and returns a channel.
   - Body:
 
     ```json
-    [
-    	{
-    		"id": 1,
-    		"name": "Updated Channel Name",
-    		"visibility": "private",
-    		"server_id": 1,
-    		"created_at": "11-01-2024",
-    		"updated_at": "11-05-2024"
-    	}
-    ]
+    {
+      "id": 1,
+      "name": "Updated Channel Name",
+      "server_id": 1,
+      "visibility": "private"
+    }
     ```
 
 - Error Response: Body validation errors
@@ -676,47 +838,20 @@ Edits and returns a channel.
     }
     ```
 
-### Create a channel
+- Error response: Couldn't find a Channel with the specified id
 
-Creates and returns a channel.
-
-- Require Authentication: true
-- Require proper authorization: Server must belong to the current user
-- Request
-
-  - Method: POST
-  - URL: /api/:serverId
-  - Headers: Content-Type: application/json
+  - Status Code: 404
+  - Headers:
+    - Content-Type: application/json
   - Body:
 
-  ```json
-  {
-  	"name": "announcements",
-  	"visibility": "public"
-  }
-  ```
-
-  - Successful Response
-
-    - Status Code: 201
-    - Headers:
-      - Content-Type: application/json
-    - Body:
-
     ```json
-    [
-    	{
-    		"id": 1,
-    		"name": "announcements",
-    		"visibility": "public",
-    		"server_id": 1,
-    		"created_at": "11-01-2024",
-    		"updated_at": "11-05-2024"
-    	}
-    ]
+    {
+      "message": "Channel not found"
+    }
     ```
 
-- Error Response: Body validation errors
+- Error response: form validation errors
 
   - Status Code: 400
   - Headers:
@@ -727,11 +862,11 @@ Creates and returns a channel.
     {
       "message": "Bad Request",
       "errors": {
-        "name": "Name must be between 2 and 20 characters.",
-        "visibility": "Visibility must be either public or private."
+        "name": "Name must be between 2 and 20 characters."
       }
     }
     ```
+
 
 ### Delete a channel
 
@@ -742,7 +877,7 @@ Deletes a specified channel.
 - Request
 
   - Method: DELETE
-  - URL: /api/servers/:serverId/:channelId
+  - URL: /api/channels/:channelId
   - Body: none
 
 - Successful Response
@@ -770,9 +905,6 @@ Deletes a specified channel.
     	"message": "Channel not found"
     }
     ```
-
-## Message Routes
-
 ### Get Messages from a channel
 
 Returns all of the messages inside a specified channel.
@@ -795,59 +927,18 @@ Returns all of the messages inside a specified channel.
 
     ```json
     [
-    	{
-    		"id": 1,
-    		"body": "Hello, world!",
-    		"author_id": 1,
+      {
+        "body": "hi",
         "channel_id": 1,
-        "thread_id": null,
-    		"created_at": "11-01-2024"
-    	}
+        "created_at": "Wed, 13 Nov 2024 22:12:32 GMT",
+        "id": 6,
+        "reactions": [],
+        "reply_count": 0,
+        "thread": null,
+        "updated_at": "Wed, 13 Nov 2024 22:12:32 GMT",
+        "user_id": 1
+      }
     ]
-    ```
-
-### Get a message by it's ID
-
-Returns the details of a message specified by its ID.
-
-- Require Authentication: true
-- Request
-
-  - Method: GET
-  - URL: /api/channels/:channelId/messages/:messageId
-  - Body: none
-
-- Successful Response
-
-  - Status Code: 200
-  - Headers:
-    - Content-Type: application/json
-  - Body:
-
-    ```json
-    [
-    	{
-    		"id": 1,
-    		"body": "Hello, world!",
-    		"author_id": 1,
-        "channel_id": 1,
-        "thread_id": null,
-    		"created_at": "11-01-2024"
-    	}
-    ]
-    ```
-
-- Error response: Couldn't find a Message with the specified id
-
-  - Status Code: 404
-  - Headers:
-    - Content-Type: application/json
-  - Body:
-
-    ```json
-    {
-      "message": "Message not found"
-    }
     ```
 
 ### Create a Message
@@ -858,7 +949,7 @@ Creates and returns a message.
 - Request
 
   - Method: POST
-  - URL: /api/:serverId/:channelId
+  - URL: /api/channels/:channelId/messages
   - Headers: Content-Type: application/json
   - Body:
 
@@ -876,16 +967,17 @@ Creates and returns a message.
   - Body:
 
     ```json
-    [
-    	{
-    		"id": 1,
-    		"body": "Hello, world!",
-    		"author_id": 1,
-        "channel_id": 1,
-        "thread_id": null,
-    		"created_at": "11-01-2024"
-    	}
-    ]
+    {
+      "body": "Hello, world!",
+      "channel_id": 1,
+      "created_at": "Wed, 13 Nov 2024 22:52:31 GMT",
+      "id": 7,
+      "reactions": [],
+      "reply_count": 0,
+      "thread": null,
+      "updated_at": "Wed, 13 Nov 2024 22:52:31 GMT",
+      "user_id": 1
+    }
     ```
 
 - Error Response: Body validation errors
@@ -901,6 +993,50 @@ Creates and returns a message.
       "errors": {
         "body": "Body must be between 1 and 500 characters."
       }
+    }
+    ```
+
+
+## Message Routes
+
+### Get a message by it's ID
+
+Returns the details of a message specified by its ID.
+
+- Require Authentication: true
+- Request
+
+  - Method: GET
+  - URL: /api/messages/:messageId
+  - Body: none
+
+- Successful Response
+
+  - Status Code: 200
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "id": 1,
+      "body": "Hello, world!",
+      "channel_id": 1,
+      "thread_id": null,
+      "created_at": "Wed, 13 Nov 2024 22:12:32 GMT"
+    }
+    ```
+
+- Error response: Couldn't find a Message with the specified id
+
+  - Status Code: 404
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "Message not found"
     }
     ```
 
@@ -959,6 +1095,32 @@ Updates and returns a message.
     }
     ```
 
+- Error response: Couldn't find a Message with the specified id
+
+  - Status Code: 404
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "Message not found"
+    }
+    ```
+
+- Error response: You are not the author of this message
+
+  - Status Code: 403
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "You are not the author of this message"
+    }
+    ```
+
 ### Delete a Message
 
 Deletes a specified message.
@@ -997,6 +1159,19 @@ Deletes a specified message.
     }
     ```
 
+- Error response: You are not the author of this message
+
+  - Status Code: 403
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "You are not the author of this message"
+    }
+    ```
+
 ## Reaction Routes
 
 ### Get Reactions from a message by it's ID
@@ -1007,7 +1182,7 @@ Returns all of the reactions inside a specified message.
 - Request
 
   - Method: GET
-  - URL: /api/messages/:messageId/reactions
+  - URL: /api/messsages/:messageId/reactions
   - Body: none
 
 - Successful Response
@@ -1098,6 +1273,19 @@ Adds a reaction to a specified message.
     }
     ```
 
+- Error Response: User already reacted with this emoji
+
+  - Status Code: 400
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "You've already reacted with this emoji"
+    }
+    ```
+
 ### Delete a Reaction
 
 Deletes a specified reaction.
@@ -1134,5 +1322,31 @@ Deletes a specified reaction.
     ```json
     {
       "message": "Reaction not found"
+    }
+    ```
+
+- Error response: You are not the author of this reaction
+
+  - Status Code: 403
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "You are not the author of this reaction"
+    }
+    ```
+
+- Error response: Couldn't find message with the specified id
+
+  - Status Code: 404
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+      "message": "Message not found"
     }
     ```
