@@ -16,8 +16,8 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
+- `backend`: a [Flask](https://flask.palletsprojects.com/) app
+- `frontend`: a [React](https://reactjs.org/) app
 - `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
