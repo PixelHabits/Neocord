@@ -44,13 +44,14 @@ function SignupFormModal() {
 	};
 
 	return (
-		<>
-			<h1>Sign Up</h1>
+		<div className="flex flex-col items-center justify-center">
+			<h1 className="text-4xl">Sign Up</h1>
 			{errors.server && <p>{errors.server}</p>}
 			<form onSubmit={handleSubmit}>
 				<label>
 					Email
 					<input
+						className='w-full rounded-md border-1 border-gray-300 p-2'
 						type='text'
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
@@ -61,6 +62,7 @@ function SignupFormModal() {
 				<label>
 					Username
 					<input
+						className='w-full rounded-md border-1 border-gray-300 p-2'
 						type='text'
 						value={username}
 						onChange={(e) => setUsername(e.target.value)}
@@ -71,6 +73,7 @@ function SignupFormModal() {
 				<label>
 					Password
 					<input
+						className='w-full rounded-md border-1 border-gray-300 p-2'
 						type='password'
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
@@ -81,6 +84,7 @@ function SignupFormModal() {
 				<label>
 					Confirm Password
 					<input
+						className='w-full rounded-md border-1 border-gray-300 p-2'
 						type='password'
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
@@ -88,9 +92,9 @@ function SignupFormModal() {
 					/>
 				</label>
 				{errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-				<button type='submit'>Sign Up</button>
+				<button className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900' type='submit'>Sign Up</button>
 			</form>
-		</>
+		</div>
 	);
 }
 

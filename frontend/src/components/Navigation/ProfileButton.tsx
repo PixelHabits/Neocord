@@ -47,7 +47,7 @@ function ProfileButton() {
 			{showMenu && (
 				<ul className={'profile-dropdown'} ref={ulRef}>
 					{user ? (
-						<>
+						<div className='flex flex-col items-center justify-center'>
 							<li>{user.username}</li>
 							<li>{user.email}</li>
 							<li>
@@ -55,9 +55,9 @@ function ProfileButton() {
 									Log Out
 								</button>
 							</li>
-						</>
+						</div>
 					) : (
-						<>
+						<div id='profile-dropdown-not-logged-in' className='flex cursor-pointer flex-col items-center justify-center rounded-md bg-neutral-200 p-4 text-gray-800 text-xl'>
 							<OpenModalMenuItem
 								itemText='Log In'
 								onItemClick={closeMenu}
@@ -68,7 +68,7 @@ function ProfileButton() {
 								onItemClick={closeMenu}
 								modalComponent={<SignupFormModal />}
 							/>
-						</>
+						</div>
 					)}
 				</ul>
 			)}

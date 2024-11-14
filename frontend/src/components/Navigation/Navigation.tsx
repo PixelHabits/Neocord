@@ -1,12 +1,11 @@
 import { NavLink } from "react-router-dom";
 import { ProfileButton } from "./ProfileButton.tsx";
 import "./Navigation.css";
-// import { useStore } from "../../store/store.ts";
+import { useStore } from "../../store/store.ts";
 
 
 function Navigation() {
-  // const user = useStore((state) => state.user);
-  const user = true;
+  const user = useStore((state) => state.user);
   
   return (
     <ul className="flex items-center p-4 text-white">

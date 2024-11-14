@@ -34,12 +34,13 @@ function LoginFormModal() {
 		};
 
 		return (
-			<>
-				<h1>Log In</h1>
+			<div className="flex flex-col items-center justify-center">
+				<h1 className="text-4xl">Log In</h1>
 				<form onSubmit={handleSubmit}>
 					<label>
-						Email
+						Email:
 						<input
+							className='w-full rounded-md border-1 border-gray-300 p-2'
 							type='text'
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -48,8 +49,9 @@ function LoginFormModal() {
 					</label>
 					{errors.email && <p>{errors.email}</p>}
 					<label>
-						Password
+						Password:
 						<input
+							className='w-full rounded-md border-1 border-gray-300 p-2'
 							type='password'
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
@@ -57,9 +59,9 @@ function LoginFormModal() {
 						/>
 					</label>
 					{errors.password && <p>{errors.password}</p>}
-					<button type='submit'>Log In</button>
+					<button className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900' type='submit'>Log In</button>
 				</form>
-			</>
+			</div>
 		);
 }
 
