@@ -26,6 +26,7 @@ dependencies = [
     "sqlalchemy>=2.0.36",
     "werkzeug>=3.1.2",
     "wtforms>=3.2.1",
+    "ruff>=0.7.3",
 ]
 
 [tool.uv]
