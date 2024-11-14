@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"bradlc.vscode-tailwindcss",
+		"yoavbls.pretty-ts-errors",
+		"biomejs.biome",
+		"dsznajder.es7-react-js-snippets",
+		"streetsidesoftware.code-spell-checker",
+		"usernamehw.errorlens"
+	]
+}
