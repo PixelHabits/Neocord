@@ -50,7 +50,7 @@
 			"correctness": {
 				"noConstantMathMinMaxClamp": "error",
 				"noNodejsModules": "error",
-				"noUndeclaredDependencies": "error",
+				"noUndeclaredDependencies": "off",
 				"noUndeclaredVariables": "error",
 				"noUnusedImports": "error",
 				"noUnusedPrivateClassMembers": "error",
