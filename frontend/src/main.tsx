@@ -26,6 +26,8 @@ const root = createRoot(rootElement);
 
 root.render(
 	<StrictMode>
-		<RouterProvider router={router} />
+		<div className="bg-background">
+			<RouterProvider router={router} />
+		</div>
 	</StrictMode>,
 );
