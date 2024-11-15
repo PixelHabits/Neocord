@@ -71,15 +71,17 @@ export const createSessionSlice: StateCreator<
 			const data = await response.json();
 			set({ user: data }, false, 'session/login');
 		} else if (response.status < 500) {
-			return response.json();
+			const errorMessages = await response.json();
+			return errorMessages;
+		} else {
+			return { server: 'Something went wrong. Please try again' };
 		}
-		return { server: 'Something went wrong. Please try again' };
 	},
 
 	signup: async (user) => {
 		const response = await fetch('/api/auth/signup', {
 			method: 'POST',
-			headers: { 
+				headers: { 
 				'Content-Type': 'application/json',
 				'X-CSRFToken': getCsrfToken(),
 			},
@@ -91,9 +93,11 @@ export const createSessionSlice: StateCreator<
 			const data = await response.json();
 			set({ user: data }, false, 'session/signup');
 		} else if (response.status < 500) {
-			return response.json();
+			const errorMessages = await response.json();
+			return errorMessages;
+		} else {
+			return { server: 'Something went wrong. Please try again' };
 		}
-		return { server: 'Something went wrong. Please try again' };
 	},
 
 	logout: async () => {
