@@ -2,15 +2,15 @@ import { BiPlusCircle } from 'react-icons/bi';
 
 function getInitials(serverName: string) {
 	const titleArr = serverName.split(' ');
-	return titleArr.map((title) => title[0].toUpperCase()).join('');
+	return titleArr.map((title) => title.charAt(0)?.toUpperCase() || '').join('');
 }
 // Added so that typescript doesn't complain
 export interface Server {
 	id: number;
 	name: string;
 	description: string;
-	updated_at: string;
-	created_at: string;
+	updatedAt: string;
+	createdAt: string;
 }
 
 interface ServerProps {
@@ -19,20 +19,27 @@ interface ServerProps {
 
 export const ServerList = ({ servers }: ServerProps) => {
 	return (
-		<aside className='flex flex-col items-center px-4 gap-4 relative'>
+		<aside className='relative flex flex-col items-center gap-4 px-4'>
 			{/* TODO: Add server tooltips (to be implemented later) */}
 			{servers.map((server) => (
-				<div
+				<button
+					type='button'
 					key={server.id}
-					className='rounded-full bg-gray-500 h-16 w-16 flex justify-center p-1 items-center cursor-pointer'
+					className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-gray-500 p-1'
 					onClick={() => alert(`Navigating to ${server.name}`)}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							alert(`Navigating to ${server.name}`);
+						}
+					}}
+					tabIndex={0}
 				>
 					<span className='font-bold text-gray-200'>
 						{getInitials(server.name)}
 					</span>
-				</div>
+				</button>
 			))}
-			<div className='w-16 h-16 bg-gray-700 rounded-md flex items-center justify-center text-4xl text-gray-400 mb-4 cursor-pointer absolute bottom-0'>
+			<div className='absolute bottom-0 mb-4 flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400'>
 				<BiPlusCircle size={48} />
 			</div>
 		</aside>

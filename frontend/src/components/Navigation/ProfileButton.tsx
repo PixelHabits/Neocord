@@ -1,10 +1,10 @@
 import type React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { useStore } from '../../store/store.ts';
-import { OpenModalMenuItem } from './OpenModalMenuItem.tsx';
 import { LoginFormModal } from '../LoginFormModal/LoginFormModal.tsx';
 import { SignupFormModal } from '../SignupFormModal/SignupFormModal.tsx';
+import { OpenModalMenuItem } from './OpenModalMenuItem.tsx';
 
 function ProfileButton() {
 	const [showMenu, setShowMenu] = useState(false);
@@ -49,15 +49,24 @@ function ProfileButton() {
 					{user ? (
 						<div className='flex cursor-pointer flex-col items-center justify-center rounded-md bg-neutral-200 p-4 text-gray-800 text-xl'>
 							<li className='mb-2'>{user.username}</li>
-							<li className='mb-2 border-b-1 border-gray-600 pb-4'>{user.email}</li>
+							<li className='mb-2 border-gray-600 border-b-1 pb-4'>
+								{user.email}
+							</li>
 							<li>
-								<button className='w-full cursor-pointer rounded-md p-2' type='button' onClick={handleLogout}>
+								<button
+									className='w-full cursor-pointer rounded-md p-2'
+									type='button'
+									onClick={handleLogout}
+								>
 									Log Out
 								</button>
 							</li>
 						</div>
 					) : (
-						<div id='profile-dropdown-not-logged-in' className='flex cursor-pointer flex-col items-center justify-center rounded-md bg-neutral-200 p-4 text-gray-800 text-xl'>
+						<div
+							id='profile-dropdown-not-logged-in'
+							className='flex cursor-pointer flex-col items-center justify-center rounded-md bg-neutral-200 p-4 text-gray-800 text-xl'
+						>
 							<OpenModalMenuItem
 								itemText='Log In'
 								onItemClick={closeMenu}

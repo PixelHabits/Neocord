@@ -69,12 +69,12 @@ class Message(db.Model):
 		message_dict = {
 			'id': self.id,
 			'body': self.body,
-			'user_id': self.user_id,
-			'channel_id': self.channel_id,
-			'created_at': self.created_at,
-			'updated_at': self.updated_at,
+			'userId': self.user_id,
+			'channelId': self.channel_id,
+			'createdAt': self.created_at,
+			'updatedAt': self.updated_at,
 			'thread': None,
-			'reply_count': 0,
+			'replyCount': 0,
 			'reactions': [reaction.to_dict() for reaction in self.reactions],
 		}
 
@@ -85,19 +85,19 @@ class Message(db.Model):
 					reply.to_dict(include_replies=False)
 					for reply in self.parent_thread.replies
 				],
-				'created_at': self.parent_thread.created_at,
+				'createdAt': self.parent_thread.created_at,
 			}
-			message_dict['reply_count'] = len(self.parent_thread.replies)
+			message_dict['replyCount'] = len(self.parent_thread.replies)
 		# If this is a reply, include thread info only if specifically needed
 		# elif self.thread:
 		#     message_dict["thread"] = {
 		#         "id": self.thread.id,
-		#         "reply_count": len(self.thread.replies),
+		#         "replyCount": len(self.thread.replies),
 		#         "latest_replies": [
 		#             reply.to_dict(include_replies=False)
 		#             for reply in self.thread.replies[-3:]
 		#         ],
-		#         "created_at": self.thread.created_at,
+		#         "createdAt": self.thread.created_at,
 		#     }
 
 		return message_dict

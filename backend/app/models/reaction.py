@@ -34,7 +34,7 @@ class Reaction(db.Model):
 		"""Convert the reaction to a dictionary."""
 		return {
 			'id': self.id,
-			'user_id': self.user_id,
-			'message_id': self.message_id,
+			'userId': self.user_id,
+			'messageId': self.message_id,
 			'emoji': self.emoji,
 		}

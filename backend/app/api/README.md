@@ -259,8 +259,8 @@ Returns all the current Users Servers
         "id": 1,
         "name": "Demo's Server",
         "description": "Demo's server for general discussions",
-        "created_at": "Wed, 13 Nov 2024 18:23:51 GMT",
-        "updated_at": "Wed, 13 Nov 2024 18:23:51 GMT"
+        "createdAt": "Wed, 13 Nov 2024 18:23:51 GMT",
+        "updatedAt": "Wed, 13 Nov 2024 18:23:51 GMT"
     	}
     ]
     ```
@@ -293,7 +293,7 @@ Returns the details of a Server specified by its ID.
             "visibility": "public"
         }
     ],
-    "created_at": "Wed, 13 Nov 2024 18:23:51 GMT",
+    "createdAt": "Wed, 13 Nov 2024 18:23:51 GMT",
     "description": "Demo's server for general discussions",
     "id": 1,
     "members": [
@@ -331,7 +331,7 @@ Returns the details of a Server specified by its ID.
         "id": 1,
         "username": "Demo"
     },
-    "updated_at": "Wed, 13 Nov 2024 18:23:51 GMT"
+    "updatedAt": "Wed, 13 Nov 2024 18:23:51 GMT"
     }
     ```
 
@@ -378,7 +378,7 @@ Creates and returns a new Server
     ```json
     {
     "channels": [],
-    "created_at": "Wed, 13 Nov 2024 22:36:18 GMT",
+    "createdAt": "Wed, 13 Nov 2024 22:36:18 GMT",
     "description": "A server for learners to discuss and share their learning experiences",
     "id": 4,
     "members": [
@@ -398,7 +398,7 @@ Creates and returns a new Server
         "id": 1,
         "username": "Demo"
     },
-    "updated_at": "Wed, 13 Nov 2024 22:36:18 GMT"
+    "updatedAt": "Wed, 13 Nov 2024 22:36:18 GMT"
     }
     ```
 
@@ -455,7 +455,7 @@ Updates and returns an existing server.
             "visibility": "public"
         }
     ],
-    "created_at": "Wed, 13 Nov 2024 22:37:45 GMT",
+    "createdAt": "Wed, 13 Nov 2024 22:37:45 GMT",
     "description": "A server for learners to discuss and share their learning experiences",
     "id": 1,
     "members": [
@@ -493,7 +493,7 @@ Updates and returns an existing server.
         "id": 1,
         "username": "Demo"
     },
-    "updated_at": "Wed, 13 Nov 2024 22:37:45 GMT"
+    "updatedAt": "Wed, 13 Nov 2024 22:37:45 GMT"
     }
     ```
 
@@ -930,13 +930,13 @@ Returns all of the messages inside a specified channel.
       {
         "body": "hi",
         "channel_id": 1,
-        "created_at": "Wed, 13 Nov 2024 22:12:32 GMT",
+        "createdAt": "Wed, 13 Nov 2024 22:12:32 GMT",
         "id": 6,
         "reactions": [],
-        "reply_count": 0,
+        "replyCount": 0,
         "thread": null,
-        "updated_at": "Wed, 13 Nov 2024 22:12:32 GMT",
-        "user_id": 1
+        "updatedAt": "Wed, 13 Nov 2024 22:12:32 GMT",
+        "userId": 1
       }
     ]
     ```
@@ -970,13 +970,13 @@ Creates and returns a message.
     {
       "body": "Hello, world!",
       "channel_id": 1,
-      "created_at": "Wed, 13 Nov 2024 22:52:31 GMT",
+      "createdAt": "Wed, 13 Nov 2024 22:52:31 GMT",
       "id": 7,
       "reactions": [],
-      "reply_count": 0,
+      "replyCount": 0,
       "thread": null,
-      "updated_at": "Wed, 13 Nov 2024 22:52:31 GMT",
-      "user_id": 1
+      "updatedAt": "Wed, 13 Nov 2024 22:52:31 GMT",
+      "userId": 1
     }
     ```
 
@@ -1023,7 +1023,7 @@ Returns the details of a message specified by its ID.
       "body": "Hello, world!",
       "channel_id": 1,
       "thread_id": null,
-      "created_at": "Wed, 13 Nov 2024 22:12:32 GMT"
+      "createdAt": "Wed, 13 Nov 2024 22:12:32 GMT"
     }
     ```
 
@@ -1074,7 +1074,7 @@ Updates and returns a message.
     		"author_id": 1,
         "channel_id": 1,
         "thread_id": null,
-    		"created_at": "11-01-2024"
+    		"createdAt": "11-01-2024"
     	}
     ]
     ```
@@ -1197,15 +1197,15 @@ Returns all of the reactions inside a specified message.
     	{
     		"id": 1,
     		"emoji": "👍",
-    		"message_id": 1,
-    		"user_id": 1,
+    		"messageId": 1,
+    		"userId": 1,
         "Message": {
           "id": 1,
           "body": "Hello, world!",
           "author_id": 1,
-          "created_at": "11-01-2024"
+          "createdAt": "11-01-2024"
         },
-    		"created_at": "11-01-2024"
+    		"createdAt": "11-01-2024"
     	}
     ]
     ```
@@ -1253,9 +1253,9 @@ Adds a reaction to a specified message.
     	{
     		"id": 1,
     		"emoji": "👍",
-    		"message_id": 1,
-    		"user_id": 1,
-    		"created_at": "11-01-2024"
+    		"messageId": 1,
+    		"userId": 1,
+    		"createdAt": "11-01-2024"
     	}
     ]
     ```
