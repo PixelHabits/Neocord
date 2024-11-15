@@ -21,7 +21,7 @@ export const DeleteServerConfirmation = () => {
 		// Close modal and navigate to first server (or home if no servers)
 		closeModal();
 		if (servers.length > 0) {
-			navigate(`/servers/${servers[0].id}`);
+			navigate(`/servers/${servers[0]?.id}`);
 		} else {
 			navigate('/');
 		}
