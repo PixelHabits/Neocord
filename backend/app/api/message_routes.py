@@ -1,6 +1,7 @@
-from app.models import Message, Reaction, db
 from flask import Blueprint, request
 from flask_login import current_user
+
+from app.models import Message, Reaction, db
 
 message_routes = Blueprint('messages', __name__)
 

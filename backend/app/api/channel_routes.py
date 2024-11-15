@@ -1,7 +1,8 @@
-from app.forms.channel_form import ChannelForm
-from app.models import Channel, Message, ServerMember, Thread, db
 from flask import Blueprint, request
 from flask_login import current_user
+
+from app.forms.channel_form import ChannelForm
+from app.models import Channel, Message, ServerMember, Thread, db
 
 channel_routes = Blueprint('channels', __name__)
 
@@ -114,7 +115,7 @@ def get_channel_messages(id):
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
 	messages = Message.query.filter(
-		Message.channel_id == id, Message.thread_id == None
+		Message.channel_id == id, Message.thread_id is None
 	).all()
 	return [message.to_dict() for message in messages], 200
 

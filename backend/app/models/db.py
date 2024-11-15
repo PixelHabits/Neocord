@@ -1,8 +1,9 @@
+import os
+from sqlite3 import Connection as SQLite3Connection
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
-from sqlite3 import Connection as SQLite3Connection
-import os
 
 environment = os.getenv('FLASK_ENV')
 SCHEMA = os.environ.get('SCHEMA')

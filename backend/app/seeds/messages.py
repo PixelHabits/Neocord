@@ -39,7 +39,6 @@ def seed_messages():
 			return
 
 		message_list = generate_messages()
-		messages_to_thread = []
 
 		# Create all messages
 		for channel in channels:

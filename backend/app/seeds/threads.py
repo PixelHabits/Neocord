@@ -1,6 +1,3 @@
-
-
-
 def seed_threads():
 	# Threads are created in messages.py
 	pass

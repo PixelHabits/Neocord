@@ -1,8 +1,9 @@
+from flask import Blueprint, request
+from flask_login import current_user
+
 from app.forms.channel_form import ChannelForm
 from app.forms.server_form import ServerForm
 from app.models import Channel, Server, ServerMember, db
-from flask import Blueprint, request
-from flask_login import current_user
 
 server_routes = Blueprint('server', __name__)
 

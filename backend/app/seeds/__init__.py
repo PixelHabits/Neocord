@@ -1,14 +1,12 @@
 from flask.cli import AppGroup
 
-from app.models.db import SCHEMA, db, environment
+from app.models.db import environment
 
 from .channels import seed_channels, undo_channels
 from .messages import seed_messages, undo_messages
 from .reactions import seed_reactions, undo_reactions
 from .server_members import seed_server_members, undo_server_members
 from .servers import seed_servers, undo_servers
-
-# from .threads import seed_threads, undo_threads
 from .users import seed_users, undo_users
 
 # Creates a seed group to hold our commands

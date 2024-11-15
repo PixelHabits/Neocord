@@ -1,5 +1,6 @@
-from app.models import Reaction
 from flask import Blueprint
+
+from app.models import Reaction
 
 reaction_routes = Blueprint('reactions', __name__)
 
