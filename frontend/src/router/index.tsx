@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { LoginFormPage } from '../components/LoginFormPage/LoginFormPage.tsx';
 import { ServerPage } from '../components/ServerPage/ServerPage.tsx';
+import { ServerLayout } from '../components/ServerPage/components/ServerLayout.tsx';
 import { SignupFormPage } from '../components/SignupFormPage/SignupFormPage.tsx';
 import { Layout } from './Layout.tsx';
 
@@ -22,7 +23,13 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: 'servers',
-				element: <ServerPage />,
+				element: <ServerLayout />,
+				children: [
+					{
+						path: ':serverId',
+						element: <ServerPage />,
+					},
+				],
 			},
 		],
 	},

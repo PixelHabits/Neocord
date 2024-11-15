@@ -1,6 +1,6 @@
-import type { Channel } from '../ChannelList/ChannelList.tsx';
+import type { Channel, Message, Server } from '../../types/index.ts';
 
-export const servers = [
+export const servers: Server[] = [
 	{
 		createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
 		description: "Demo's server for general discussions",
@@ -88,7 +88,7 @@ export const channels: Channel[] = [
 	},
 ];
 
-export const messages = [
+export const messages: Message[] = [
 	{
 		body: 'Hey everyone! Welcome to the channel! 👋',
 		channelId: 1,
@@ -97,9 +97,7 @@ export const messages = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
-			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
-			id: 1,
-			replies: [],
+			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
 		userId: 1,
@@ -134,9 +132,7 @@ export const messages = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
-			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
-			id: 2,
-			replies: [],
+			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
 		userId: 1,
@@ -171,9 +167,7 @@ export const messages = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
-			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
-			id: 3,
-			replies: [],
+			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
 		userId: 1,
@@ -208,9 +202,7 @@ export const messages = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
-			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
-			id: 4,
-			replies: [],
+			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
 		userId: 1,
@@ -245,9 +237,7 @@ export const messages = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
-			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
-			id: 5,
-			replies: [],
+			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
 		userId: 1,
