@@ -1,6 +1,6 @@
 import type { StateCreator } from 'zustand';
 import type { Server, ServerDetails, ServerMember } from '../../types/index.ts';
-
+import { getCsrfToken } from '../csrf.ts';
 export interface ServersState {
 	servers: Server[];
 	currentServer: ServerDetails | null;
@@ -23,15 +23,6 @@ export interface ServersActions {
 }
 
 export type ServersSlice = ServersState & ServersActions;
-
-const getCsrfToken = (): string => {
-	return (
-		document.cookie
-			.split('; ')
-			.find((row) => row.startsWith('csrf_token='))
-			?.split('=')[1] ?? ''
-	);
-};
 
 export const createServersSlice: StateCreator<
 	ServersSlice,
@@ -256,3 +247,21 @@ export const createServersSlice: StateCreator<
 		set({ currentServer: server }, false, 'servers/setCurrentServer');
 	},
 });
+
+/*
+Example of how to use this state slice:
+
+Access servers:
+
+const servers = useStore(state => state.servers);
+
+Access/modify current server:
+
+const currentServer = useStore(state => state.currentServer);
+const setCurrentServer = useStore(state => state.setCurrentServer);
+
+Check if current user is owner:
+const isOwner = currentServer?.members.some(
+  member => member.user.isOwner && member.user.id === currentUserId
+);
+*/

@@ -59,3 +59,13 @@ export interface Thread {
 	messages: Message[];
 	createdAt: string;
 }
+
+export interface ApiError {
+	message: string;
+	field?: string;
+}
+
+export interface ApiResponse<T> {
+	data?: T;
+	errors?: Record<string, string>;
+}
