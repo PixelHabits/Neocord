@@ -59,8 +59,8 @@ class Server(db.Model):
 				if member.is_owner
 			),
 			'channels': [channel.to_dict() for channel in self.channels],
-			'created_at': self.created_at,
-			'updated_at': self.updated_at,
+			'createdAt': self.created_at,
+			'updatedAt': self.updated_at,
 		}
 
 	def to_dict_basic(self):
@@ -69,6 +69,6 @@ class Server(db.Model):
 			'id': self.id,
 			'name': self.name,
 			'description': self.description,
-			'created_at': self.created_at,
-			'updated_at': self.updated_at,
+			'createdAt': self.created_at,
+			'updatedAt': self.updated_at,
 		}

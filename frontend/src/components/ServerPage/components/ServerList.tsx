@@ -9,8 +9,8 @@ export interface Server {
 	id: number;
 	name: string;
 	description: string;
-	updated_at: string;
-	created_at: string;
+	updatedAt: string;
+	createdAt: string;
 }
 
 interface ServerProps {

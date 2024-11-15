@@ -78,7 +78,11 @@ class Channel(db.Model):
 			.join(Thread.replies, isouter=True)  # Left join with replies
 			.options(joinedload(Message.thread).joinedload(Thread.replies))
 			# Order by the latest activity (either message creation or latest reply)
-			.order_by(func.coalesce(func.max(Message.created_at), Message.created_at))
+			.order_by(
+				func.coalesce(func.max(Message.created_at), Message.created_at).label(
+					'createdAt'
+				)
+			)
 			.group_by(Message.id)
 			.all()
 		)
