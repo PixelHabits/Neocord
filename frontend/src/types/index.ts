@@ -1,8 +1,35 @@
+export interface User {
+	id: number;
+	email: string;
+	username: string;
+}
+
+export interface ServerMember {
+	joinDate: string;
+	user: User & {
+		isOwner: boolean;
+	};
+}
+
 export interface Channel {
 	id: number;
 	name: string;
 	serverId: number;
 	visibility: 'public' | 'private';
+}
+
+export interface Server {
+	id: number;
+	name: string;
+	description: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface ServerDetails extends Server {
+	channels: Channel[];
+	members: ServerMember[];
+	owner: User;
 }
 
 export interface Message {
@@ -18,29 +45,6 @@ export interface Message {
 	thread?: {
 		messages: Message[];
 	} | null;
-}
-
-export interface User {
-	id: number;
-	username: string;
-	email: string;
-	isOwner?: boolean;
-}
-
-export interface Server {
-	id: number;
-	name: string;
-	description: string;
-	members?: ServerMember[];
-	owner?: User;
-	channels?: Channel[];
-	createdAt?: string;
-	updatedAt?: string;
-}
-
-export interface ServerMember {
-	user: User;
-	joinDate: string;
 }
 
 export interface Reaction {

@@ -289,7 +289,7 @@ Returns the details of a Server specified by its ID.
         {
             "id": 1,
             "name": "general",
-            "server_id": 1,
+            "serverId": 1,
             "visibility": "public"
         }
     ],
@@ -298,7 +298,7 @@ Returns the details of a Server specified by its ID.
     "id": 1,
     "members": [
         {
-            "join_date": "Wed, 13 Nov 2024 18:23:51 GMT",
+            "joinDate": "Wed, 13 Nov 2024 18:23:51 GMT",
             "user": {
                 "email": "demo@aa.io",
                 "id": 1,
@@ -307,7 +307,7 @@ Returns the details of a Server specified by its ID.
             }
         },
         {
-            "join_date": "Wed, 13 Nov 2024 18:23:51 GMT",
+            "joinDate": "Wed, 13 Nov 2024 18:23:51 GMT",
             "user": {
                 "email": "marnie@aa.io",
                 "id": 2,
@@ -316,7 +316,7 @@ Returns the details of a Server specified by its ID.
             }
         },
         {
-            "join_date": "Wed, 13 Nov 2024 18:23:51 GMT",
+            "joinDate": "Wed, 13 Nov 2024 18:23:51 GMT",
             "user": {
                 "email": "bobbie@aa.io",
                 "id": 3,
@@ -383,7 +383,7 @@ Creates and returns a new Server
     "id": 4,
     "members": [
         {
-            "join_date": "Wed, 13 Nov 2024 22:36:18 GMT",
+            "joinDate": "Wed, 13 Nov 2024 22:36:18 GMT",
             "user": {
                 "email": "demo@aa.io",
                 "id": 1,
@@ -451,7 +451,7 @@ Updates and returns an existing server.
         {
             "id": 1,
             "name": "general",
-            "server_id": 1,
+            "serverId": 1,
             "visibility": "public"
         }
     ],
@@ -460,7 +460,7 @@ Updates and returns an existing server.
     "id": 1,
     "members": [
         {
-            "join_date": "Wed, 13 Nov 2024 22:37:45 GMT",
+            "joinDate": "Wed, 13 Nov 2024 22:37:45 GMT",
             "user": {
                 "email": "demo@aa.io",
                 "id": 1,
@@ -469,7 +469,7 @@ Updates and returns an existing server.
             }
         },
         {
-            "join_date": "Wed, 13 Nov 2024 22:37:45 GMT",
+            "joinDate": "Wed, 13 Nov 2024 22:37:45 GMT",
             "user": {
                 "email": "marnie@aa.io",
                 "id": 2,
@@ -478,7 +478,7 @@ Updates and returns an existing server.
             }
         },
         {
-            "join_date": "Wed, 13 Nov 2024 22:37:45 GMT",
+            "joinDate": "Wed, 13 Nov 2024 22:37:45 GMT",
             "user": {
                 "email": "bobbie@aa.io",
                 "id": 3,
@@ -649,7 +649,7 @@ Returns all of the channels inside a specified server.
     {
         "id": 1,
         "name": "general",
-        "server_id": 1,
+        "serverId": 1,
         "visibility": "public"
     }
   ]
@@ -712,7 +712,7 @@ Creates and returns a new channel.
     {
       "id": 4,
       "name": "new channel",
-      "server_id": 1,
+      "serverId": 1,
       "visibility": "public"
     }
     ```
@@ -754,7 +754,7 @@ Returns the details of a channel specified by its ID.
     {
       "id": 1,
       "name": "general",
-      "server_id": 1,
+      "serverId": 1,
       "visibility": "public"
     }
     ```
@@ -817,7 +817,7 @@ Edits and returns a channel.
     {
       "id": 1,
       "name": "Updated Channel Name",
-      "server_id": 1,
+      "serverId": 1,
       "visibility": "private"
     }
     ```

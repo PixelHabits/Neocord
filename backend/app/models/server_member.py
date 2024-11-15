@@ -41,8 +41,8 @@ class ServerMember(db.Model):
 	def to_dict(self):
 		"""Convert the server member to a dictionary."""
 		user_dict = self.user.to_dict()
-		user_dict['is_owner'] = self.is_owner
+		user_dict['isOwner'] = self.is_owner
 		return {
 			'user': user_dict,
-			'join_date': self.created_at,
+			'joinDate': self.created_at,
 		}
