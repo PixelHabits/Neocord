@@ -7,6 +7,7 @@
     "build": "tsc -b && vite build",
     "clean": "git clean -fX node_modules dist",
     "dev": "vite",
+		"format": "(biome format --write; biome lint --write --unsafe --only=nursery/useSortedClasses)",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --build"

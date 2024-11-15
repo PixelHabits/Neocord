@@ -1,9 +1,9 @@
 import type React from 'react';
-import { createContext, useContext, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import reactDom from 'react-dom';
 import './Modal.css';
 
-interface ModalContextType {
+export interface ModalContextType {
 	modalRef: React.RefObject<HTMLDivElement>;
 	modalContent: React.ReactNode | null;
 	setModalContent: (content: React.ReactNode) => void;
@@ -55,22 +55,36 @@ export function ModalProvider({ children }: ModalProviderProps) {
 
 export function Modal() {
 	const context = useContext(ModalContext);
-
 	if (!context) {
 		throw new Error('Modal must be used within a ModalProvider');
 	}
 
 	const { modalRef, modalContent, closeModal } = context;
 
-	if (!(modalRef.current && modalContent))
-		// If there is no div referenced by the modalRef or modalContent is not a
-		// truthy value, render nothing:
-		return null;
+	// Focus the modal whenever modalContent changes (modal opens)
+	useEffect(() => {
+		if (modalContent) {
+			const modalElement = document.getElementById('modal');
+			if (modalElement) {
+				modalElement.focus();
+			}
+		}
+	}, [modalContent]);
 
-	// Render the following component to the div referenced by the modalRef
+	if (!(modalRef.current && modalContent)) return null;
+
 	return reactDom.createPortal(
-		<div id='modal'>
-			<div id='modal-background' onClick={closeModal} />
+		<div
+			id='modal'
+			onKeyDown={(e) => e.key === 'Escape' && closeModal()}
+			tabIndex={-1}
+		>
+			<div
+				id='modal-background'
+				onClick={closeModal}
+				onKeyDown={closeModal}
+				role='presentation'
+			/>
 			<div id='modal-content'>{modalContent}</div>
 		</div>,
 		modalRef.current,

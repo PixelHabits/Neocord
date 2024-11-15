@@ -1,3 +1,5 @@
+import type { Channel } from '../ChannelList/ChannelList.tsx';
+
 export const servers = [
 	{
 		created_at: 'Wed, 13 Nov 2024 21:08:24 GMT',
@@ -29,7 +31,7 @@ export const servers = [
 	},
 ];
 
-export const channels = [
+export const channels: Channel[] = [
 	{
 		id: 1,
 		name: 'announcements',

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import { ModalContext } from './Modal.tsx';
+import { ModalContext, type ModalContextType } from './Modal.tsx';
 
-export const useModal = () => {
+export const useModal = (): ModalContextType => {
 	const context = useContext(ModalContext);
 	if (context === undefined) {
 		throw new Error('useModal must be used within a ModalProvider');

@@ -7,10 +7,9 @@ export const ServerPage = () => {
 	return (
 		<div className='flex'>
 			<ServerList servers={servers} />
-			{/* Channel list */}
-			<ChannelList server={servers[0]} />
+			{servers[0] && <ChannelList server={servers[0]} />}
 			{/* TODO: Top bar to show Server name, and other options */}
-			<ChatBox channel={channels[0]} />
+			{channels[0] && <ChatBox channel={channels[0]} />}
 		</div>
 	);
 };

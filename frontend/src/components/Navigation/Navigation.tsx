@@ -17,7 +17,7 @@ function Navigation() {
 				</NavLink>
 			</li>
 			{user && (
-				<li className='text-4xl ml-auto'>
+				<li className='ml-auto text-4xl'>
 					<ProfileButton />
 				</li>
 			)}

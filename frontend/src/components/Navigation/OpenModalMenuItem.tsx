@@ -15,13 +15,28 @@ function OpenModalMenuItem({
 }: OpenModalMenuItemProps) {
 	const { setModalContent, setOnModalClose } = useModal();
 
-	const onClick = () => {
+	const handleInteraction = () => {
 		if (onModalClose) setOnModalClose(onModalClose);
 		setModalContent(modalComponent);
 		if (typeof onItemClick === 'function') onItemClick();
 	};
 
-	return <li onClick={onClick}>{itemText}</li>;
+	return (
+		<li>
+			<button
+				type='button'
+				onClick={handleInteraction}
+				onKeyDown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						handleInteraction();
+					}
+				}}
+				className='w-full text-left'
+			>
+				{itemText}
+			</button>
+		</li>
+	);
 }
 
 export { OpenModalMenuItem };
