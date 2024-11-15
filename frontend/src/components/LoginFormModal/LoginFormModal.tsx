@@ -33,6 +33,13 @@ function LoginFormModal() {
 			}
 		};
 
+
+		const handleDemoUser = async (e: React.MouseEvent) => {
+			e.preventDefault();
+			await login({ email: 'demo@aa.io', password: 'password' });
+			closeModal();
+		};
+
 		return (
 			<div className="flex flex-col items-center justify-center">
 				<h1 className="text-4xl">Log In</h1>
@@ -59,6 +66,7 @@ function LoginFormModal() {
 						/>
 					</label>
 					{errors.password && <p>{errors.password}</p>}
+					<button className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900' type='button' onClick={handleDemoUser}>Demo User</button>
 					<button className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900' type='submit'>Log In</button>
 				</form>
 			</div>
