@@ -3,9 +3,8 @@
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
-		"./button": "./src/button.tsx",
-		"./card": "./src/card.tsx",
-		"./code": "./src/code.tsx"
+		".": "./src/index.ts",
+		"./*": ["./src/*.tsx", "./src/*.ts"]
 	},
 	"scripts": {
 		"generate:component": "turbo gen react-component",
@@ -21,6 +20,8 @@
 		"typescript": "~5.6.3"
 	},
 	"dependencies": {
-		"react": "^18.3.1"
+		"clsx": "^2.1.1",
+		"react": "^18.3.1",
+		"tailwind-merge": "^2.5.4"
 	}
 }

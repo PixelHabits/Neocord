@@ -22,8 +22,8 @@ export interface Server {
 	id: number;
 	name: string;
 	description: string;
-	createdAt: string;
-	updatedAt: string;
+	createdAt?: string;
+	updatedAt?: string;
 }
 
 export interface ServerDetails extends Server {

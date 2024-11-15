@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import { BiPlusCircle } from 'react-icons/bi';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import type { Server } from '../../../types/index.ts';
+import { CreateServerForm } from '../../CreateServerForm/CreateServerForm.tsx';
+import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
 import { servers } from '../mockServers.ts';
 
 function getInitials(serverName: string) {
@@ -11,7 +14,16 @@ function getInitials(serverName: string) {
 }
 
 export const ServerLayout = () => {
+	const { serverId } = useParams();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (serverId) {
+			navigate(`/servers/${serverId}`);
+		} else {
+			navigate('/servers/servers[0].id');
+		}
+	}, [serverId, navigate]);
 
 	return (
 		<div className='flex h-[calc(100vh-6rem)] w-full'>
@@ -37,10 +49,16 @@ export const ServerLayout = () => {
 						</button>
 					))}
 				</div>
-				<div className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400 '>
-					<BiPlusCircle size={48} />
-				</div>
+				<OpenModalButton
+					modalComponent={<CreateServerForm />}
+					buttonText={<BiPlusCircle size={48} />}
+					className={
+						'flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400'
+					}
+				/>
 			</aside>
+
+			{/* Render the information for the selected server (channels, messages within the channels, and the sidebar) */}
 			<Outlet />
 		</div>
 	);
