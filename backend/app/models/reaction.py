@@ -1,7 +1,11 @@
+"""Module for the Reaction model."""
+
 from .db import SCHEMA, add_prefix_for_prod, db, environment
 
 
 class Reaction(db.Model):
+	"""Reaction model."""
+
 	__tablename__ = 'reactions'
 
 	id = db.Column(db.Integer, primary_key=True)
@@ -27,6 +31,7 @@ class Reaction(db.Model):
 	message = db.relationship('Message', back_populates='reactions')
 
 	def to_dict(self):
+		"""Convert the reaction to a dictionary."""
 		return {
 			'id': self.id,
 			'user_id': self.user_id,

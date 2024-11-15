@@ -1,3 +1,5 @@
+"""Module for the Flask app."""
+
 import os
 
 from flask import Flask, redirect, request
@@ -26,6 +28,7 @@ login.login_view = 'auth.unauthorized'
 
 @login.user_loader
 def load_user(id):
+	"""Loads a user by their ID."""
 	return User.query.get(int(id))
 
 
@@ -55,19 +58,23 @@ CORS(app)
 # Well.........
 @app.before_request
 def https_redirect():
+	"""Redirects HTTP requests to HTTPS."""
 	if os.environ.get('FLASK_ENV') == 'production':
 		if request.headers.get('X-Forwarded-Proto') == 'http':
 			url = request.url.replace('http://', 'https://', 1)
 			code = 301
 			return redirect(url, code=code)
+		return None
+	return None
 
 
 @app.after_request
 def inject_csrf_token(response):
+	"""Injects the CSRF token into the response."""
 	response.set_cookie(
 		'csrf_token',
 		generate_csrf(),
-		secure=True if os.environ.get('FLASK_ENV') == 'production' else False,
+		secure=os.environ.get('FLASK_ENV') == 'production',
 		samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
 		httponly=False,
 	)
@@ -76,11 +83,9 @@ def inject_csrf_token(response):
 
 @app.route('/api/docs')
 def api_help():
-	"""
-	Returns all API routes and their doc strings
-	"""
+	"""Returns all API routes and their doc strings."""
 	acceptable_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
-	route_list = {
+	return {
 		rule.rule: [
 			[method for method in rule.methods if method in acceptable_methods],
 			app.view_functions[rule.endpoint].__doc__,
@@ -88,13 +93,13 @@ def api_help():
 		for rule in app.url_map.iter_rules()
 		if rule.endpoint != 'static'
 	}
-	return route_list
 
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def react_root(path):
-	"""
+	"""Route for handling favicon and index.html requests.
+
 	This route will direct to the public directory in our
 	react builds in the production environment for favicon
 	or index.html requests
@@ -106,4 +111,5 @@ def react_root(path):
 
 @app.errorhandler(404)
 def not_found(e):
+	"""Route for handling 404 errors."""
 	return app.send_static_file('index.html')

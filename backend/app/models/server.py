@@ -1,7 +1,11 @@
+"""Module for the Server model."""
+
 from .db import SCHEMA, db, environment
 
 
 class Server(db.Model):
+	"""Server model."""
+
 	__tablename__ = 'servers'
 
 	if environment == 'production':
@@ -31,12 +35,11 @@ class Server(db.Model):
 
 	@classmethod
 	def get_by_id(cls, server_id, load_channels=True):
-		"""
-		Get server by ID with optional relationship loading
+		"""Get server by ID with optional relationship loading.
 
 		Args:
-		    server_id: The ID of the server to fetch
-		    load_channels: Whether to eagerly load channels (default: True)
+			server_id: The ID of the server to fetch
+			load_channels: Whether to eagerly load channels (default: True)
 		"""
 		query = cls.query
 		if load_channels:
@@ -44,7 +47,7 @@ class Server(db.Model):
 		return query.get(server_id)
 
 	def to_dict(self):
-		"""Convert server to dictionary including all relationships"""
+		"""Convert server to dictionary including all relationships."""
 		return {
 			'id': self.id,
 			'name': self.name,
@@ -61,7 +64,7 @@ class Server(db.Model):
 		}
 
 	def to_dict_basic(self):
-		"""Lightweight dictionary conversion with no relationships"""
+		"""Lightweight dictionary conversion with no relationships."""
 		return {
 			'id': self.id,
 			'name': self.name,

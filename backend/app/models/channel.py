@@ -1,3 +1,5 @@
+"""Module for the Channel model."""
+
 import enum
 
 from sqlalchemy import func
@@ -8,11 +10,15 @@ from .thread import Thread
 
 
 class ChannelVisibility(enum.Enum):
+	"""Channel visibility enum."""
+
 	PUBLIC = 'public'
 	PRIVATE = 'private'
 
 
 class Channel(db.Model):
+	"""Channel model."""
+
 	__tablename__ = 'channels'
 
 	if environment == 'production':
@@ -51,6 +57,7 @@ class Channel(db.Model):
 	)
 
 	def to_dict(self):
+		"""Convert the channel to a dictionary."""
 		return {
 			'id': self.id,
 			'name': self.name,
@@ -59,7 +66,7 @@ class Channel(db.Model):
 		}
 
 	def get_messages_with_threads(self):
-		"""Get channel messages with their thread info organized"""
+		"""Get channel messages with their thread info organized."""
 		from sqlalchemy.orm import joinedload
 
 		# Get all channel messages that aren't replies (thread_id is None)

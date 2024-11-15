@@ -1,7 +1,11 @@
+"""Module for the Message model."""
+
 from .db import SCHEMA, add_prefix_for_prod, db, environment
 
 
 class Message(db.Model):
+	"""Message model."""
+
 	__tablename__ = 'messages'
 
 	if environment == 'production':
@@ -61,7 +65,7 @@ class Message(db.Model):
 	)
 
 	def to_dict(self, include_replies=True):
-		"""Return message data with thread info if it exists"""
+		"""Return message data with thread info if it exists."""
 		message_dict = {
 			'id': self.id,
 			'body': self.body,
@@ -74,28 +78,26 @@ class Message(db.Model):
 			'reactions': [reaction.to_dict() for reaction in self.reactions],
 		}
 
-		if include_replies:
-			# Check if this message has replies (is a parent message)
-			if self.parent_thread:
-				message_dict['thread'] = {
-					'id': self.parent_thread.id,
-					'replies': [
-						reply.to_dict(include_replies=False)
-						for reply in self.parent_thread.replies
-					],
-					'created_at': self.parent_thread.created_at,
-				}
-				message_dict['reply_count'] = len(self.parent_thread.replies)
-			# If this is a reply, include thread info only if specifically needed
-			# elif self.thread:
-			#     message_dict["thread"] = {
-			#         "id": self.thread.id,
-			#         "reply_count": len(self.thread.replies),
-			#         "latest_replies": [
-			#             reply.to_dict(include_replies=False)
-			#             for reply in self.thread.replies[-3:]
-			#         ],
-			#         "created_at": self.thread.created_at,
-			#     }
+		if include_replies and self.parent_thread:
+			message_dict['thread'] = {
+				'id': self.parent_thread.id,
+				'replies': [
+					reply.to_dict(include_replies=False)
+					for reply in self.parent_thread.replies
+				],
+				'created_at': self.parent_thread.created_at,
+			}
+			message_dict['reply_count'] = len(self.parent_thread.replies)
+		# If this is a reply, include thread info only if specifically needed
+		# elif self.thread:
+		#     message_dict["thread"] = {
+		#         "id": self.thread.id,
+		#         "reply_count": len(self.thread.replies),
+		#         "latest_replies": [
+		#             reply.to_dict(include_replies=False)
+		#             for reply in self.thread.replies[-3:]
+		#         ],
+		#         "created_at": self.thread.created_at,
+		#     }
 
 		return message_dict

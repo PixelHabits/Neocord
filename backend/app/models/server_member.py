@@ -1,7 +1,11 @@
+"""Module for the ServerMember model."""
+
 from .db import SCHEMA, add_prefix_for_prod, db, environment
 
 
 class ServerMember(db.Model):
+	"""ServerMember model."""
+
 	__tablename__ = 'server_members'
 
 	if environment == 'production':
@@ -35,6 +39,7 @@ class ServerMember(db.Model):
 	server = db.relationship('Server', back_populates='server_members')
 
 	def to_dict(self):
+		"""Convert the server member to a dictionary."""
 		user_dict = self.user.to_dict()
 		user_dict['is_owner'] = self.is_owner
 		return {

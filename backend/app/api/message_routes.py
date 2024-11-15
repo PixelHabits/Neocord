@@ -1,3 +1,5 @@
+"""Module for the message routes."""
+
 from flask import Blueprint, request
 from flask_login import current_user
 
@@ -8,9 +10,7 @@ message_routes = Blueprint('messages', __name__)
 
 @message_routes.route('/<int:id>')
 def get_message(id):
-	"""
-	Get a message by it's ID
-	"""
+	"""Get a message by it's ID."""
 	if not current_user.is_authenticated:
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
@@ -32,9 +32,7 @@ def get_message(id):
 
 @message_routes.route('/<int:id>', methods=['PUT'])
 def update_message(id):
-	"""
-	Update a message by it's ID
-	"""
+	"""Update a message by it's ID."""
 	if not current_user.is_authenticated:
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
@@ -54,9 +52,7 @@ def update_message(id):
 
 @message_routes.route('/<int:id>', methods=['DELETE'])
 def delete_message(id):
-	"""
-	Delete a message by it's ID
-	"""
+	"""Delete a message by it's ID."""
 	if not current_user.is_authenticated:
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
@@ -73,30 +69,26 @@ def delete_message(id):
 	return {'message': 'Message deleted successfully'}
 
 
-@message_routes.route('/<int:messageId>/reactions')
-def get_message_reactions(messageId):
-	"""
-	Get all reactions for a message by it's ID
-	"""
+@message_routes.route('/<int:message_id>/reactions')
+def get_message_reactions(message_id):
+	"""Get all reactions for a message by it's ID."""
 	if not current_user.is_authenticated:
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
-	message = Message.query.get(messageId)
+	message = Message.query.get(message_id)
 	if not message:
 		return {'errors': {'message': 'Message not found'}}, 404
 
 	return [reaction.to_dict() for reaction in message.reactions]
 
 
-@message_routes.route('/<int:messageId>/reactions', methods=['POST'])
-def add_reaction_to_message(messageId):
-	"""
-	Add a reaction to a message by it's ID
-	"""
+@message_routes.route('/<int:message_id>/reactions', methods=['POST'])
+def add_reaction_to_message(message_id):
+	"""Add a reaction to a message by it's ID."""
 	if not current_user.is_authenticated:
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
-	message = Message.query.get(messageId)
+	message = Message.query.get(message_id)
 	if not message:
 		return {'errors': {'message': 'Message not found'}}, 404
 
@@ -107,7 +99,7 @@ def add_reaction_to_message(messageId):
 
 	# Check if user already reacted with this emoji
 	existing_reaction = Reaction.query.filter(
-		Reaction.message_id == messageId,
+		Reaction.message_id == message_id,
 		Reaction.user_id == current_user.id,
 		Reaction.emoji == data['emoji'],
 	).first()
@@ -116,7 +108,7 @@ def add_reaction_to_message(messageId):
 		return {'errors': {'message': 'You already reacted with this emoji'}}, 400
 
 	reaction = Reaction(
-		user_id=current_user.id, message_id=messageId, emoji=data['emoji']
+		user_id=current_user.id, message_id=message_id, emoji=data['emoji']
 	)
 
 	db.session.add(reaction)
@@ -125,20 +117,20 @@ def add_reaction_to_message(messageId):
 	return reaction.to_dict()
 
 
-@message_routes.route('/<int:messageId>/reactions/<int:reactionId>', methods=['DELETE'])
-def remove_reaction_from_message(messageId, reactionId):
-	"""
-	Remove a reaction from a message by it's ID
-	"""
+@message_routes.route(
+	'/<int:message_id>/reactions/<int:reaction_id>', methods=['DELETE']
+)
+def remove_reaction_from_message(message_id, reaction_id):
+	"""Remove a reaction from a message by it's ID."""
 	if not current_user.is_authenticated:
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
-	message = Message.query.get(messageId)
+	message = Message.query.get(message_id)
 	if not message:
 		return {'errors': {'message': 'Message not found'}}, 404
 
 	# Check if user already reacted with this emoji
-	existing_reaction = Reaction.query.get(reactionId)
+	existing_reaction = Reaction.query.get(reaction_id)
 
 	if not existing_reaction:
 		return {'errors': {'message': 'Reaction not found'}}, 404

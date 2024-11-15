@@ -1,3 +1,5 @@
+"""Module for seeding and managing channel data in the database."""
+
 from sqlalchemy.sql import text
 
 from app.models import SCHEMA, Server, db, environment
@@ -5,6 +7,7 @@ from app.models.channel import Channel, ChannelVisibility
 
 
 def generate_channels():
+	"""Generate a list of channels."""
 	return [
 		{
 			'name': 'announcements',
@@ -46,6 +49,7 @@ def generate_channels():
 
 
 def seed_channels():
+	"""Seed the database with channels."""
 	# Get all servers
 	servers = Server.query.all()
 	channels_to_add = []
@@ -67,6 +71,7 @@ def seed_channels():
 
 
 def undo_channels():
+	"""Undo the seeding of channels."""
 	if environment == 'production':
 		db.session.execute(
 			f'TRUNCATE TABLE {SCHEMA}.channels RESTART IDENTITY CASCADE;'

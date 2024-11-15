@@ -1,3 +1,5 @@
+"""Module for seeding and managing reaction data in the database."""
+
 from random import choice, sample
 
 from sqlalchemy.sql import text
@@ -6,6 +8,7 @@ from app.models import SCHEMA, Message, Reaction, User, db, environment
 
 
 def generate_reactions():
+	"""Generate a list of reactions."""
 	return [
 		'👋',
 		'❤️',
@@ -31,6 +34,7 @@ def generate_reactions():
 
 
 def seed_reactions():
+	"""Seed the database with reactions."""
 	try:
 		demo = User.query.filter(User.username == 'Demo').first()
 		marnie = User.query.filter(User.username == 'marnie').first()
@@ -66,10 +70,11 @@ def seed_reactions():
 
 	except Exception as e:
 		db.session.rollback()
-		print(f'Error seeding reactions: {str(e)}')
+		print(f'Error seeding reactions: {e!s}')
 
 
 def undo_reactions():
+	"""Undo the seeding of reactions."""
 	if environment == 'production':
 		db.session.execute(
 			f'TRUNCATE table {SCHEMA}.reactions RESTART IDENTITY CASCADE;'

@@ -1,9 +1,12 @@
+"""Module for seeding and managing server membership data in the database."""
+
 from sqlalchemy.sql import text
 
 from app.models import SCHEMA, Server, ServerMember, User, db, environment
 
 
 def seed_server_members():
+	"""Seed the database with server memberships."""
 	# Get users
 	demo = User.query.filter(User.username == 'Demo').first()
 	marnie = User.query.filter(User.username == 'marnie').first()
@@ -42,6 +45,7 @@ def seed_server_members():
 
 
 def undo_server_members():
+	"""Undo the seeding of server memberships."""
 	if environment == 'production':
 		db.session.execute(
 			f'TRUNCATE table {SCHEMA}.server_members RESTART IDENTITY CASCADE;'

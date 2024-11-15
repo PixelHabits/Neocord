@@ -1,9 +1,12 @@
+"""Module for seeding and managing message data in the database."""
+
 from sqlalchemy.sql import text
 
 from app.models import SCHEMA, Channel, Message, Thread, User, db, environment
 
 
 def generate_messages():
+	"""Generate a list of messages."""
 	return [
 		'Hey everyone! Welcome to the channel! 👋',
 		'Thanks for having us here! Excited to be part of this community 😊',
@@ -24,6 +27,7 @@ def generate_messages():
 
 
 def seed_messages():
+	"""Seed the database with messages."""
 	try:
 		# Get users
 		demo = User.query.filter(User.username == 'Demo').first()
@@ -67,6 +71,7 @@ def seed_messages():
 
 
 def undo_messages():
+	"""Undo the seeding of messages."""
 	if environment == 'production':
 		db.session.execute(
 			f'TRUNCATE TABLE {SCHEMA}.messages RESTART IDENTITY CASCADE;'

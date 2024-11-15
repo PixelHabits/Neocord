@@ -1,3 +1,5 @@
+"""Module for the database configuration."""
+
 import os
 from sqlite3 import Connection as SQLite3Connection
 
@@ -21,7 +23,7 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
 
 # helper function for adding prefix to foreign key column references in production
 def add_prefix_for_prod(attr):
+	"""Add prefix to foreign key column references in production."""
 	if environment == 'production':
 		return f'{SCHEMA}.{attr}'
-	else:
-		return attr
+	return attr

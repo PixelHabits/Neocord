@@ -1,3 +1,5 @@
+"""Module for the models."""
+
 from .channel import Channel
 from .db import SCHEMA, db, environment
 from .message import Message

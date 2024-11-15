@@ -1,3 +1,5 @@
+"""Module for the User model."""
+
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -5,6 +7,8 @@ from .db import SCHEMA, db, environment
 
 
 class User(db.Model, UserMixin):
+	"""User model."""
+
 	__tablename__ = 'users'
 
 	if environment == 'production':
@@ -34,14 +38,18 @@ class User(db.Model, UserMixin):
 
 	@property
 	def password(self):
+		"""Get the user's password."""
 		return self.hashed_password
 
 	@password.setter
 	def password(self, password):
+		"""Set the user's password."""
 		self.hashed_password = generate_password_hash(password)
 
 	def check_password(self, password):
+		"""Check if the user's password is correct."""
 		return check_password_hash(self.password, password)
 
 	def to_dict(self):
+		"""Convert the user to a dictionary."""
 		return {'id': self.id, 'username': self.username, 'email': self.email}

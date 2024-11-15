@@ -1,4 +1,4 @@
-from __future__ import with_statement
+"""Module for running migrations."""
 
 import logging
 import os

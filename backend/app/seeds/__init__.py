@@ -1,3 +1,5 @@
+"""Module for seeding and managing data in the database."""
+
 from flask.cli import AppGroup
 
 from app.models.db import environment
@@ -17,6 +19,7 @@ seed_commands = AppGroup('seed')
 # Creates the `flask seed all` command
 @seed_commands.command('all')
 def seed():
+	"""Seed the database with all data."""
 	if environment == 'production':
 		undo_reactions()
 		undo_messages()
@@ -36,6 +39,7 @@ def seed():
 # Creates the `flask seed undo` command
 @seed_commands.command('undo')
 def undo():
+	"""Undo the seeding of all data."""
 	undo_reactions()
 	undo_messages()
 	undo_channels()

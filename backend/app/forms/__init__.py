@@ -1,3 +1,5 @@
+"""Module for the forms."""
+
 from .channel_form import ChannelForm
 from .login_form import LoginForm
 from .message_form import MessageForm

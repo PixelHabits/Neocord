@@ -1,7 +1,11 @@
+"""Module for the configuration."""
+
 import os
 
 
 class Config:
+	"""Config class."""
+
 	SECRET_KEY = os.environ.get('SECRET_KEY')
 	FLASK_RUN_PORT = os.environ.get('FLASK_RUN_PORT')
 	SQLALCHEMY_TRACK_MODIFICATIONS = False

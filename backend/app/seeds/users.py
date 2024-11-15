@@ -1,3 +1,5 @@
+"""Module for seeding and managing user data in the database."""
+
 from sqlalchemy.sql import text
 
 from app.models import SCHEMA, User, db, environment
@@ -5,6 +7,7 @@ from app.models import SCHEMA, User, db, environment
 
 # Adds a demo user, you can add other users here if you want
 def seed_users():
+	"""Seed the database with demo users."""
 	demo = User(username='Demo', email='demo@aa.io', password='password')
 	marnie = User(username='marnie', email='marnie@aa.io', password='password')
 	bobbie = User(username='bobbie', email='bobbie@aa.io', password='password')
@@ -22,6 +25,7 @@ def seed_users():
 # sqlite3 in development you need to instead use DELETE to remove all data and
 # it will reset the primary keys for you as well.
 def undo_users():
+	"""Undo the seeding of users."""
 	if environment == 'production':
 		db.session.execute(f'TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;')
 	else:

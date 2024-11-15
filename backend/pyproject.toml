@@ -54,3 +54,33 @@ package = false
 [tool.ruff.format]
 quote-style = "single"
 indent-style = "tab"
+
+[tool.ruff.lint]
+select = [
+    "B",   # flake8-bugbear: finds likely bugs and design problems 
+    "D",   # flake8-docstrings: enforces docstring conventions
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "W",   # pycodestyle warnings
+    "C4",  # flake8-comprehensions
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "RUF", # Ruff-specific rules
+]
+
+# Ignore rules that conflict with tabs
+ignore = [
+    "W191",  # indentation contains tabs
+    "D206",  # indent with spaces not tabs
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+combine-as-imports = true
+known-first-party = ["backend"]

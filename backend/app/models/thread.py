@@ -1,7 +1,11 @@
+"""Module for the Thread model."""
+
 from .db import SCHEMA, add_prefix_for_prod, db, environment
 
 
 class Thread(db.Model):
+	"""Thread model."""
+
 	__tablename__ = 'threads'
 
 	if environment == 'production':

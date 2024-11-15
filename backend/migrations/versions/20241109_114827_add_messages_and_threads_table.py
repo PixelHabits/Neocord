@@ -1,4 +1,4 @@
-"""add messages and threads table
+"""Add Messages and Threads Table.
 
 Revision ID: 84fe2c915d76
 Revises: 2e1b14261b74
@@ -22,6 +22,7 @@ depends_on = None
 
 
 def upgrade():
+	"""Create the messages and threads tables."""
 	# Create messages table
 	op.create_table(
 		'messages',
@@ -72,6 +73,7 @@ def upgrade():
 
 
 def downgrade():
+	"""Remove the messages and threads tables."""
 	if environment == 'production':
 		op.execute('ALTER TABLE messages SET SCHEMA public')
 		op.execute('ALTER TABLE threads SET SCHEMA public')

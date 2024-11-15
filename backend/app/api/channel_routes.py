@@ -1,3 +1,5 @@
+"""Module for the channel routes."""
+
 from flask import Blueprint, request
 from flask_login import current_user
 
@@ -9,9 +11,7 @@ channel_routes = Blueprint('channels', __name__)
 
 @channel_routes.route('/<int:id>')
 def get_channel(id):
-	"""
-	Get a channel by it's ID
-	"""
+	"""Get a channel by it's ID."""
 	if current_user.is_authenticated:
 		channel = Channel.query.get(id)
 		if channel:
@@ -21,21 +21,14 @@ def get_channel(id):
 			).first()
 			if server_member:
 				return channel.to_dict(), 200
-			else:
-				return {
-					'errors': {'message': 'You are not a member of this server'}
-				}, 401
-		else:
-			return {'errors': {'message': 'Channel not found'}}, 404
-	else:
-		return {'errors': {'message': 'Unauthorized'}}, 401
+			return {'errors': {'message': 'You are not a member of this server'}}, 401
+		return {'errors': {'message': 'Channel not found'}}, 404
+	return {'errors': {'message': 'Unauthorized'}}, 401
 
 
 @channel_routes.route('/<int:id>', methods=['PUT'])
 def update_channel(id):
-	"""
-	Update a channel by it's ID
-	"""
+	"""Update a channel by it's ID."""
 	form = ChannelForm()
 	form['csrf_token'].data = request.cookies['csrf_token']
 	if current_user.is_authenticated:
@@ -53,25 +46,21 @@ def update_channel(id):
 						channel.visibility = form.data['visibility']
 					db.session.commit()
 					return channel.to_dict(), 200
-				else:
-					return {
-						'errors': {
-							'message': 'You must be the owner of the server to update this channel'
-						}
-					}, 401
-			else:
-				return {'errors': {'message': 'Channel not found'}}, 404
-		else:
-			return {'errors': form.errors}, 400
-	else:
-		return {'errors': {'message': 'Unauthorized'}}, 401
+				return {
+					'errors': {
+						'message': (
+							'You must be the owner of the server to update this channel'
+						)
+					}
+				}, 401
+			return {'errors': {'message': 'Channel not found'}}, 404
+		return {'errors': form.errors}, 400
+	return {'errors': {'message': 'Unauthorized'}}, 401
 
 
 @channel_routes.route('/<int:id>', methods=['DELETE'])
 def delete_channel(id):
-	"""
-	Delete a channel by it's ID
-	"""
+	"""Delete a channel by it's ID."""
 	if current_user.is_authenticated:
 		channel = Channel.query.get(id)
 		if channel:
@@ -83,23 +72,20 @@ def delete_channel(id):
 				db.session.delete(channel)
 				db.session.commit()
 				return {'message': 'Channel successfully deleted'}, 200
-			else:
-				return {
-					'errors': {
-						'message': 'You must be the owner of the server to delete this channel'
-					}
-				}, 401
-		else:
-			return {'errors': {'message': 'Channel not found'}}, 404
-	else:
-		return {'errors': {'message': 'Unauthorized'}}, 401
+			return {
+				'errors': {
+					'message': (
+						'You must be the owner of the server to delete this channel'
+					)
+				}
+			}, 401
+		return {'errors': {'message': 'Channel not found'}}, 404
+	return {'errors': {'message': 'Unauthorized'}}, 401
 
 
 @channel_routes.route('/<int:id>/messages')
 def get_channel_messages(id):
-	"""
-	Get all messages for a channel by it's ID
-	"""
+	"""Get all messages for a channel by it's ID."""
 	if not current_user.is_authenticated:
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
@@ -122,9 +108,7 @@ def get_channel_messages(id):
 
 @channel_routes.route('/<int:id>/messages', methods=['POST'])
 def create_channel_message(id, parent_message_id=None):
-	"""
-	Create a new message for a channel by it's ID
-	"""
+	"""Create a new message for a channel by it's ID."""
 	parent_message_id = request.args.get('parent_message_id')
 	thread = None
 
@@ -158,14 +142,13 @@ def create_channel_message(id, parent_message_id=None):
 
 		if parent_message.channel_id != id:
 			return {'errors': {'message': 'Parent message is not in this channel'}}, 400
-		else:
-			thread = Thread.query.filter(
-				Thread.parent_message_id == parent_message_id
-			).first()
-			if not thread:
-				thread = Thread(channel_id=id, parent_message_id=parent_message_id)
-				db.session.add(thread)
-				db.session.commit()
+		thread = Thread.query.filter(
+			Thread.parent_message_id == parent_message_id
+		).first()
+		if not thread:
+			thread = Thread(channel_id=id, parent_message_id=parent_message_id)
+			db.session.add(thread)
+			db.session.commit()
 
 	message = Message(
 		body=data['body'],
