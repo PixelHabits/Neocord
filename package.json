@@ -10,7 +10,7 @@
 		"_fix": "biome check --write .",
 		"format": "turbo run format",
 		"lint": "turbo run lint",
-		"lint:ws": "bunx sherif@latest -f",
+		"lint:ws": "bunx sherif@latest",
 		"postinstall": "turbo run install",
 		"prepare": "lefthook install && bun lint:ws",
 		"typecheck": "turbo run typecheck"
