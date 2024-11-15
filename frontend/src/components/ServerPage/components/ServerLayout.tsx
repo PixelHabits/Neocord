@@ -1,10 +1,10 @@
+import { useEffect } from 'react';
 import { BiPlusCircle } from 'react-icons/bi';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import type { Server } from '../../../types/index.ts';
-import { servers } from '../mockServers.ts';
-import { useEffect } from 'react';
-import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
 import { CreateServerForm } from '../../CreateServerForm/CreateServerForm.tsx';
+import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
+import { servers } from '../mockServers.ts';
 
 function getInitials(serverName: string) {
 	const titleArr = serverName.split(' ');

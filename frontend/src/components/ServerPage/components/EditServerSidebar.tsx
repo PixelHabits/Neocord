@@ -1,6 +1,7 @@
-import { FormEvent, useState } from 'react';
-import { OpenModalButton } from '../../OpenModalButton/OpenModalButton';
-import { DeleteServerConfirmation } from '../../DeleteServerConfirmation/DeleteServerConfirmation';
+import type React from 'react';
+import { type FormEvent, useState } from 'react';
+import { DeleteServerConfirmation } from '../../DeleteServerConfirmation/DeleteServerConfirmation.tsx';
+import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
 
 export const EditServerSidebar = ({ server, onUpdateServer }) => {
 	const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ export const EditServerSidebar = ({ server, onUpdateServer }) => {
 		}));
 	};
 	return (
-		<div className='col-span-1 m-4 flex h-full w-[calc(100%-2rem)] flex-col self-center justify-self-center justify-between rounded-r-lg bg-gray-700 p-4 space-y-4'>
+		<div className='col-span-1 m-4 flex h-full w-[calc(100%-2rem)] flex-col justify-between space-y-4 self-center justify-self-center rounded-r-lg bg-gray-700 p-4'>
 			<div>
 				<h3 className='font-bold text-gray-400 text-xl'>Edit Server</h3>
 				<p className='text-gray-400 text-sm'>Edit this server&apos;s details</p>
@@ -87,7 +88,7 @@ export const EditServerSidebar = ({ server, onUpdateServer }) => {
 				<OpenModalButton
 					modalComponent={<DeleteServerConfirmation />}
 					buttonText='Delete Server'
-					className='bg-red-500 text-white p-2 rounded-md cursor-pointer'
+					className='cursor-pointer rounded-md bg-red-500 p-2 text-white'
 				/>
 			</div>
 		</div>
