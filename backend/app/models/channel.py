@@ -61,7 +61,7 @@ class Channel(db.Model):
 		return {
 			'id': self.id,
 			'name': self.name,
-			'server_id': self.server_id,
+			'serverId': self.server_id,
 			'visibility': self.visibility.value,
 		}
 
