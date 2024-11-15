@@ -30,11 +30,11 @@ function LoginFormPage() {
 		};
 
 		return (
-			<>
-      <h1>Log In</h1>
-      {Object.keys(errors).length > 0 &&
-        Object.keys(errors).map((key) => <p key={key}>{errors[key]}</p>)}
-      <form onSubmit={handleSubmit}>
+			<div>
+				<h1 className="text-4xl">Log In</h1>
+				{Object.keys(errors).length > 0 &&
+					Object.keys(errors).map((key) => <p key={key}>{errors[key]}</p>)}
+				<form onSubmit={handleSubmit}>
 					<label>
 						Email
 						<input
@@ -57,7 +57,7 @@ function LoginFormPage() {
 					{errors.password && <p>{errors.password}</p>}
 					<button type='submit'>Log In</button>
 				</form>
-			</>
+			</div>
 		);
 }
 
