@@ -1,11 +1,5 @@
 import type { StateCreator } from 'zustand';
-
-export interface User {
-	id: number;
-	email: string;
-	username: string;
-	// Add other user properties as needed
-}
+import type { User } from '../../types/index.ts';
 
 export interface SessionState {
 	user: User | null;

@@ -1,10 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { LoginFormPage } from '../components/LoginFormPage/LoginFormPage.tsx';
 import { ServerPage } from '../components/ServerPage/ServerPage.tsx';
+import { ServerLayout } from '../components/ServerPage/components/ServerLayout.tsx';
 import { SignupFormPage } from '../components/SignupFormPage/SignupFormPage.tsx';
 import { Layout } from './Layout.tsx';
-import { ServerPage } from '../components/ServerPage/ServerPage.tsx';
-import { ServerLayout } from '../components/ServerPage/components/ServerLayout.tsx';
 
 export const router = createBrowserRouter([
 	{
