@@ -1,38 +1,90 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Dependencies
-node_modules
+node_modules/
 .pnp
 .pnp.js
+__pypackages__/
 
-# Local env files
+# Environment Variables
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Testing
-coverage
-
-# Turbo
-.turbo
-
-# Vercel
-.vercel
-
-# Build Outputs
-.next/
+# Build and Distribution
+dist/
+build/
 out/
-build
-dist
+*.egg-info/
+*.egg
+MANIFEST
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.turbo
+.next
 
+# Cache and Temporary Files
+.cache
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+.coverage
+coverage/
+.tox/
+.nox/
+*.py,cover
+.pytype/
+cython_debug/
 
-# Debug
+# Logs and Debug
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Misc
+# IDE and Editor
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.spyderproject
+.spyproject
+.ropeproject
+
+# OS Generated
 .DS_Store
 *.pem
+Thumbs.db
+
+# Deployment
+.vercel
+
+# Python Specific
+pip-log.txt
+pip-delete-this-directory.txt
+.pdm.toml
+.pdm-python
+.pdm-build/
+.installed.cfg
+celerybeat-schedule
+celerybeat.pid
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Documentation
+/site
+docs/_build/
