@@ -26,6 +26,38 @@ def generate_messages():
 	]
 
 
+def generate_message_replies(original_message):
+	"""Generate contextual replies based on the original message."""
+	replies = {
+		'Hey everyone! Welcome to the channel! 👋': [
+			'Welcome! Glad to be here! 🎉',
+			'Thanks for the warm welcome! Looking forward to chatting with everyone 😊',
+		],
+		'Could someone help me with a coding problem?': [
+			'Of course! What seems to be the issue? 🤔',
+			"Happy to help! Can you share more details about what you're working on?",
+		],
+		"What's everyone working on this week? 💻": [
+			"I'm building a new React component library! Making good progress so far.",
+			'Working on our database queries. Found some interesting bottlenecks.',
+		],
+		"Don't forget about our meeting tomorrow! 📅": [
+			'What time was it again? Can you share the meeting link?',
+			"Thanks for the reminder! I'll prepare my updates.",
+		],
+		"Who's going to the tech conference next month?": [
+			"I'll be there! We should coordinate and meet up 🤝",
+			'Which talks are you planning to attend? The AI track looks interesting!',
+		],
+	}
+	# Return default replies if no specific replies are defined
+	default_replies = [
+		f'Interesting point about: {original_message}',
+		f'Thanks for sharing! Regarding {original_message.lower()}',
+	]
+	return replies.get(original_message, default_replies)
+
+
 def seed_messages():
 	"""Seed the database with messages."""
 	try:
@@ -49,18 +81,34 @@ def seed_messages():
 			for i, message_body in enumerate(message_list):
 				current_user = users[i % len(users)]
 
+				# Create initial message
 				message = Message(
 					body=message_body,
 					channel_id=channel.id,
 					user_id=current_user.id,
 				)
 				db.session.add(message)
-				db.session.flush()
+				db.session.flush()  # Flush to get message.id
 
-				if i % 3 == 0:
-					# Create thread immediately after message
+				if i % 3 == 0:  # Create thread for every third message
 					thread = Thread(channel_id=channel.id, parent_message_id=message.id)
 					db.session.add(thread)
+					db.session.flush()  # Flush to get thread.id
+
+					# Update the original message with thread_id
+					message.thread_id = thread.id
+
+					# Add contextual replies in the thread
+					replies = generate_message_replies(message_body)
+					for j, reply_text in enumerate(replies):
+						reply_user = users[(i + j + 1) % len(users)]
+						reply = Message(
+							body=reply_text,
+							channel_id=channel.id,
+							user_id=reply_user.id,
+							thread_id=thread.id,
+						)
+						db.session.add(reply)
 
 		# Commit everything at once
 		db.session.commit()
