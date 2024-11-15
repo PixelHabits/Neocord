@@ -26,6 +26,7 @@ jobs:
           version: latest
 
       - name: Run Biome
+        id: biome
         run: biome ci --reporter=github .
         continue-on-error: true  # Allow the workflow to continue even if Biome fails
 
@@ -37,18 +38,25 @@ jobs:
         run: uv tool install ruff
 
       - name: Run Ruff Format Check
+        id: ruff_format
         run: ruff format --check backend/
         continue-on-error: true  # Allow the workflow to continue even if format check fails
 
       - name: Run Ruff Lint
+        id: ruff_lint
         run: ruff check --output-format=github backend/
         continue-on-error: true  # Allow the workflow to continue even if lint fails
 
-      # Report status
-      - name: Report Status
+      # Final status check
+      - name: Check for failures
         if: always()
         run: |
-          if [ "${{ job.status }}" = "failure" ]; then
-            echo "::error::Code quality checks failed. Please review the errors above."
+          if [ "${{ steps.biome.outcome }}" == "failure" ] || \
+             [ "${{ steps.ruff_format.outcome }}" == "failure" ] || \
+             [ "${{ steps.ruff_lint.outcome }}" == "failure" ]; then
+            echo "One or more quality checks failed:"
+            [ "${{ steps.biome.outcome }}" == "failure" ] && echo "- Biome check failed"
+            [ "${{ steps.ruff_format.outcome }}" == "failure" ] && echo "- Ruff format check failed"
+            [ "${{ steps.ruff_lint.outcome }}" == "failure" ] && echo "- Ruff lint check failed"
             exit 1
           fi
