@@ -12,6 +12,7 @@
     "db:reset": "git clean -fX instance && uv run flask db upgrade && uv run flask seed all",
     "db:setup": "uv run flask db upgrade && uv run flask seed all",
     "dev": "uv sync && uv run flask run --debug",
+    "format": "uv run ruff format .",
     "install": "uv sync",
     "migrate": "uv run flask db upgrade",
     "migrate:add": "uv run flask db migrate -m",

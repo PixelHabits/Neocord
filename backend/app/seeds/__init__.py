@@ -13,34 +13,34 @@ from .users import seed_users, undo_users
 
 # Creates a seed group to hold our commands
 # So we can type `flask seed --help`
-seed_commands = AppGroup("seed")
+seed_commands = AppGroup('seed')
 
 
 # Creates the `flask seed all` command
-@seed_commands.command("all")
+@seed_commands.command('all')
 def seed():
-    if environment == "production":
-        undo_reactions()
-        undo_messages()
-        undo_channels()
-        undo_server_members()
-        undo_servers()
-        undo_users()
+	if environment == 'production':
+		undo_reactions()
+		undo_messages()
+		undo_channels()
+		undo_server_members()
+		undo_servers()
+		undo_users()
 
-    seed_users()
-    seed_servers()
-    seed_channels()
-    seed_server_members()
-    seed_messages()
-    seed_reactions()
+	seed_users()
+	seed_servers()
+	seed_channels()
+	seed_server_members()
+	seed_messages()
+	seed_reactions()
 
 
 # Creates the `flask seed undo` command
-@seed_commands.command("undo")
+@seed_commands.command('undo')
 def undo():
-    undo_reactions()
-    undo_messages()
-    undo_channels()
-    undo_server_members()
-    undo_servers()
-    undo_users()
+	undo_reactions()
+	undo_messages()
+	undo_channels()
+	undo_server_members()
+	undo_servers()
+	undo_users()
