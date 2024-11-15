@@ -17,6 +17,7 @@ from .seeds import seed_commands
 from .config import Config
 
 app = Flask(__name__, static_folder='../../frontend/dist', static_url_path='/')
+csrf = CSRFProtect(app)
 
 # Setup login manager
 login = LoginManager(app)
@@ -69,7 +70,7 @@ def inject_csrf_token(response):
         secure=True if os.environ.get('FLASK_ENV') == 'production' else False,
         samesite='Strict' if os.environ.get(
             'FLASK_ENV') == 'production' else None,
-        httponly=True)
+        httponly=False)
     return response
 
 
