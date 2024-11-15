@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
-import { useStore } from '../../store/store.ts';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useStore } from '../../store/store.ts';
 
 function SignupFormPage() {
 	const navigate = useNavigate();
@@ -59,7 +59,7 @@ function SignupFormPage() {
 						type='text'
 						value={username}
 						onChange={(e) => setUsername(e.target.value)}
-						required={true} 
+						required={true}
 					/>
 				</label>
 				{errors.username && <p>{errors.username}</p>}
@@ -69,7 +69,7 @@ function SignupFormPage() {
 						type='password'
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						required={true} 
+						required={true}
 					/>
 				</label>
 				{errors.password && <p>{errors.password}</p>}

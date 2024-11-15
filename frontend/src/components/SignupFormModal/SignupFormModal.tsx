@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
-import { useStore } from '../../store/store.ts';
 import { useModal } from '../../context/useModal.ts';
+import { useStore } from '../../store/store.ts';
 import './SignupForm.css';
 
 interface SignupErrors {
@@ -44,8 +44,8 @@ function SignupFormModal() {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-center">
-			<h1 className="text-4xl">Sign Up</h1>
+		<div className='flex flex-col items-center justify-center'>
+			<h1 className='text-4xl'>Sign Up</h1>
 			{errors.server && <p>{errors.server}</p>}
 			<form onSubmit={handleSubmit}>
 				<label>
@@ -92,7 +92,12 @@ function SignupFormModal() {
 					/>
 				</label>
 				{errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-				<button className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900' type='submit'>Sign Up</button>
+				<button
+					className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900'
+					type='submit'
+				>
+					Sign Up
+				</button>
 			</form>
 		</div>
 	);

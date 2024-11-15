@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { createSessionSlice, type SessionSlice } from './slices/sessionSlice.ts';
+import {
+	type SessionSlice,
+	createSessionSlice,
+} from './slices/sessionSlice.ts';
 
 export type StoreState = SessionSlice;
 

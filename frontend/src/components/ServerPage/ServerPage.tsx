@@ -1,8 +1,7 @@
-import { channels, messages, servers } from './mockServers.ts';
-import { ServerList } from './components/ServerList.tsx';
 import { ChannelList } from '../ChannelList/ChannelList.tsx';
 import { ChatBox } from '../ChatBox/ChatBox.tsx';
-import { useStore } from 'zustand';
+import { ServerList } from './components/ServerList.tsx';
+import { channels, servers } from './mockServers.ts';
 
 export const ServerPage = () => {
 	return (

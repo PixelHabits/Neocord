@@ -27,10 +27,12 @@ export interface SessionActions {
 export type SessionSlice = SessionState & SessionActions;
 
 const getCsrfToken = (): string => {
-	return document.cookie
-		.split('; ')
-		.find(row => row.startsWith('csrf_token='))
-		?.split('=')[1] ?? '';
+	return (
+		document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('csrf_token='))
+			?.split('=')[1] ?? ''
+	);
 };
 
 export const createSessionSlice: StateCreator<
@@ -59,7 +61,7 @@ export const createSessionSlice: StateCreator<
 	login: async (credentials) => {
 		const response = await fetch('/api/auth/login', {
 			method: 'POST',
-			headers: { 
+			headers: {
 				'Content-Type': 'application/json',
 				'X-CSRFToken': getCsrfToken(),
 			},
@@ -81,7 +83,7 @@ export const createSessionSlice: StateCreator<
 	signup: async (user) => {
 		const response = await fetch('/api/auth/signup', {
 			method: 'POST',
-				headers: { 
+			headers: {
 				'Content-Type': 'application/json',
 				'X-CSRFToken': getCsrfToken(),
 			},

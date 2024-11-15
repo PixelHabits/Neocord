@@ -1,5 +1,5 @@
+import type { Server } from '../ServerPage/components/ServerList.tsx';
 import { channels } from '../ServerPage/mockServers.ts';
-import { Server } from '../ServerPage/components/ServerList.tsx';
 
 // Added so that typescript doesn't complain
 interface Channel {
