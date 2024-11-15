@@ -3,6 +3,8 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import type { Server } from '../../../types/index.ts';
 import { servers } from '../mockServers.ts';
 import { useEffect } from 'react';
+import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
+import { CreateServerForm } from '../../CreateServerForm/CreateServerForm.tsx';
 
 function getInitials(serverName: string) {
 	const titleArr = serverName.split(' ');
@@ -19,7 +21,7 @@ export const ServerLayout = () => {
 		if (serverId) {
 			navigate(`/servers/${serverId}`);
 		} else {
-			navigate('/servers/1');
+			navigate('/servers/servers[0].id');
 		}
 	}, [serverId, navigate]);
 
@@ -47,10 +49,14 @@ export const ServerLayout = () => {
 						</button>
 					))}
 				</div>
-				<div className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400 '>
-					<BiPlusCircle size={48} />
-				</div>
+				<OpenModalButton
+					modalComponent={<CreateServerForm />}
+					buttonText={<BiPlusCircle size={48} />}
+					className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400'
+				/>
 			</aside>
+
+			{/* Render the information for the selected server (channels, messages within the channels, and the sidebar) */}
 			<Outlet />
 		</div>
 	);
