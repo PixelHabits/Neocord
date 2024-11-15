@@ -19,18 +19,14 @@
 			"persistent": true
 		},
 		"lint": {
+			"dependsOn": ["format"],
 			"outputs": []
 		},
 		"fix": {
-			"cache": false,
 			"dependsOn": ["format", "lint", "//#_fix"]
 		},
-		"//#_fix": {
-			"cache": false
-		},
-		"format": {
-			"cache": false
-		},
+		"//#_fix": {},
+		"format": {},
 		"install": {
 			"cache": false
 		}
