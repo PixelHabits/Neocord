@@ -101,7 +101,7 @@ def get_channel_messages(id):
 		return {'errors': {'message': 'Unauthorized'}}, 401
 
 	messages = Message.query.filter(
-		Message.channel_id == id, Message.thread_id is None
+		Message.channel_id == id, Message.thread_id.is_(None)
 	).all()
 	return [message.to_dict() for message in messages], 200
 
