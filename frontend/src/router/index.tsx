@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { LandingPage } from '../components/LandingPage/LandingPage.tsx';
 import { LoginFormPage } from '../components/LoginFormPage/LoginFormPage.tsx';
 import { ServerPage } from '../components/ServerPage/ServerPage.tsx';
 import { ServerLayout } from '../components/ServerPage/components/ServerLayout.tsx';
@@ -11,7 +12,7 @@ export const router = createBrowserRouter([
 		children: [
 			{
 				path: '/',
-				element: <h1>Welcome!</h1>,
+				element: <LandingPage />,
 			},
 			{
 				path: 'login',
