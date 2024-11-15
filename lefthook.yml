@@ -2,13 +2,13 @@ pre-commit:
   parallel: true
   commands:
     ruff-format:
-      glob: "backend/**/*.py"
-      run: ruff format {staged_files}
+      glob: "**/*.py"
+      run: cd backend && bunx ruff format {staged_files}
       stage_fixed: true
 
 pre-push:
   parallel: true
   commands:
     ruff-check:
-      glob: "backend/**/*.py"
-      run: ruff check {push_files} 
+      glob: "**/*.py"
+      run: cd backend && bunx ruff check {push_files}
