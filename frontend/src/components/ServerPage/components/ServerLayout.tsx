@@ -1,7 +1,8 @@
 import { BiPlusCircle } from 'react-icons/bi';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import type { Server } from '../../../types/index.ts';
 import { servers } from '../mockServers.ts';
+import { useEffect } from 'react';
 
 function getInitials(serverName: string) {
 	const titleArr = serverName.split(' ');
@@ -11,7 +12,16 @@ function getInitials(serverName: string) {
 }
 
 export const ServerLayout = () => {
+	const { serverId } = useParams();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (serverId) {
+			navigate(`/servers/${serverId}`);
+		} else {
+			navigate('/servers/1');
+		}
+	}, [serverId, navigate]);
 
 	return (
 		<div className='flex h-[calc(100vh-6rem)] w-full'>
