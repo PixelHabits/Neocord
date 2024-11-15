@@ -18,10 +18,6 @@
 			"cache": false,
 			"persistent": true
 		},
-		"lint": {
-			"dependsOn": ["format"],
-			"outputs": []
-		},
 		"fix": {
 			"dependsOn": ["format", "lint", "//#_fix"]
 		},
@@ -29,6 +25,15 @@
 		"format": {},
 		"install": {
 			"cache": false
+		},
+		"lint": {
+			"dependsOn": ["format"],
+			"outputs": []
+		},
+		"typecheck": {
+			"dependsOn": ["^build"],
+			"outputs": ["node_modules/.tmp/**/*.tsbuildinfo"],
+			"cache": true
 		}
 	}
 }

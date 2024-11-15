@@ -12,7 +12,8 @@
 		"lint": "turbo run lint",
 		"lint:ws": "bunx sherif@latest -f",
 		"postinstall": "turbo run install",
-		"prepare": "lefthook install && bun lint:ws"
+		"prepare": "lefthook install && bun lint:ws",
+		"typecheck": "turbo run typecheck"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

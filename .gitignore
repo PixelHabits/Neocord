@@ -29,6 +29,7 @@ __pycache__/
 *.so
 .turbo
 .next
+*.tsbuildinfo
 
 # Cache and Temporary Files
 .cache

@@ -8,7 +8,8 @@
     "./code": "./src/code.tsx"
   },
   "scripts": {
-    "generate:component": "turbo gen react-component"
+    "generate:component": "turbo gen react-component",
+    "typecheck": "tsc --noEmit"
   },
   "packageManager": "bun@1.1.34",
   "devDependencies": {
