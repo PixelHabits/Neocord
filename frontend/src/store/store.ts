@@ -1,14 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import {
-	type SessionSlice,
-	createSessionSlice,
-} from './slices/sessionSlice.ts';
-import {
-	type ServersSlice,
-	createServersSlice,
-} from './slices/serversSlice.ts';
-import {
 	type ChannelsSlice,
 	createChannelsSlice,
 } from './slices/channelsSlice.ts';
@@ -16,6 +8,14 @@ import {
 	type MessagesSlice,
 	createMessagesSlice,
 } from './slices/messagesSlice.ts';
+import {
+	type ServersSlice,
+	createServersSlice,
+} from './slices/serversSlice.ts';
+import {
+	type SessionSlice,
+	createSessionSlice,
+} from './slices/sessionSlice.ts';
 
 export type StoreState = SessionSlice &
 	ServersSlice &

@@ -1,5 +1,5 @@
 import type { StateCreator } from 'zustand';
-import type { Server, ServerDetails, ServerMember } from '../../types/index.ts';
+import type { Server, ServerDetails } from '../../types/index.ts';
 import { getCsrfToken } from '../csrf.ts';
 export interface ServersState {
 	servers: Server[];
@@ -177,7 +177,7 @@ export const createServersSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const newMember: ServerMember = await response.json();
+			await response.json();
 
 			// Get the updated server details after joining
 			await get().getServer(serverId);

@@ -1,7 +1,7 @@
 import type { StateCreator } from 'zustand';
 import type { Channel } from '../../types/index.ts';
-import type { ServersSlice } from './serversSlice.ts';
 import { getCsrfToken } from '../csrf.ts';
+import type { ServersSlice } from './serversSlice.ts';
 export interface ChannelsState {
 	currentChannel: Channel | null;
 }

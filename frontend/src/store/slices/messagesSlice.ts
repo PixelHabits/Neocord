@@ -1,8 +1,8 @@
 import type { StateCreator } from 'zustand';
 import type { Message, Thread } from '../../types/index.ts';
-import type { ServersSlice } from './serversSlice.ts';
-import type { ChannelsSlice } from './channelsSlice.ts';
 import { getCsrfToken } from '../csrf.ts';
+import type { ChannelsSlice } from './channelsSlice.ts';
+import type { ServersSlice } from './serversSlice.ts';
 
 export interface MessagesState {
 	messages: Record<number, Message[]>; // channelId -> messages[]
@@ -40,16 +40,21 @@ const updateMessageInState = (
 	messageId: number,
 	updater: (message: Message) => Message,
 ): Partial<MessagesState> => {
-	const channelId = Object.keys(state.messages).find((channelId) =>
-		state.messages[Number(channelId)].some((msg) => msg.id === messageId),
+	const channelIdStr = Object.keys(state.messages).find((channelId) =>
+		state.messages[Number(channelId)]?.some((msg) => msg.id === messageId),
 	);
 
-	if (!channelId) return state;
+	if (!channelIdStr) return state;
+
+	const channelId = Number(channelIdStr);
+	const messages = state.messages[channelId];
+
+	if (!messages) return state;
 
 	return {
 		messages: {
 			...state.messages,
-			[channelId]: state.messages[Number(channelId)].map((message) =>
+			[channelId]: messages.map((message) =>
 				message.id === messageId ? updater(message) : message,
 			),
 		},
@@ -59,6 +64,46 @@ const updateMessageInState = (
 				: state.currentMessage,
 	};
 };
+
+const getCreateMessageState = (
+	state: MessagesState,
+	channelId: number,
+	newMessage: Message,
+	parentMessageId?: number,
+): Partial<MessagesState> => {
+	if (parentMessageId && newMessage.thread) {
+		const thread = newMessage.thread as Thread;
+		return {
+			threads: { ...state.threads, [parentMessageId]: thread },
+			currentThread:
+				state.currentThread?.id === thread.id ? thread : state.currentThread,
+		};
+	}
+
+	return {
+		messages: {
+			...state.messages,
+			[channelId]: [...(state.messages[channelId] || []), newMessage],
+		},
+	};
+};
+
+const getDeleteMessageState = (
+	state: MessagesState,
+	messageId: number,
+): Partial<MessagesState> => ({
+	currentMessage:
+		state.currentMessage?.id === messageId ? null : state.currentMessage,
+	threads: Object.fromEntries(
+		Object.entries(state.threads).filter(([id]) => Number(id) !== messageId),
+	),
+	messages: Object.fromEntries(
+		Object.entries(state.messages).map(([channelId, msgs]) => [
+			channelId,
+			msgs.filter((msg) => msg.id !== messageId),
+		]),
+	),
+});
 
 export const createMessagesSlice: StateCreator<
 	MessagesSlice & ServersSlice & ChannelsSlice,
@@ -133,30 +178,8 @@ export const createMessagesSlice: StateCreator<
 		if (response.ok) {
 			const newMessage = await response.json();
 			set(
-				(state) => {
-					const newState: Partial<MessagesState> = {
-						messages: { ...state.messages },
-					};
-
-					if (parentMessageId && newMessage.thread) {
-						// Update thread messages
-						newState.threads = {
-							...state.threads,
-							[parentMessageId]: newMessage.thread,
-						};
-						if (state.currentThread?.id === newMessage.thread.id) {
-							newState.currentThread = newMessage.thread;
-						}
-					} else {
-						// Update channel messages
-						newState.messages[channelId] = [
-							...(state.messages[channelId] || []),
-							newMessage,
-						];
-					}
-
-					return newState as MessagesState;
-				},
+				(state) =>
+					getCreateMessageState(state, channelId, newMessage, parentMessageId),
 				false,
 				'messages/createMessage',
 			);
@@ -205,28 +228,7 @@ export const createMessagesSlice: StateCreator<
 
 		if (response.ok) {
 			set(
-				(state) => {
-					const newState: Partial<MessagesState> = {
-						currentMessage:
-							state.currentMessage?.id === messageId
-								? null
-								: state.currentMessage,
-						threads: { ...state.threads },
-						messages: { ...state.messages },
-					};
-
-					// Remove from threads if exists
-					delete newState.threads[messageId];
-
-					// Remove from channel messages
-					Object.keys(newState.messages).forEach((channelId) => {
-						newState.messages[Number(channelId)] = state.messages[
-							Number(channelId)
-						].filter((message) => message.id !== messageId);
-					});
-
-					return newState as MessagesState;
-				},
+				(state) => getDeleteMessageState(state, messageId),
 				false,
 				'messages/deleteMessage',
 			);
@@ -250,7 +252,9 @@ export const createMessagesSlice: StateCreator<
 				(state) =>
 					updateMessageInState(state, messageId, (message) => ({
 						...message,
-						reactions: [...message.reactions, newReaction],
+						reactions: message.reactions
+							? [...message.reactions, newReaction]
+							: [newReaction],
 					})),
 				false,
 				'messages/addReaction',
@@ -280,7 +284,9 @@ export const createMessagesSlice: StateCreator<
 				(state) =>
 					updateMessageInState(state, messageId, (message) => ({
 						...message,
-						reactions: message.reactions.filter((r) => r.id !== reactionId),
+						reactions: message.reactions
+							? message.reactions.filter((r) => r.id !== reactionId)
+							: [],
 					})),
 				false,
 				'messages/removeReaction',
