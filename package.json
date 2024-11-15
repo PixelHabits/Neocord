@@ -9,10 +9,12 @@
 		"fix": "turbo run fix",
 		"_fix": "biome check --write .",
 		"lint:ws": "bunx sherif@latest -f && turbo run install",
-		"postinstall": "bun lint:ws"
+		"postinstall": "bun lint:ws",
+		"prepare": "lefthook install"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"lefthook": "^1.8.2",
 		"turbo": "^2.2.3",
 		"typescript": "~5.6.3"
 	},
