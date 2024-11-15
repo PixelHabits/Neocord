@@ -4,30 +4,83 @@ version = "0.1.0"
 description = "Flask-based backend API for Neocord - a modern real-time communication platform. Features user authentication, instant messaging, community server management, and channel organization. Built with SQLAlchemy and Alembic for robust data management and migrations."
 readme = "README.md"
 requires-python = ">=3.13"
+
+# Core dependencies grouped by purpose
 dependencies = [
-    "alembic>=1.14.0",
-    "click>=8.1.7",
+    # Flask and Extensions
     "flask>=3.0.3",
     "flask-cors>=5.0.0",
     "flask-login>=0.6.3",
     "flask-migrate>=4.0.7",
     "flask-sqlalchemy>=3.1.1",
     "flask-wtf>=1.2.2",
+    "werkzeug>=3.1.2",
+
+    # Database and ORM
+    "sqlalchemy>=2.0.36",
+    "alembic>=1.14.0",
     "greenlet>=3.1.1",
+    # Server
     "gunicorn>=23.0.0",
+
+    # Utilities
+    "click>=8.1.7",
     "itsdangerous>=2.2.0",
+    "python-dotenv>=1.0.1",
+    "python-dateutil>=2.9.0.post0",
+
+    # Template Engine
     "jinja2>=3.1.4",
     "mako>=1.3.6",
     "markupsafe>=3.0.2",
-    "python-dateutil>=2.9.0.post0",
-    "python-dotenv>=1.0.1",
+
+    # Forms and Validation
+    "wtforms>=3.2.1",
+    
+    # Misc
     "python-editor>=1.0.4",
     "six>=1.16.0",
-    "sqlalchemy>=2.0.36",
-    "werkzeug>=3.1.2",
-    "wtforms>=3.2.1",
+]
+
+[dependency-groups]
+dev = [
     "ruff>=0.7.3",
 ]
 
+# Tool configurations
 [tool.uv]
 package = false
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "tab"
+
+[tool.ruff.lint]
+select = [
+    "B",   # flake8-bugbear: finds likely bugs and design problems 
+    "D",   # flake8-docstrings: enforces docstring conventions
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "W",   # pycodestyle warnings
+    "C4",  # flake8-comprehensions
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "RUF", # Ruff-specific rules
+]
+
+# Ignore rules that conflict with tabs
+ignore = [
+    "W191",  # indentation contains tabs
+    "D206",  # indent with spaces not tabs
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+combine-as-imports = true
+known-first-party = ["backend"]
