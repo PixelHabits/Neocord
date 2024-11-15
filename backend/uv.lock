@@ -37,11 +37,15 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "python-dotenv" },
     { name = "python-editor" },
-    { name = "ruff" },
     { name = "six" },
     { name = "sqlalchemy" },
     { name = "werkzeug" },
     { name = "wtforms" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -63,12 +67,14 @@ requires-dist = [
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "python-editor", specifier = ">=1.0.4" },
-    { name = "ruff", specifier = ">=0.7.3" },
     { name = "six", specifier = ">=1.16.0" },
     { name = "sqlalchemy", specifier = ">=2.0.36" },
     { name = "werkzeug", specifier = ">=3.1.2" },
     { name = "wtforms", specifier = ">=3.2.1" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ruff", specifier = ">=0.7.3" }]
 
 [[package]]
 name = "blinker"

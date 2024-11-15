@@ -26,8 +26,16 @@ dependencies = [
     "sqlalchemy>=2.0.36",
     "werkzeug>=3.1.2",
     "wtforms>=3.2.1",
-    "ruff>=0.7.3",
 ]
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+dev = [
+    "ruff>=0.7.3",
+]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "tab"
