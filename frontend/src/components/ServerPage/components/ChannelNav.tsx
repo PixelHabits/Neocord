@@ -39,7 +39,7 @@ export const ChannelNav = ({ server }) => {
 				</div>
 				<footer className='relative bg-neutral-800 text-white py-4 px-2 flex gap-4 items-center'>
 					<span>Current Server: {server.name}</span>
-					<span>
+					<span className='cursor-pointer'>
 						<BiCog size={24} />
 					</span>
 				</footer>
