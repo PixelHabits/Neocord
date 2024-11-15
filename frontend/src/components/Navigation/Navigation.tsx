@@ -1,13 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { ProfileButton } from './ProfileButton.tsx';
 import './Navigation.css';
+import { useStore } from '../../store/store.ts';
 
 function Navigation() {
-	// const user = useStore((state) => state.user);
-	const user = {
-		username: 'test',
-		email: 'test@test.com',
-	};
+	const user = useStore((state) => state.user);
 
 	return (
 		<ul className='flex items-center p-4 text-white'>
@@ -17,7 +14,7 @@ function Navigation() {
 				</NavLink>
 			</li>
 			{user && (
-				<li className='ml-auto text-4xl'>
+				<li className='ml-auto text-4xl [&_*:first-child]:cursor-pointer'>
 					<ProfileButton />
 				</li>
 			)}
