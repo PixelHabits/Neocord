@@ -1,4 +1,4 @@
-from .db import SCHEMA, add_prefix_for_prod, db, environment
+from .db import SCHEMA, db, environment
 
 
 class Server(db.Model):

@@ -1,4 +1,3 @@
-from app.forms.message_form import MessageForm
 from app.models import Message, Reaction, db
 from flask import Blueprint, request
 from flask_login import current_user

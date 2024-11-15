@@ -14,6 +14,7 @@
     "dev": "uv sync && uv run flask run --debug",
     "format": "uv run ruff format .",
     "install": "uv sync",
+    "lint": "uv run ruff check",
     "migrate": "uv run flask db upgrade",
     "migrate:add": "uv run flask db migrate -m",
     "seed": "uv run flask seed all",
