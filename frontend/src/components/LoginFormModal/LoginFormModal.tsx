@@ -36,8 +36,7 @@ function LoginFormModal() {
 
 		const handleDemoUser = async (e: React.MouseEvent) => {
 			e.preventDefault();
-			await login({ email: 'demo@aa.io', password: 'password' });
-			closeModal();
+			await login({ email: 'demo@aa.io', password: 'password' }).then(closeModal);
 		};
 
 		return (

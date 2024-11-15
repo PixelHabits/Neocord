@@ -47,11 +47,11 @@ function ProfileButton() {
 			{showMenu && (
 				<ul className={'profile-dropdown'} ref={ulRef}>
 					{user ? (
-						<div className='flex flex-col items-center justify-center'>
-							<li>{user.username}</li>
-							<li>{user.email}</li>
+						<div className='flex cursor-pointer flex-col items-center justify-center rounded-md bg-neutral-200 p-4 text-gray-800 text-xl'>
+							<li className='mb-2'>{user.username}</li>
+							<li className='mb-2 border-b-1 border-gray-600 pb-4'>{user.email}</li>
 							<li>
-								<button type='button' onClick={handleLogout}>
+								<button className='w-full cursor-pointer rounded-md p-2' type='button' onClick={handleLogout}>
 									Log Out
 								</button>
 							</li>
