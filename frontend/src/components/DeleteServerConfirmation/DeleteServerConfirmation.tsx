@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
+import { useState } from 'react';
 
 export const DeleteServerConfirmation = ({
 	onCloseSettings,
@@ -8,20 +9,27 @@ export const DeleteServerConfirmation = ({
 	const { closeModal } = useModal();
 	const { serverId } = useParams();
 	const navigate = useNavigate();
-
+	const [isLoading, setIsLoading] = useState(false);
 	const { deleteServer, servers } = useStore();
 
 	const handleDelete = async () => {
+		setIsLoading(true);
 		await deleteServer(Number(serverId));
 		// Close modal and navigate to first server (or home if no servers)
 		closeModal();
 		onCloseSettings();
-		if (servers.length > 0) {
-			navigate(`/servers/${servers[0]?.id}`);
+		const nextServer = servers.find((server) => server.id !== Number(serverId));
+		if (nextServer) {
+			navigate(`/servers/${nextServer.id}`);
 		} else {
 			navigate('/');
 		}
+		setIsLoading(false);
 	};
+
+	if (isLoading) {
+		return <div>Loading...</div>; // Or a proper loading component
+	}
 
 	return (
 		<div className='flex flex-col gap-4 rounded-md bg-background p-4'>

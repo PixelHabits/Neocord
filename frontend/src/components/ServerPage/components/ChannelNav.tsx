@@ -19,6 +19,8 @@ export const ChannelNav = ({
 	const { setCurrentChannel, getChannelMessages } = useStore();
 	const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
 
+	const { user } = useStore();
+
 	const handleChannelSelect = async (channel: Channel) => {
 		try {
 			setCurrentChannel(channel);
@@ -31,7 +33,9 @@ export const ChannelNav = ({
 	};
 
 	useEffect(() => {
-		const firstChannel = server.channels?.[0];
+		const firstChannel = server.channels.find(
+			(channel) => channel.visibility === 'public',
+		);
 		if (firstChannel) {
 			setSelectedChannel(firstChannel);
 		}
@@ -61,31 +65,65 @@ export const ChannelNav = ({
 			<div className='flex h-full flex-col justify-between'>
 				<div className='space-y-1 p-2'>
 					{server.channels?.length > 0 ? (
-						server.channels.map((channel) => (
-							<div
-								className='flex items-center justify-between'
-								key={channel.id}
-							>
+						user?.id === server?.owner?.id ? (
+							server.channels.map((channel) => (
 								<div
-									className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-md px-2 py-4 font-bold text-gray-300 text-sm transition-colors duration-300 hover:bg-purple-800 hover:text-white ${selectedChannel?.id === channel.id ? 'bg-purple-800' : ''}`}
-									onClick={() => handleChannelSelect(channel)}
-									onKeyDown={(e) =>
-										handleSubmitKeysDown(e, () => handleChannelSelect(channel))
-									}
+									className='flex items-center justify-between'
+									key={channel.id}
 								>
-									<span>#{channel.name}</span>
-								</div>
-								{selectedChannel?.id === channel.id && (
-									<button
-										type='button'
-										className='ml-2 cursor-pointer text-red-500 transition-colors duration-200 hover:text-red-600'
-										onClick={() => onDeleteChannel(channel.id)}
+									<div
+										className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-md px-2 py-4 font-bold text-gray-300 text-sm transition-colors duration-300 hover:bg-purple-800 hover:text-white ${selectedChannel?.id === channel.id ? 'bg-purple-800' : ''}`}
+										onClick={() => handleChannelSelect(channel)}
+										onKeyDown={(e) =>
+											handleSubmitKeysDown(e, () =>
+												handleChannelSelect(channel),
+											)
+										}
 									>
-										<FaTrash size={12} />
-									</button>
-								)}
-							</div>
-						))
+										<span>#{channel.name}</span>
+									</div>
+									{selectedChannel?.id === channel.id && (
+										<button
+											type='button'
+											className='ml-2 cursor-pointer text-red-500 transition-colors duration-200 hover:text-red-600'
+											onClick={() => onDeleteChannel(channel.id)}
+										>
+											<FaTrash size={12} />
+										</button>
+									)}
+								</div>
+							))
+						) : (
+							server.channels
+								.filter((channel) => channel.visibility === 'public')
+								.map((channel) => (
+									<div
+										className='flex items-center justify-between'
+										key={channel.id}
+									>
+										<div
+											className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-md px-2 py-4 font-bold text-gray-300 text-sm transition-colors duration-300 hover:bg-purple-800 hover:text-white ${selectedChannel?.id === channel.id ? 'bg-purple-800' : ''}`}
+											onClick={() => handleChannelSelect(channel)}
+											onKeyDown={(e) =>
+												handleSubmitKeysDown(e, () =>
+													handleChannelSelect(channel),
+												)
+											}
+										>
+											<span>#{channel.name}</span>
+										</div>
+										{selectedChannel?.id === channel.id && (
+											<button
+												type='button'
+												className='ml-2 cursor-pointer text-red-500 transition-colors duration-200 hover:text-red-600'
+												onClick={() => onDeleteChannel(channel.id)}
+											>
+												<FaTrash size={12} />
+											</button>
+										)}
+									</div>
+								))
+						)
 					) : (
 						<div className='p-4 text-center text-gray-400'>
 							<p>No channels yet!</p>
@@ -93,17 +131,19 @@ export const ChannelNav = ({
 						</div>
 					)}
 				</div>
-				<footer className='relative flex items-center gap-4 bg-neutral-800 px-2 py-4 text-white'>
-					<span className='text-sm'>
+				<footer className='flex h-20 items-center gap-4 bg-neutral-800 px-2 py-4 text-white'>
+					<span className='w-1/2 text-sm'>
 						Current Server: <em>{server.name}</em>
 					</span>
-					<button
-						type='button'
-						className='w-1/2 cursor-pointer rounded-md bg-gray-600 px-2 py-1 text-sm hover:bg-gray-700'
-						onClick={onShowSettings}
-					>
-						Edit Server
-					</button>
+					{user?.id === server?.owner?.id && (
+						<button
+							type='button'
+							className='w-1/2 h-12 cursor-pointer rounded-md bg-gray-600 px-2 py-1 text-sm hover:bg-gray-700'
+							onClick={onShowSettings}
+						>
+							Edit Server
+						</button>
+					)}
 				</footer>
 			</div>
 		</nav>

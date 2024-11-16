@@ -19,13 +19,14 @@ export const EditServerSidebar = ({
 		name: server.name,
 		description: server.description,
 	});
-
+	const [isLoading, setIsLoading] = useState(false);
 	const { updateServer } = useStore();
 
 	const handleSubmit = (e: FormEvent) => {
+		setIsLoading(true);
 		e.preventDefault();
 		updateServer(server.id, { ...formData });
-		alert('updated');
+		setIsLoading(false);
 	};
 
 	const handleChange = (
@@ -37,6 +38,11 @@ export const EditServerSidebar = ({
 			[id.replace('server', '').toLowerCase()]: value,
 		}));
 	};
+
+	if (isLoading) {
+		return <div>Loading...</div>; // Or a proper loading component
+	}
+
 	return (
 		<div className='col-span-1 m-4 flex h-full w-[calc(100%-2rem)] flex-col justify-between space-y-4 self-center justify-self-center rounded-r-lg bg-gray-700 p-4'>
 			<div>
