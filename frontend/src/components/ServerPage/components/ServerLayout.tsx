@@ -13,13 +13,15 @@ export const ServerLayout = () => {
 
 	const { getServers, servers } = useStore();
 
+	const firstServerId = servers[0]?.id;
+
 	useEffect(() => {
 		if (serverId) {
 			navigate(`/servers/${serverId}`);
 		} else {
-			navigate(`/servers/${servers[0]?.id}`);
+			navigate(`/servers/${firstServerId}`);
 		}
-	}, [serverId, navigate, servers[0]?.id]);
+	}, [serverId, navigate, firstServerId]);
 
 	useEffect(() => {
 		getServers();

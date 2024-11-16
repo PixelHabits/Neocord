@@ -1,10 +1,12 @@
 import type React from 'react';
 import { type FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
 import { handleSubmitKeysDown } from '../../utils/index.ts';
 
 export const CreateServerForm = () => {
+	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		name: '',
 		description: '',
@@ -12,7 +14,7 @@ export const CreateServerForm = () => {
 	const [errors, setErrors] = useState<Record<string, string>>({});
 
 	const { closeModal } = useModal();
-	const { createServer } = useStore();
+	const { createServer, currentServer } = useStore();
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -27,17 +29,26 @@ export const CreateServerForm = () => {
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setErrors({});
+
 		if (!formData.name) {
 			setErrors({ name: 'Server name is required' });
 			return;
 		}
 
-		try {
-			await createServer(formData);
+		const result = await createServer(formData);
+
+		if (result) {
+			// Error case
+			setErrors({
+				server: result.server ?? 'An error occurred',
+			});
+		} else {
+			// Success case
 			closeModal();
 			setFormData({ name: '', description: '' });
-		} catch (_error) {
-			setErrors({ server: 'Failed to create server' });
+			if (currentServer?.id) {
+				navigate(`/servers/${currentServer.id}`);
+			}
 		}
 	};
 	return (

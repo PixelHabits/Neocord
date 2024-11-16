@@ -19,31 +19,26 @@ export const CreateChannelForm = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError({});
+
 		if (!(channelName.trim() && currentServer)) {
 			setError({ name: 'Channel name is required' });
-			setIsLoading(false);
 			return;
 		}
 
-		try {
-			setIsLoading(true);
-			const result = await createChannel(currentServer.id, {
-				name: formatChannelName(channelName),
-				visibility,
+		setIsLoading(true);
+		const result = await createChannel(currentServer.id, {
+			name: formatChannelName(channelName),
+			visibility,
+		});
+
+		if (result) {
+			setError({
+				server: result.server ?? 'An error occurred',
 			});
-
-			if (result?.server) {
-				setError({ server: result.server });
-				return;
-			}
-
+		} else {
 			closeModal();
-		} catch (_error) {
-			setError({ server: 'Failed to create channel' });
-			// console.error('Failed to create channel:', error);
-		} finally {
-			setIsLoading(false);
 		}
+		setIsLoading(false);
 	};
 
 	return (

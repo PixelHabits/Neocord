@@ -16,9 +16,13 @@ export interface ServersActions {
 		serverId: number,
 		updates: { name?: string; description?: string },
 	) => Promise<Record<string, string> | undefined>;
-	deleteServer: (serverId: number) => Promise<void>;
+	deleteServer: (
+		serverId: number,
+	) => Promise<Record<string, string> | undefined>;
 	joinServer: (serverId: number) => Promise<Record<string, string> | undefined>;
-	leaveServer: (serverId: number) => Promise<void>;
+	leaveServer: (
+		serverId: number,
+	) => Promise<Record<string, string> | undefined>;
 	setCurrentServer: (server: ServerDetails | null) => void;
 }
 
@@ -75,28 +79,45 @@ export const createServersSlice: StateCreator<
 
 		if (response.ok) {
 			const newServerDetails = await response.json();
-			const newServer: Server = {
-				id: newServerDetails.id,
-				name: newServerDetails.name,
-				description: newServerDetails.description,
-				createdAt: newServerDetails.createdAt,
-				updatedAt: newServerDetails.updatedAt,
-			};
 
-			set(
-				(state) => ({
-					servers: [...state.servers, newServer],
-					currentServer: newServerDetails,
-				}),
-				false,
-				'servers/createServer',
+			// Fetch the complete server details after creation
+			const serverResponse = await fetch(
+				`/api/servers/${newServerDetails.id}`,
+				{
+					credentials: 'include',
+					headers: {
+						'X-CSRFToken': store.getState().csrfToken,
+					},
+				},
 			);
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+
+			if (serverResponse.ok) {
+				const fullServerDetails = await serverResponse.json();
+				const newServer: Server = {
+					id: fullServerDetails.id,
+					name: fullServerDetails.name,
+					description: fullServerDetails.description,
+					createdAt: fullServerDetails.createdAt,
+					updatedAt: fullServerDetails.updatedAt,
+				};
+
+				set(
+					(state) => ({
+						servers: [...state.servers, newServer],
+						currentServer: fullServerDetails,
+					}),
+					false,
+					'servers/createServer',
+				);
+				return undefined;
+			}
 		}
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	updateServer: async (serverId, updates) => {
@@ -133,12 +154,14 @@ export const createServersSlice: StateCreator<
 				false,
 				'servers/updateServer',
 			);
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	deleteServer: async (serverId) => {
@@ -160,12 +183,14 @@ export const createServersSlice: StateCreator<
 				false,
 				'servers/deleteServer',
 			);
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	joinServer: async (serverId) => {
@@ -209,12 +234,14 @@ export const createServersSlice: StateCreator<
 					'servers/joinServer',
 				);
 			}
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	leaveServer: async (serverId) => {
@@ -236,12 +263,14 @@ export const createServersSlice: StateCreator<
 				false,
 				'servers/leaveServer',
 			);
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	setCurrentServer: (server) => {

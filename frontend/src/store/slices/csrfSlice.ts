@@ -25,7 +25,7 @@ export const createCsrfSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const token = response.headers.get('X-CSRFToken') || '';
+			const token = response.headers.get('X-CSRFToken') ?? '';
 			set({ csrfToken: token }, false, 'csrf/initializeCsrfToken');
 
 			// Set up auto-refresh before token expires (50 minutes)
