@@ -1,24 +1,20 @@
-import { useEffect, useState } from 'react';
-import type { Channel, Server } from '../../../types/index.ts';
-import { channels } from '../mockServers.ts';
+import type { Channel, Server, ServerDetails } from '../../../types/index.ts';
+import { useStore } from '../../../store/store.ts';
 
 export const ChannelNav = ({
 	server,
 	onShowSettings,
-}: { server: Server; onShowSettings: () => void }) => {
-	const [serverChannels, setServerChannels] = useState<Channel[]>([]);
+}: { server: ServerDetails; onShowSettings: () => void }) => {
+	const { setCurrentChannel, getChannelMessages } = useStore();
 
-	useEffect(() => {
-		if (server) {
-			const filteredChannels = channels.filter(
-				(ch) => ch.serverId === server.id,
-			);
-
-			if (filteredChannels.length > 0) {
-				setServerChannels(filteredChannels);
-			}
+	const handleChannelSelect = async (channel: Channel) => {
+		try {
+			setCurrentChannel(channel);
+			await getChannelMessages(channel.id);
+		} catch (error) {
+			console.log(error);
 		}
-	}, [server]);
+	};
 
 	if (!server) {
 		<section className='relative flex w-72 max-w-72 flex-col gap-4 overflow-y-auto rounded-tl-lg bg-gray-600'>
@@ -27,14 +23,15 @@ export const ChannelNav = ({
 	}
 
 	return (
-		<section className='relative flex w-72 max-w-72 flex-col gap-4 overflow-y-auto rounded-tl-3xl bg-gray-600'>
+		<nav className='relative flex w-72 max-w-72 flex-col gap-4 overflow-y-auto rounded-tl-3xl bg-gray-600'>
 			<h2 className='p-4 font-bold text-xl '>Channels</h2>
 			<div className='flex h-full flex-col justify-between'>
 				<div className='space-y-3 p-2'>
-					{serverChannels?.map((channel) => (
+					{server.channels?.map((channel) => (
 						<div
-							className='cursor-pointer rounded-md px-2 py-1 transition-colors hover:bg-purple-800 hover:text-white'
+							className='cursor-pointer rounded-md px-2 py-1 transition-colors text-gray-300 hover:bg-purple-800 hover:text-white text-sm font-bold'
 							key={channel.id}
+							onClick={() => handleChannelSelect(channel)}
 						>
 							#{channel.name}
 						</div>
@@ -53,6 +50,6 @@ export const ChannelNav = ({
 					</button>
 				</footer>
 			</div>
-		</section>
+		</nav>
 	);
 };
