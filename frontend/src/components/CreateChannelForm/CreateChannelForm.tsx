@@ -3,28 +3,45 @@ import { useStore } from '../../store/store';
 import { useModal } from '../../context/useModal';
 import { handleSubmitKeysDown } from '../../utils';
 
+const formatChannelName = (name: string) => {
+	return name.trim().toLowerCase().replace(/\s+/g, '-');
+};
+
 export const CreateChannelForm = () => {
 	const { closeModal } = useModal();
 	const { createChannel, currentServer } = useStore();
 	const [channelName, setChannelName] = useState('');
 	const [visibility, setVisibility] = useState<'PUBLIC' | 'PRIVATE'>('PUBLIC');
 	const [error, setError] = useState<Record<string, string>>({});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError({});
 		if (!channelName.trim() || !currentServer) {
 			setError({ name: 'Channel name is required' });
+			setIsLoading(false);
 			return;
 		}
 
 		try {
-			await createChannel(currentServer.id, { name: channelName, visibility });
+			setIsLoading(true);
+			const result = await createChannel(currentServer.id, {
+				name: formatChannelName(channelName),
+				visibility,
+			});
+
+			if (result?.server) {
+				setError({ server: result.server });
+				return;
+			}
 
 			closeModal();
 		} catch (error) {
 			setError({ server: 'Failed to create channel' });
 			console.error('Failed to create channel:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -68,7 +85,8 @@ export const CreateChannelForm = () => {
 			</div>
 			<button
 				type='submit'
-				className='rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700'
+				disabled={isLoading}
+				className='rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700 cursor-pointer'
 			>
 				Create Channel
 			</button>

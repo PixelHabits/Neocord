@@ -46,6 +46,7 @@ export const createChannelsSlice: StateCreator<
 			await serverStore.getServer(serverId);
 
 			set({ currentChannel: newChannel }, false, 'channels/createChannel');
+			return newChannel;
 		} else if (response.status < 500) {
 			return await response.json();
 		}
