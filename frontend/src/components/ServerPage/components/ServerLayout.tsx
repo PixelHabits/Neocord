@@ -1,29 +1,29 @@
 import { useEffect } from 'react';
 import { BiPlusCircle } from 'react-icons/bi';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { useStore } from '../../../store/store.ts';
 import type { Server } from '../../../types/index.ts';
+import { getInitials } from '../../../utils/index.ts';
 import { CreateServerForm } from '../../CreateServerForm/CreateServerForm.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
-import { servers } from '../mockServers.ts';
-
-function getInitials(serverName: string) {
-	const titleArr = serverName.split(' ');
-	return titleArr
-		.map((title) => title?.charAt(0)?.toUpperCase() ?? '')
-		.join('');
-}
 
 export const ServerLayout = () => {
 	const { serverId } = useParams();
 	const navigate = useNavigate();
 
+	const { getServers, servers } = useStore();
+
 	useEffect(() => {
 		if (serverId) {
 			navigate(`/servers/${serverId}`);
 		} else {
-			navigate('/servers/servers[0].id');
+			navigate(`/servers/${servers[0]?.id}`);
 		}
-	}, [serverId, navigate]);
+	}, [serverId, navigate, servers[0]?.id]);
+
+	useEffect(() => {
+		getServers();
+	}, [getServers]);
 
 	return (
 		<div className='flex h-[calc(100vh-6rem)] w-full'>

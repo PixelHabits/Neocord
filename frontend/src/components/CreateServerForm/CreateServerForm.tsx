@@ -1,15 +1,18 @@
 import type React from 'react';
 import { type FormEvent, useState } from 'react';
-import { useModal } from '../../context/useModal.tsx';
-import { servers } from '../ServerPage/mockServers.ts';
+import { useModal } from '../../context/useModal.ts';
+import { useStore } from '../../store/store.ts';
+import { handleSubmitKeysDown } from '../../utils/index.ts';
 
 export const CreateServerForm = () => {
 	const [formData, setFormData] = useState({
 		name: '',
 		description: '',
 	});
+	const [errors, setErrors] = useState<Record<string, string>>({});
 
 	const { closeModal } = useModal();
+	const { createServer } = useStore();
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -21,27 +24,21 @@ export const CreateServerForm = () => {
 		}));
 	};
 
-	const handleSubmit = (e: FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-
+		setErrors({});
 		if (!formData.name) {
+			setErrors({ name: 'Server name is required' });
 			return;
 		}
 
-		// Create new server
-		const newServer = {
-			id: servers.length + 1,
-			name: formData.name,
-			description: formData.description,
-			channels: [],
-		};
-
-		// Add to servers array
-		servers.push(newServer);
-
-		// Close modal and reset form
-		closeModal();
-		setFormData({ name: '', description: '' });
+		try {
+			await createServer(formData);
+			closeModal();
+			setFormData({ name: '', description: '' });
+		} catch (_error) {
+			setErrors({ server: 'Failed to create server' });
+		}
 	};
 	return (
 		<div className='flex flex-col gap-4 rounded-lg bg-background p-4'>
@@ -58,7 +55,11 @@ export const CreateServerForm = () => {
 				</button>
 			</div>
 
-			<form className='flex flex-col gap-2 space-y-4' onSubmit={handleSubmit}>
+			<form
+				className='flex flex-col gap-2 space-y-4'
+				onSubmit={handleSubmit}
+				onKeyDown={(e) => handleSubmitKeysDown(e, handleSubmit)}
+			>
 				<div className='flex flex-col gap-2'>
 					<label htmlFor='server-name' className='font-bold text-gray-400'>
 						Server Name
@@ -71,6 +72,9 @@ export const CreateServerForm = () => {
 						value={formData.name}
 						onChange={handleChange}
 					/>
+					{errors.name && (
+						<span className='text-red-500 text-sm'>{errors.name}</span>
+					)}
 				</div>
 				<div className='flex flex-col gap-2'>
 					<label
@@ -95,6 +99,9 @@ export const CreateServerForm = () => {
 						Create
 					</button>
 				</div>
+				{errors.server && (
+					<span className='text-red-500 text-sm'>{errors.server}</span>
+				)}
 			</form>
 		</div>
 	);

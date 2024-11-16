@@ -1,63 +1,95 @@
-import { ChannelNav } from './components/ChannelNav.tsx';
-import { channels, servers } from './mockServers.ts';
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { Server } from '../../types/index.ts';
+import { useStore } from '../../store/store.ts';
 import { ChatBox } from '../ChatBox/ChatBox.tsx';
+import { ChannelNav } from './components/ChannelNav.tsx';
 import { EditServerSidebar } from './components/EditServerSidebar.tsx';
 
 export const ServerPage = () => {
 	const { serverId } = useParams();
-	const [server, setServer] = useState<Server | null>(null);
 	const [showSettings, setShowSettings] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
+	const {
+		getServer,
+		getServers,
+		currentServer,
+		currentChannel,
+		deleteChannel,
+		setCurrentChannel,
+	} = useStore();
+
 	useEffect(() => {
-		setIsLoading(true);
-		const existingServer = servers.find((s) => s.id === Number(serverId));
-		if (existingServer) {
-			setServer(existingServer);
-		}
-		setIsLoading(false);
-	}, [serverId]);
+		const fetchServer = async () => {
+			setIsLoading(true);
+			if (serverId) {
+				try {
+					await Promise.all([getServer(Number(serverId)), getServers()]);
+				} catch (error) {
+					alert((error as Error).message); //avoid console.log
+					// console.error('Failed to fetch server', error);
+				} finally {
+					setIsLoading(false);
+				}
+			}
+		};
+		fetchServer();
+	}, [serverId, getServer, getServers]);
 
 	const handleShowSettings = () => {
 		setShowSettings(!showSettings);
 	};
 
-	const handleUpdateServer = (updatedServer: Server) => {
-		setServer(updatedServer);
-		// In a real app, you'd make an API call here
-		setShowSettings(false);
+	const handleDeleteChannel = async (channelId: number) => {
+		try {
+			await deleteChannel(channelId);
+			await getServer(Number(serverId));
+			setCurrentChannel(currentServer?.channels?.[0] || null);
+		} catch (error) {
+			alert((error as Error).message); //avoid console.log
+			// console.error('Failed to delete channel', error);
+		}
 	};
 
 	if (isLoading) {
 		return <div>Loading...</div>; // Or a proper loading component
 	}
 
-	if (!server) {
+	if (!currentServer) {
 		return <div>Server not found</div>; // Handle case when server doesn't exist
 	}
 
 	return (
 		<div className='flex w-full'>
-			{servers[0] && (
-				<ChannelNav server={server} onShowSettings={handleShowSettings} />
-			)}
+			<ChannelNav
+				server={currentServer}
+				onShowSettings={handleShowSettings}
+				onDeleteChannel={handleDeleteChannel}
+			/>
+
 			<section className='grid h-full w-full grid-cols-5'>
 				<div
 					className={`${
 						showSettings ? 'col-span-4' : 'col-span-5'
 					} flex w-full flex-col rounded-tr-3xl bg-gray-700 transition-all duration-300`}
 				>
-					{channels[0] && <ChatBox channel={channels[0]} />}
+					{currentServer.channels?.length > 0 && currentChannel ? (
+						<ChatBox />
+					) : (
+						<div className='flex h-full flex-col items-center justify-center text-gray-400'>
+							<h3 className='mb-2 font-bold text-xl'>
+								Welcome to {currentServer.name}!
+							</h3>
+							<p>This server is brand new.</p>
+							<p className='text-sm'>Create a channel to get started!</p>
+						</div>
+					)}
 				</div>
 
 				{showSettings && (
 					<EditServerSidebar
-						server={server}
-						onUpdateServer={handleUpdateServer}
+						server={currentServer}
+						onShowSettings={setShowSettings}
 					/>
 				)}
 			</section>

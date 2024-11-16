@@ -1,27 +1,30 @@
 import type React from 'react';
 import { type FormEvent, useState } from 'react';
-import type { Server } from '../../../types/index.ts';
+import { useStore } from '../../../store/store.ts';
+import type { ServerDetails } from '../../../types/index.ts';
+import { handleSubmitKeysDown } from '../../../utils/index.ts';
 import { DeleteServerConfirmation } from '../../DeleteServerConfirmation/DeleteServerConfirmation.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
 
+interface EditServerSidebarProps {
+	server: ServerDetails;
+	onShowSettings: (show: boolean) => void;
+}
+
 export const EditServerSidebar = ({
 	server,
-	onUpdateServer,
-}: {
-	server: Server;
-	onUpdateServer: (server: Server) => void;
-}) => {
+	onShowSettings,
+}: EditServerSidebarProps) => {
 	const [formData, setFormData] = useState({
 		name: server.name,
 		description: server.description,
 	});
 
+	const { updateServer } = useStore();
+
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
-		onUpdateServer({
-			...server,
-			...formData,
-		});
+		updateServer(server.id, { ...formData });
 		alert('updated');
 	};
 
@@ -39,7 +42,11 @@ export const EditServerSidebar = ({
 			<div>
 				<h3 className='font-bold text-gray-400 text-xl'>Edit Server</h3>
 				<p className='text-gray-400 text-sm'>Edit this server&apos;s details</p>
-				<form onSubmit={handleSubmit} className='my-8 flex flex-col gap-4'>
+				<form
+					onSubmit={handleSubmit}
+					onKeyDown={(e) => handleSubmitKeysDown(e, handleSubmit)}
+					className='my-8 flex flex-col gap-4'
+				>
 					<div className='flex flex-col gap-2'>
 						<label
 							htmlFor='serverName'
@@ -93,7 +100,11 @@ export const EditServerSidebar = ({
 					Delete this server and all of its channels
 				</p>
 				<OpenModalButton
-					modalComponent={<DeleteServerConfirmation />}
+					modalComponent={
+						<DeleteServerConfirmation
+							onCloseSettings={() => onShowSettings(false)}
+						/>
+					}
 					buttonText='Delete Server'
 					className='cursor-pointer rounded-md bg-red-500 p-2 text-white'
 				/>
