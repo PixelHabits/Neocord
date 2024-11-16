@@ -1,25 +1,22 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useModal } from '../../context/useModal.ts';
 import { servers } from '../ServerPage/mockServers.ts';
+import { useStore } from '../../store/store.ts';
 
-export const DeleteServerConfirmation = () => {
+export const DeleteServerConfirmation = ({
+	onCloseSettings,
+}: { onCloseSettings: () => void }) => {
 	const { closeModal } = useModal();
 	const { serverId } = useParams();
 	const navigate = useNavigate();
 
-	const handleDelete = () => {
-		// Find server index
-		const serverIndex = servers.findIndex(
-			(server) => server.id === Number(serverId),
-		);
+	const { deleteServer, servers } = useStore();
 
-		// Remove server from array
-		if (serverIndex !== -1) {
-			servers.splice(serverIndex, 1);
-		}
-
+	const handleDelete = async () => {
+		await deleteServer(Number(serverId));
 		// Close modal and navigate to first server (or home if no servers)
 		closeModal();
+		onCloseSettings();
 		if (servers.length > 0) {
 			navigate(`/servers/${servers[0]?.id}`);
 		} else {

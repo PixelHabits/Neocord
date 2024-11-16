@@ -13,7 +13,6 @@ export const ServerPage = () => {
 	const {
 		getServer,
 		getServers,
-		setCurrentServer,
 		currentServer,
 		currentChannel,
 		deleteChannel,
@@ -88,7 +87,7 @@ export const ServerPage = () => {
 				{showSettings && (
 					<EditServerSidebar
 						server={currentServer}
-						onUpdateServer={setCurrentServer}
+						onShowSettings={setShowSettings}
 					/>
 				)}
 			</section>

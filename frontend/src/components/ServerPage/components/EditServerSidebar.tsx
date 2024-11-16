@@ -6,7 +6,15 @@ import { ServerDetails } from '../../../types/index.ts';
 import { useStore } from '../../../store/store.ts';
 import { handleSubmitKeysDown } from '../../../utils/index.ts';
 
-export const EditServerSidebar = ({ server }: { server: ServerDetails }) => {
+interface EditServerSidebarProps {
+	server: ServerDetails;
+	onShowSettings: (show: boolean) => void;
+}
+
+export const EditServerSidebar = ({
+	server,
+	onShowSettings,
+}: EditServerSidebarProps) => {
 	const [formData, setFormData] = useState({
 		name: server.name,
 		description: server.description,
@@ -92,7 +100,9 @@ export const EditServerSidebar = ({ server }: { server: ServerDetails }) => {
 					Delete this server and all of its channels
 				</p>
 				<OpenModalButton
-					modalComponent={<DeleteServerConfirmation />}
+					modalComponent={
+						<DeleteServerConfirmation onCloseSettings={onShowSettings} />
+					}
 					buttonText='Delete Server'
 					className='cursor-pointer rounded-md bg-red-500 p-2 text-white'
 				/>
