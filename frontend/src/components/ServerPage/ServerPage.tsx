@@ -26,14 +26,15 @@ export const ServerPage = () => {
 				try {
 					await Promise.all([getServer(Number(serverId)), getServers()]);
 				} catch (error) {
-					console.error('Failed to fetch server', error);
+					alert((error as Error).message); //avoid console.log
+					// console.error('Failed to fetch server', error);
 				} finally {
 					setIsLoading(false);
 				}
 			}
 		};
 		fetchServer();
-	}, [serverId]);
+	}, [serverId, getServer, getServers]);
 
 	const handleShowSettings = () => {
 		setShowSettings(!showSettings);
@@ -45,7 +46,8 @@ export const ServerPage = () => {
 			await getServer(Number(serverId));
 			setCurrentChannel(currentServer?.channels?.[0] || null);
 		} catch (error) {
-			console.error('Failed to delete channel', error);
+			alert((error as Error).message); //avoid console.log
+			// console.error('Failed to delete channel', error);
 		}
 	};
 

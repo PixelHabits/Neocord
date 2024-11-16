@@ -3,6 +3,7 @@ import { BiPlusCircle } from 'react-icons/bi';
 import { FaTrash } from 'react-icons/fa';
 import { useStore } from '../../../store/store.ts';
 import type { Channel, ServerDetails } from '../../../types/index.ts';
+import { handleSubmitKeysDown } from '../../../utils/index.ts';
 import { CreateChannelForm } from '../../CreateChannelForm/CreateChannelForm.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
 
@@ -24,7 +25,8 @@ export const ChannelNav = ({
 			setSelectedChannel(channel);
 			await getChannelMessages(channel.id);
 		} catch (error) {
-			console.log(error);
+			alert((error as Error).message); //avoid console.log
+			// console.log(error);
 		}
 	};
 
@@ -67,11 +69,15 @@ export const ChannelNav = ({
 								<div
 									className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-md px-2 py-4 font-bold text-gray-300 text-sm transition-colors duration-300 hover:bg-purple-800 hover:text-white ${selectedChannel?.id === channel.id ? 'bg-purple-800' : ''}`}
 									onClick={() => handleChannelSelect(channel)}
+									onKeyDown={(e) =>
+										handleSubmitKeysDown(e, () => handleChannelSelect(channel))
+									}
 								>
 									<span>#{channel.name}</span>
 								</div>
 								{selectedChannel?.id === channel.id && (
 									<button
+										type='button'
 										className='ml-2 cursor-pointer text-red-500 transition-colors duration-200 hover:text-red-600'
 										onClick={() => onDeleteChannel(channel.id)}
 									>

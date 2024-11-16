@@ -19,7 +19,7 @@ export const CreateChannelForm = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError({});
-		if (!channelName.trim() || !currentServer) {
+		if (!(channelName.trim() && currentServer)) {
 			setError({ name: 'Channel name is required' });
 			setIsLoading(false);
 			return;
@@ -38,9 +38,9 @@ export const CreateChannelForm = () => {
 			}
 
 			closeModal();
-		} catch (error) {
+		} catch (_error) {
 			setError({ server: 'Failed to create channel' });
-			console.error('Failed to create channel:', error);
+			// console.error('Failed to create channel:', error);
 		} finally {
 			setIsLoading(false);
 		}

@@ -29,7 +29,7 @@ export const ChatBox = () => {
 			if (currentChannel?.id) {
 				try {
 					await getChannelMessages(currentChannel.id);
-				} catch (error) {
+				} catch (_error) {
 					setErrorMessage('Failed to fetch messages:');
 				} finally {
 					setIsLoading(false);
@@ -37,17 +37,20 @@ export const ChatBox = () => {
 			}
 		};
 		fetchMessages();
-	}, [currentChannel?.id]);
+	}, [currentChannel?.id, getChannelMessages]);
 
 	const handleSubmitMessage = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrorMessage(null);
-		if (!messageInput.trim() || !currentChannel) return;
+		if (!(messageInput.trim() && currentChannel)) {
+			setErrorMessage('Message cannot be empty');
+			return;
+		}
 
 		try {
 			await createMessage(currentChannel.id, { body: messageInput });
 			setMessageInput('');
-		} catch (error) {
+		} catch (_error) {
 			setErrorMessage('Failed to send message');
 		}
 	};
@@ -93,6 +96,7 @@ export const ChatBox = () => {
 					value={messageInput}
 					onChange={(e) => setMessageInput(e.target.value)}
 				/>
+
 				<button
 					type='submit'
 					className='mx-2 cursor-pointer rounded-full bg-purple-400 p-2 text-white hover:bg-purple-500'

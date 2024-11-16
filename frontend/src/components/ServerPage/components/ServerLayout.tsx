@@ -19,7 +19,7 @@ export const ServerLayout = () => {
 		} else {
 			navigate(`/servers/${servers[0]?.id}`);
 		}
-	}, [serverId, navigate]);
+	}, [serverId, navigate, servers[0]?.id]);
 
 	useEffect(() => {
 		getServers();

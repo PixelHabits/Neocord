@@ -36,7 +36,7 @@ export const CreateServerForm = () => {
 			await createServer(formData);
 			closeModal();
 			setFormData({ name: '', description: '' });
-		} catch (error) {
+		} catch (_error) {
 			setErrors({ server: 'Failed to create server' });
 		}
 	};

@@ -1,4 +1,5 @@
 import type { FormEvent, KeyboardEvent } from 'react';
+import type React from 'react';
 
 /**
  * Get the initials of a server name
