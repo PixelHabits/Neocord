@@ -16,16 +16,15 @@ export const ChannelNav = ({
 	onShowSettings: () => void;
 	onDeleteChannel: (channelId: number) => void;
 }) => {
-	const { setCurrentChannel, getChannelMessages } = useStore();
+	const { setCurrentChannel } = useStore();
 	const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
 
 	const { user } = useStore();
 
-	const handleChannelSelect = async (channel: Channel) => {
+	const handleChannelSelect = (channel: Channel) => {
 		try {
 			setCurrentChannel(channel);
 			setSelectedChannel(channel);
-			await getChannelMessages(channel.id);
 		} catch (error) {
 			alert((error as Error).message); //avoid console.log
 			// console.log(error);

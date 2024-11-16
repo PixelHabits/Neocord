@@ -13,12 +13,16 @@ export function Layout() {
 	}, [authenticate]);
 
 	return (
-		<>
+		<div className='flex h-full flex-col overflow-hidden'>
 			<ModalProvider>
 				<Navigation />
-				{isLoaded && <Outlet />}
+				{isLoaded && (
+					<div className='flex-1 overflow-hidden'>
+						<Outlet />
+					</div>
+				)}
 				<Modal />
 			</ModalProvider>
-		</>
+		</div>
 	);
 }
