@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import './ChatBox.css';
 import { BiSend } from 'react-icons/bi';
 
@@ -14,7 +15,6 @@ export const ChatBox = () => {
 	const {
 		getChannelMessages,
 		createMessage,
-		deleteMessage,
 		messages: channelMessages,
 	} = useStore();
 
@@ -52,13 +52,14 @@ export const ChatBox = () => {
 		}
 	};
 
-	const handleDeleteMessage = async (messageId: number) => {
-		try {
-			await deleteMessage(messageId);
-		} catch (error) {
-			setErrorMessage('Failed to delete message');
-		}
-	};
+	// Use this to delete messages
+	// const handleDeleteMessage = async (messageId: number) => {
+	// 	try {
+	// 		await deleteMessage(messageId);
+	// 	} catch (error) {
+	// 		setErrorMessage('Failed to delete message');
+	// 	}
+	// };
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -71,8 +72,8 @@ export const ChatBox = () => {
 					{messages.length > 0 ? (
 						messages.map((msg) => <MessageItem message={msg} key={msg.id} />)
 					) : (
-						<div className='flex flex-col items-center justify-center h-full text-gray-400'>
-							<h3 className='text-xl font-bold mb-2'>
+						<div className='flex h-full flex-col items-center justify-center text-gray-400'>
+							<h3 className='mb-2 font-bold text-xl'>
 								Welcome to #{currentChannel?.name}!
 							</h3>
 							<p>This is the beginning of this channel.</p>
@@ -99,6 +100,7 @@ export const ChatBox = () => {
 				>
 					<BiSend size={32} />
 				</button>
+				{errorMessage && <p className='text-red-500'>{errorMessage}</p>}
 			</form>
 		</>
 	);

@@ -1,10 +1,10 @@
 import type React from 'react';
 import { type FormEvent, useState } from 'react';
+import { useStore } from '../../../store/store.ts';
+import type { ServerDetails } from '../../../types/index.ts';
+import { handleSubmitKeysDown } from '../../../utils/index.ts';
 import { DeleteServerConfirmation } from '../../DeleteServerConfirmation/DeleteServerConfirmation.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
-import { ServerDetails } from '../../../types/index.ts';
-import { useStore } from '../../../store/store.ts';
-import { handleSubmitKeysDown } from '../../../utils/index.ts';
 
 interface EditServerSidebarProps {
 	server: ServerDetails;
@@ -101,7 +101,9 @@ export const EditServerSidebar = ({
 				</p>
 				<OpenModalButton
 					modalComponent={
-						<DeleteServerConfirmation onCloseSettings={onShowSettings} />
+						<DeleteServerConfirmation
+							onCloseSettings={() => onShowSettings(false)}
+						/>
 					}
 					buttonText='Delete Server'
 					className='cursor-pointer rounded-md bg-red-500 p-2 text-white'

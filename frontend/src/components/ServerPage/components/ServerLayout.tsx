@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { BiPlusCircle } from 'react-icons/bi';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { useStore } from '../../../store/store.ts';
 import type { Server } from '../../../types/index.ts';
+import { getInitials } from '../../../utils/index.ts';
 import { CreateServerForm } from '../../CreateServerForm/CreateServerForm.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
-import { useStore } from '../../../store/store.ts';
-import { getInitials } from '../../../utils/index.ts';
 
 export const ServerLayout = () => {
 	const { serverId } = useParams();

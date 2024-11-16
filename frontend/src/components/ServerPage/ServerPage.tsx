@@ -1,9 +1,9 @@
-import { ChannelNav } from './components/ChannelNav.tsx';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ChatBox } from '../ChatBox/ChatBox.tsx';
-import { EditServerSidebar } from './components/EditServerSidebar.tsx';
 import { useStore } from '../../store/store.ts';
+import { ChatBox } from '../ChatBox/ChatBox.tsx';
+import { ChannelNav } from './components/ChannelNav.tsx';
+import { EditServerSidebar } from './components/EditServerSidebar.tsx';
 
 export const ServerPage = () => {
 	const { serverId } = useParams();
@@ -74,8 +74,8 @@ export const ServerPage = () => {
 					{currentServer.channels?.length > 0 && currentChannel ? (
 						<ChatBox />
 					) : (
-						<div className='flex flex-col items-center justify-center h-full text-gray-400'>
-							<h3 className='text-xl font-bold mb-2'>
+						<div className='flex h-full flex-col items-center justify-center text-gray-400'>
+							<h3 className='mb-2 font-bold text-xl'>
 								Welcome to {currentServer.name}!
 							</h3>
 							<p>This server is brand new.</p>

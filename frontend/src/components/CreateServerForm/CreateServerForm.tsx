@@ -73,7 +73,7 @@ export const CreateServerForm = () => {
 						onChange={handleChange}
 					/>
 					{errors.name && (
-						<span className='text-sm text-red-500'>{errors.name}</span>
+						<span className='text-red-500 text-sm'>{errors.name}</span>
 					)}
 				</div>
 				<div className='flex flex-col gap-2'>
@@ -100,7 +100,7 @@ export const CreateServerForm = () => {
 					</button>
 				</div>
 				{errors.server && (
-					<span className='text-sm text-red-500'>{errors.server}</span>
+					<span className='text-red-500 text-sm'>{errors.server}</span>
 				)}
 			</form>
 		</div>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { useStore } from '../../store/store';
-import { useModal } from '../../context/useModal';
-import { handleSubmitKeysDown } from '../../utils';
+import type React from 'react';
+import { useState } from 'react';
+import { useModal } from '../../context/useModal.ts';
+import { useStore } from '../../store/store.ts';
+import { handleSubmitKeysDown } from '../../utils/index.ts';
 
 const formatChannelName = (name: string) => {
 	return name.trim().toLowerCase().replace(/\s+/g, '-');
@@ -48,12 +49,12 @@ export const CreateChannelForm = () => {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className='p-6 flex flex-col gap-4'
+			className='flex flex-col gap-4 p-6'
 			onKeyDown={(e) => handleSubmitKeysDown(e, handleSubmit)}
 		>
-			<h2 className='text-2xl font-bold'>Create Channel</h2>
+			<h2 className='font-bold text-2xl'>Create Channel</h2>
 			<div className='flex flex-col gap-2'>
-				<label htmlFor='channelName' className='text-sm font-semibold'>
+				<label htmlFor='channelName' className='font-semibold text-sm'>
 					Channel Name
 				</label>
 				<input
@@ -63,12 +64,12 @@ export const CreateChannelForm = () => {
 					onChange={(e) => setChannelName(e.target.value)}
 					className='rounded-md bg-gray-700 p-2 text-white'
 					placeholder='new-channel'
-					required
+					required={true}
 				/>
 				{error.name && <p className='text-red-500 text-sm'>{error.name}</p>}
 			</div>
 			<div className='flex flex-col gap-2'>
-				<label htmlFor='visibility' className='text-sm font-semibold'>
+				<label htmlFor='visibility' className='font-semibold text-sm'>
 					Visibility
 				</label>
 				<select
@@ -86,7 +87,7 @@ export const CreateChannelForm = () => {
 			<button
 				type='submit'
 				disabled={isLoading}
-				className='rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700 cursor-pointer'
+				className='cursor-pointer rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700'
 			>
 				Create Channel
 			</button>

@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useModal } from '../../context/useModal.ts';
-import { servers } from '../ServerPage/mockServers.ts';
 import { useStore } from '../../store/store.ts';
 
 export const DeleteServerConfirmation = ({
