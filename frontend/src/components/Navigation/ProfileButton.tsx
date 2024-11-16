@@ -1,3 +1,4 @@
+import { cn } from '@repo/ui';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
@@ -6,7 +7,7 @@ import { LoginFormModal } from '../LoginFormModal/LoginFormModal.tsx';
 import { SignupFormModal } from '../SignupFormModal/SignupFormModal.tsx';
 import { OpenModalMenuItem } from './OpenModalMenuItem.tsx';
 
-function ProfileButton() {
+function ProfileButton({ className }: { className?: string }) {
 	const [showMenu, setShowMenu] = useState(false);
 	const user = useStore((state) => state.user);
 	const logout = useStore((state) => state.logout);
@@ -41,7 +42,7 @@ function ProfileButton() {
 
 	return (
 		<>
-			<button type='button' onClick={toggleMenu}>
+			<button className={cn('', className)} type='button' onClick={toggleMenu}>
 				<FaUserCircle />
 			</button>
 			{showMenu && (

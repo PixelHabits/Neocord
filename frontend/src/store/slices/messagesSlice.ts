@@ -160,12 +160,9 @@ export const createMessagesSlice: StateCreator<
 	},
 
 	createMessage: async (channelId, messageData, parentMessageId) => {
-		const url = new URL(`/api/channels/${channelId}/messages`);
-		if (parentMessageId) {
-			url.searchParams.append('parent_message_id', parentMessageId.toString());
-		}
+		const url = `/api/channels/${channelId}/messages${parentMessageId ? `?parent_message_id=${parentMessageId}` : ''}`;
 
-		const response = await fetch(url.toString(), {
+		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

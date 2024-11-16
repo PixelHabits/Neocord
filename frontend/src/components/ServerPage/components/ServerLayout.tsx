@@ -52,9 +52,7 @@ export const ServerLayout = () => {
 				<OpenModalButton
 					modalComponent={<CreateServerForm />}
 					buttonText={<BiPlusCircle size={48} />}
-					className={
-						'flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400'
-					}
+					className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400'
 				/>
 			</aside>
 
