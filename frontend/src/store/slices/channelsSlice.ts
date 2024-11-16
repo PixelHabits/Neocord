@@ -1,6 +1,6 @@
-import type { StateCreator } from 'zustand';
+import type { StateCreator, StoreApi } from 'zustand';
 import type { Channel } from '../../types/index.ts';
-import { getCsrfToken } from '../csrf.ts';
+import type { CsrfSlice } from './csrfSlice.ts';
 import type { ServersSlice } from './serversSlice.ts';
 export interface ChannelsState {
 	currentChannel: Channel | null;
@@ -20,13 +20,14 @@ export interface ChannelsActions {
 }
 
 export type ChannelsSlice = ChannelsState & ChannelsActions;
+type StoreState = ChannelsSlice & ServersSlice & CsrfSlice;
 
 export const createChannelsSlice: StateCreator<
-	ChannelsSlice & ServersSlice,
+	StoreState,
 	[['zustand/devtools', never]],
 	[],
 	ChannelsSlice
-> = (set, _get, store) => ({
+> = (set, _get, store: StoreApi<StoreState>) => ({
 	currentChannel: null,
 
 	createChannel: async (serverId, channelData) => {
@@ -34,7 +35,7 @@ export const createChannelsSlice: StateCreator<
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(channelData),
@@ -57,7 +58,7 @@ export const createChannelsSlice: StateCreator<
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(updates),
@@ -90,7 +91,7 @@ export const createChannelsSlice: StateCreator<
 		const response = await fetch(`/api/channels/${channelId}`, {
 			method: 'DELETE',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 		});

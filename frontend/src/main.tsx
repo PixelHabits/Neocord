@@ -24,12 +24,18 @@ if (!rootElement) {
 
 const root = createRoot(rootElement);
 
-root.render(
-	<StrictMode>
-		<div className='min-h-screen overflow-x-hidden bg-background'>
-			<div className='h-full overflow-x-hidden'>
-				<RouterProvider router={router} />
-			</div>
-		</div>
-	</StrictMode>,
-);
+// Initialize CSRF token before rendering
+useStore
+	.getState()
+	.initializeCsrfToken()
+	.then(() => {
+		root.render(
+			<StrictMode>
+				<div className='min-h-screen overflow-x-hidden bg-background'>
+					<div className='h-full overflow-x-hidden'>
+						<RouterProvider router={router} />
+					</div>
+				</div>
+			</StrictMode>,
+		);
+	});
