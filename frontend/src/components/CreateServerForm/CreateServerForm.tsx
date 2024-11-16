@@ -1,6 +1,6 @@
 import type React from 'react';
 import { type FormEvent, useState } from 'react';
-import { useModal } from '../../context/useModal.tsx';
+import { useModal } from '../../context/useModal.ts';
 import { servers } from '../ServerPage/mockServers.ts';
 
 export const CreateServerForm = () => {

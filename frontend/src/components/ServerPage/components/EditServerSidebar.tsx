@@ -1,16 +1,9 @@
 import type React from 'react';
 import { type FormEvent, useState } from 'react';
-import type { Server } from '../../../types/index.ts';
 import { DeleteServerConfirmation } from '../../DeleteServerConfirmation/DeleteServerConfirmation.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
 
-export const EditServerSidebar = ({
-	server,
-	onUpdateServer,
-}: {
-	server: Server;
-	onUpdateServer: (server: Server) => void;
-}) => {
+export const EditServerSidebar = ({ server, onUpdateServer }) => {
 	const [formData, setFormData] = useState({
 		name: server.name,
 		description: server.description,

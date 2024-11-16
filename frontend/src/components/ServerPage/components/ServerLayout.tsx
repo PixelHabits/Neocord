@@ -21,7 +21,7 @@ export const ServerLayout = () => {
 		if (serverId) {
 			navigate(`/servers/${serverId}`);
 		} else {
-			navigate('/servers/servers[0].id');
+			navigate(`/servers/${servers[0]?.id}`);
 		}
 	}, [serverId, navigate]);
 
