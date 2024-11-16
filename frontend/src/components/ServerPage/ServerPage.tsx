@@ -16,6 +16,8 @@ export const ServerPage = () => {
 		setCurrentServer,
 		currentServer,
 		currentChannel,
+		deleteChannel,
+		setCurrentChannel,
 	} = useStore();
 
 	useEffect(() => {
@@ -38,6 +40,16 @@ export const ServerPage = () => {
 		setShowSettings(!showSettings);
 	};
 
+	const handleDeleteChannel = async (channelId: number) => {
+		try {
+			await deleteChannel(channelId);
+			await getServer(Number(serverId));
+			setCurrentChannel(currentServer?.channels?.[0] || null);
+		} catch (error) {
+			console.error('Failed to delete channel', error);
+		}
+	};
+
 	if (isLoading) {
 		return <div>Loading...</div>; // Or a proper loading component
 	}
@@ -48,7 +60,11 @@ export const ServerPage = () => {
 
 	return (
 		<div className='flex w-full'>
-			<ChannelNav server={currentServer} onShowSettings={handleShowSettings} />
+			<ChannelNav
+				server={currentServer}
+				onShowSettings={handleShowSettings}
+				onDeleteChannel={handleDeleteChannel}
+			/>
 
 			<section className='grid h-full w-full grid-cols-5'>
 				<div
@@ -56,7 +72,17 @@ export const ServerPage = () => {
 						showSettings ? 'col-span-4' : 'col-span-5'
 					} flex w-full flex-col rounded-tr-3xl bg-gray-700 transition-all duration-300`}
 				>
-					{currentChannel && <ChatBox />}
+					{currentServer.channels?.length > 0 && currentChannel ? (
+						<ChatBox />
+					) : (
+						<div className='flex flex-col items-center justify-center h-full text-gray-400'>
+							<h3 className='text-xl font-bold mb-2'>
+								Welcome to {currentServer.name}!
+							</h3>
+							<p>This server is brand new.</p>
+							<p className='text-sm'>Create a channel to get started!</p>
+						</div>
+					)}
 				</div>
 
 				{showSettings && (
