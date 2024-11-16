@@ -14,11 +14,20 @@ export const ServerPage = () => {
 		useStore();
 
 	useEffect(() => {
-		setIsLoading(true);
-		if (serverId) {
-			getServer(Number(serverId));
-		}
-		setIsLoading(false);
+		const fetchServer = async () => {
+			setIsLoading(true);
+			if (serverId) {
+				try {
+					await getServer(Number(serverId));
+					console.log('server fetched');
+				} catch (error) {
+					console.error('Failed to fetch server', error);
+				} finally {
+					setIsLoading(false);
+				}
+			}
+		};
+		fetchServer();
 	}, [serverId]);
 
 	const handleShowSettings = () => {
@@ -43,7 +52,7 @@ export const ServerPage = () => {
 						showSettings ? 'col-span-4' : 'col-span-5'
 					} flex w-full flex-col rounded-tr-3xl bg-gray-700 transition-all duration-300`}
 				>
-					{currentChannel && <ChatBox channel={currentChannel} />}
+					{currentChannel && <ChatBox />}
 				</div>
 
 				{showSettings && (
