@@ -43,11 +43,12 @@ export const ServerPage = () => {
 	const handleDeleteChannel = async (channelId: number) => {
 		try {
 			await deleteChannel(channelId);
-			await getServer(Number(serverId));
-			setCurrentChannel(currentServer?.channels?.[0] || null);
+			if (currentServer) {
+				await getServer(currentServer.id);
+				setCurrentChannel(currentServer.channels?.[0] ?? null);
+			}
 		} catch (error) {
-			alert((error as Error).message); //avoid console.log
-			// console.error('Failed to delete channel', error);
+			alert((error as Error).message);
 		}
 	};
 

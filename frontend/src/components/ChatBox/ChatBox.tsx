@@ -29,7 +29,7 @@ export const ChatBox = () => {
 			if (currentChannel?.id) {
 				try {
 					await getChannelMessages(currentChannel.id);
-				} catch (_error) {
+				} catch {
 					setErrorMessage('Failed to fetch messages:');
 				} finally {
 					setIsLoading(false);
@@ -50,7 +50,7 @@ export const ChatBox = () => {
 		try {
 			await createMessage(currentChannel.id, { body: messageInput });
 			setMessageInput('');
-		} catch (_error) {
+		} catch {
 			setErrorMessage('Failed to send message');
 		}
 	};

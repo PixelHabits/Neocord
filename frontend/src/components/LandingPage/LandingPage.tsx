@@ -1,4 +1,5 @@
 import './LandingPage.css';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/store.ts';
 import { LoginFormModal } from '../LoginFormModal/LoginFormModal.tsx';
@@ -6,8 +7,22 @@ import { OpenModalButton } from '../OpenModalButton/OpenModalButton.tsx';
 import { SignupFormModal } from '../SignupFormModal/SignupFormModal.tsx';
 
 export const LandingPage = () => {
-	const user = useStore((state) => state.user);
 	const navigate = useNavigate();
+	const { user, servers, getServers } = useStore();
+
+	useEffect(() => {
+		if (user) {
+			getServers();
+		}
+	}, [user, getServers]);
+
+	const handleNavigateToServers = () => {
+		if (servers.length > 0 && servers[0]) {
+			navigate(`/servers/${servers[0].id}`);
+		} else {
+			navigate('/servers'); // This will trigger ServerLayout's default behavior
+		}
+	};
 
 	return (
 		<div className='flex h-full flex-col items-center pt-16 text-white'>
@@ -25,7 +40,7 @@ export const LandingPage = () => {
 					<button
 						className='mt-2 cursor-pointer rounded-md border-1 border-gray-300 bg-blue-500 p-4 text-white text-xl transition-all duration-300 hover:bg-indigo-500'
 						type='button'
-						onClick={() => navigate('/servers')}
+						onClick={handleNavigateToServers}
 					>
 						Go to your servers!
 					</button>

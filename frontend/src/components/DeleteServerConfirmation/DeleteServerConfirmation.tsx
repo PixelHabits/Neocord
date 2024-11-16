@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
 
@@ -7,18 +7,29 @@ export const DeleteServerConfirmation = ({
 	onCloseSettings,
 }: { onCloseSettings: () => void }) => {
 	const { closeModal } = useModal();
-	const { serverId } = useParams();
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
-	const { deleteServer, servers } = useStore();
+	const [error, setError] = useState<Record<string, string>>({});
+	const { deleteServer, servers, currentServer } = useStore();
 
 	const handleDelete = async () => {
+		if (!currentServer) return;
+
+		setError({});
 		setIsLoading(true);
-		await deleteServer(Number(serverId));
-		// Close modal and navigate to first server (or home if no servers)
+
+		const result = await deleteServer(currentServer.id);
+
+		if (result?.server) {
+			setError({ server: result.server });
+			setIsLoading(false);
+			return;
+		}
+
+		// Only proceed with navigation if delete was successful
 		closeModal();
 		onCloseSettings();
-		const nextServer = servers.find((server) => server.id !== Number(serverId));
+		const nextServer = servers.find((server) => server.id !== currentServer.id);
 		if (nextServer) {
 			navigate(`/servers/${nextServer.id}`);
 		} else {
@@ -40,6 +51,7 @@ export const DeleteServerConfirmation = ({
 				Are you sure you want to delete this server? This action cannot be
 				undone.
 			</p>
+			{error.server && <p className='text-red-500 text-sm'>{error.server}</p>}
 			<div className='flex justify-end gap-2'>
 				<button
 					type='button'
@@ -52,6 +64,7 @@ export const DeleteServerConfirmation = ({
 					type='button'
 					className='cursor-pointer rounded-md bg-red-500 p-2 text-white'
 					onClick={handleDelete}
+					disabled={isLoading}
 				>
 					Delete
 				</button>

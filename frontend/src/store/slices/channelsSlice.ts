@@ -15,7 +15,9 @@ export interface ChannelsActions {
 		channelId: number,
 		updates: { name?: string; visibility?: string },
 	) => Promise<Record<string, string> | undefined>;
-	deleteChannel: (channelId: number) => Promise<void>;
+	deleteChannel: (
+		channelId: number,
+	) => Promise<Record<string, string> | undefined>;
 	setCurrentChannel: (channel: Channel | null) => void;
 }
 
@@ -43,14 +45,16 @@ export const createChannelsSlice: StateCreator<
 
 		if (response.ok) {
 			const newChannel = await response.json();
-			const serverStore = store as unknown as ServersSlice;
-			await serverStore.getServer(serverId);
-
+			await store.getState().getServer(serverId);
 			set({ currentChannel: newChannel }, false, 'channels/createChannel');
-		} else if (response.status < 500) {
-			return await response.json();
+			return undefined;
 		}
-		return { server: 'Something went wrong. Please try again' };
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	updateChannel: async (channelId, updates) => {
@@ -66,9 +70,9 @@ export const createChannelsSlice: StateCreator<
 
 		if (response.ok) {
 			const updatedChannel = await response.json();
-			const serverStore = store as unknown as ServersSlice;
-			if (serverStore.currentServer) {
-				await serverStore.getServer(serverStore.currentServer.id);
+			const currentServer = store.getState().currentServer;
+			if (currentServer?.id) {
+				await store.getState().getServer(currentServer.id);
 			}
 
 			set(
@@ -81,10 +85,14 @@ export const createChannelsSlice: StateCreator<
 				false,
 				'channels/updateChannel',
 			);
-		} else if (response.status < 500) {
-			return await response.json();
+			return undefined;
 		}
-		return { server: 'Something went wrong. Please try again' };
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	deleteChannel: async (channelId) => {
@@ -97,9 +105,9 @@ export const createChannelsSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const serverStore = store as unknown as ServersSlice;
-			if (serverStore.currentServer) {
-				await serverStore.getServer(serverStore.currentServer.id);
+			const currentServer = store.getState().currentServer;
+			if (currentServer?.id) {
+				await store.getState().getServer(currentServer.id);
 			}
 
 			set(
@@ -112,7 +120,14 @@ export const createChannelsSlice: StateCreator<
 				false,
 				'channels/deleteChannel',
 			);
+			return undefined;
 		}
+
+		const errorData = await response.json();
+		return {
+			server:
+				errorData.errors?.message || 'Something went wrong. Please try again',
+		};
 	},
 
 	setCurrentChannel: (channel) => {
