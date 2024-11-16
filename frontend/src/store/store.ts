@@ -4,6 +4,7 @@ import {
 	type ChannelsSlice,
 	createChannelsSlice,
 } from './slices/channelsSlice.ts';
+import { type CsrfSlice, createCsrfSlice } from './slices/csrfSlice.ts';
 import {
 	type MessagesSlice,
 	createMessagesSlice,
@@ -20,7 +21,8 @@ import {
 export type StoreState = SessionSlice &
 	ServersSlice &
 	ChannelsSlice &
-	MessagesSlice;
+	MessagesSlice &
+	CsrfSlice;
 
 export const useStore = create<StoreState>()(
 	devtools(
@@ -30,6 +32,7 @@ export const useStore = create<StoreState>()(
 				...createServersSlice(...a),
 				...createChannelsSlice(...a),
 				...createMessagesSlice(...a),
+				...createCsrfSlice(...a),
 			}),
 			{
 				name: 'app-storage',

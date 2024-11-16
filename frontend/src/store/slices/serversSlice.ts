@@ -1,6 +1,6 @@
-import type { StateCreator } from 'zustand';
+import type { StateCreator, StoreApi } from 'zustand';
 import type { Server, ServerDetails } from '../../types/index.ts';
-import { getCsrfToken } from '../csrf.ts';
+import type { CsrfSlice } from './csrfSlice.ts';
 export interface ServersState {
 	servers: Server[];
 	currentServer: ServerDetails | null;
@@ -23,13 +23,14 @@ export interface ServersActions {
 }
 
 export type ServersSlice = ServersState & ServersActions;
+type StoreState = ServersSlice & CsrfSlice;
 
 export const createServersSlice: StateCreator<
-	ServersSlice,
+	StoreState,
 	[['zustand/devtools', never]],
 	[],
 	ServersSlice
-> = (set, get) => ({
+> = (set, get, store: StoreApi<StoreState>) => ({
 	servers: [],
 	currentServer: null,
 
@@ -37,7 +38,7 @@ export const createServersSlice: StateCreator<
 		const response = await fetch('/api/servers/', {
 			credentials: 'include',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
 
@@ -51,7 +52,7 @@ export const createServersSlice: StateCreator<
 		const response = await fetch(`/api/servers/${serverId}`, {
 			credentials: 'include',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
 
@@ -66,7 +67,7 @@ export const createServersSlice: StateCreator<
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(serverData),
@@ -103,7 +104,7 @@ export const createServersSlice: StateCreator<
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(updates),
@@ -144,7 +145,7 @@ export const createServersSlice: StateCreator<
 		const response = await fetch(`/api/servers/${serverId}`, {
 			method: 'DELETE',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 		});
@@ -171,7 +172,7 @@ export const createServersSlice: StateCreator<
 		const response = await fetch(`/api/servers/${serverId}/members`, {
 			method: 'POST',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 		});
@@ -220,7 +221,7 @@ export const createServersSlice: StateCreator<
 		const response = await fetch(`/api/servers/${serverId}/members`, {
 			method: 'DELETE',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 		});

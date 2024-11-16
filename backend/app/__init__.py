@@ -6,7 +6,7 @@ from flask import Flask, redirect, request
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_wtf.csrf import CSRFProtect
 
 from .api.auth_routes import auth_routes
 from .api.channel_routes import channel_routes
@@ -68,17 +68,23 @@ def https_redirect():
 	return None
 
 
-@app.after_request
-def inject_csrf_token(response):
-	"""Injects the CSRF token into the response."""
-	response.set_cookie(
-		'csrf_token',
-		generate_csrf(),
-		secure=os.environ.get('FLASK_ENV') == 'production',
-		samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
-		httponly=False,
-	)
-	return response
+"""
+Commented out because we are now setting the CSRF in a dedicated route
+and managing it in the frontend
+"""
+# @app.after_request
+# def inject_csrf_token(response):
+# 	"""Injects the CSRF token into the response."""
+# 	token = generate_csrf()
+# 	response.set_cookie(
+# 		'csrf_token',
+# 		token,
+# 		secure=os.environ.get('FLASK_ENV') == 'production',
+# 		samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
+# 		httponly=True,
+# 	)
+# 	response.headers['X-CSRFToken'] = token
+# 	return response
 
 
 @app.route('/api/docs')

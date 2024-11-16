@@ -1,9 +1,8 @@
-import type { StateCreator } from 'zustand';
+import type { StateCreator, StoreApi } from 'zustand';
 import type { Message, Thread } from '../../types/index.ts';
-import { getCsrfToken } from '../csrf.ts';
 import type { ChannelsSlice } from './channelsSlice.ts';
+import type { CsrfSlice } from './csrfSlice.ts';
 import type { ServersSlice } from './serversSlice.ts';
-
 export interface MessagesState {
 	messages: Record<number, Message[]>; // channelId -> messages[]
 	threads: Record<number, Thread>; // messageId -> thread
@@ -83,7 +82,7 @@ const getCreateMessageState = (
 	return {
 		messages: {
 			...state.messages,
-			[channelId]: [...(state.messages[channelId] || []), newMessage],
+			[channelId]: [...(state.messages[channelId] ?? []), newMessage],
 		},
 	};
 };
@@ -105,12 +104,13 @@ const getDeleteMessageState = (
 	),
 });
 
+type StoreState = MessagesSlice & ServersSlice & ChannelsSlice & CsrfSlice;
 export const createMessagesSlice: StateCreator<
-	MessagesSlice & ServersSlice & ChannelsSlice,
+	StoreState,
 	[['zustand/devtools', never]],
 	[],
 	MessagesSlice
-> = (set, get) => ({
+> = (set, get, store: StoreApi<StoreState>) => ({
 	messages: {},
 	threads: {},
 	currentMessage: null,
@@ -120,7 +120,7 @@ export const createMessagesSlice: StateCreator<
 		const response = await fetch(`/api/channels/${channelId}/messages`, {
 			credentials: 'include',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
 
@@ -138,7 +138,7 @@ export const createMessagesSlice: StateCreator<
 		const response = await fetch(`/api/messages/${messageId}`, {
 			credentials: 'include',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
 
@@ -166,7 +166,7 @@ export const createMessagesSlice: StateCreator<
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(messageData),
@@ -193,7 +193,7 @@ export const createMessagesSlice: StateCreator<
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(updates),
@@ -218,7 +218,7 @@ export const createMessagesSlice: StateCreator<
 		const response = await fetch(`/api/messages/${messageId}`, {
 			method: 'DELETE',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 		});
@@ -237,7 +237,7 @@ export const createMessagesSlice: StateCreator<
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(reactionData),
@@ -270,7 +270,7 @@ export const createMessagesSlice: StateCreator<
 			{
 				method: 'DELETE',
 				headers: {
-					'X-CSRFToken': getCsrfToken(),
+					'X-CSRFToken': store.getState().csrfToken,
 				},
 				credentials: 'include',
 			},

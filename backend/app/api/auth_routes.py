@@ -1,7 +1,10 @@
 """Module for the authentication routes."""
 
-from flask import Blueprint, request
+import os
+
+from flask import Blueprint, make_response, request
 from flask_login import current_user, login_user, logout_user
+from flask_wtf.csrf import generate_csrf
 
 from app.forms import LoginForm, SignUpForm
 from app.models import User, db
@@ -61,3 +64,26 @@ def sign_up():
 def unauthorized():
 	"""Returns unauthorized JSON when flask-login authentication fails."""
 	return {'errors': {'message': 'Unauthorized'}}, 401
+
+
+@auth_routes.route('/csrf')
+def get_csrf():
+	"""Route to get CSRF token.
+
+	Sets token as HTTP-only cookie and returns it in response header.
+	"""
+	response = make_response({'message': 'CSRF token set'})
+	token = generate_csrf()
+
+	response.set_cookie(
+		'csrf_token',
+		token,
+		secure=os.environ.get('FLASK_ENV') == 'production',
+		samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
+		httponly=True,
+		max_age=3600,  # 1 hour expiration
+	)
+
+	response.headers['X-CSRFToken'] = token
+
+	return response

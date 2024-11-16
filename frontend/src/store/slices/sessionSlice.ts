@@ -1,5 +1,6 @@
-import type { StateCreator } from 'zustand';
+import type { StateCreator, StoreApi } from 'zustand';
 import type { User } from '../../types/index.ts';
+import type { CsrfSlice } from './csrfSlice.ts';
 
 export interface SessionState {
 	user: User | null;
@@ -19,29 +20,21 @@ export interface SessionActions {
 }
 
 export type SessionSlice = SessionState & SessionActions;
-
-const getCsrfToken = (): string => {
-	return (
-		document.cookie
-			.split('; ')
-			.find((row) => row.startsWith('csrf_token='))
-			?.split('=')[1] ?? ''
-	);
-};
+type StoreState = SessionSlice & CsrfSlice;
 
 export const createSessionSlice: StateCreator<
-	SessionSlice,
+	StoreState,
 	[['zustand/devtools', never]],
 	[],
 	SessionSlice
-> = (set) => ({
+> = (set, _get, store: StoreApi<StoreState>) => ({
 	user: null,
 
 	authenticate: async () => {
 		const response = await fetch('/api/auth/', {
 			credentials: 'include',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
 		if (response.ok) {
@@ -57,7 +50,7 @@ export const createSessionSlice: StateCreator<
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(credentials),
@@ -79,7 +72,7 @@ export const createSessionSlice: StateCreator<
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
 			body: JSON.stringify(user),
@@ -100,7 +93,7 @@ export const createSessionSlice: StateCreator<
 		await fetch('/api/auth/logout', {
 			credentials: 'include',
 			headers: {
-				'X-CSRFToken': getCsrfToken(),
+				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
 		set({ user: null }, false, 'session/logout');
