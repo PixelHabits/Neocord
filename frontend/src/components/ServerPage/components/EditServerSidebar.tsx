@@ -2,19 +2,21 @@ import type React from 'react';
 import { type FormEvent, useState } from 'react';
 import { DeleteServerConfirmation } from '../../DeleteServerConfirmation/DeleteServerConfirmation.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
+import { ServerDetails } from '../../../types/index.ts';
+import { useStore } from '../../../store/store.ts';
+import { handleSubmitKeysDown } from '../../../utils/index.ts';
 
-export const EditServerSidebar = ({ server, onUpdateServer }) => {
+export const EditServerSidebar = ({ server }: { server: ServerDetails }) => {
 	const [formData, setFormData] = useState({
 		name: server.name,
 		description: server.description,
 	});
 
+	const { updateServer } = useStore();
+
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
-		onUpdateServer({
-			...server,
-			...formData,
-		});
+		updateServer(server.id, { ...formData });
 		alert('updated');
 	};
 
@@ -32,7 +34,11 @@ export const EditServerSidebar = ({ server, onUpdateServer }) => {
 			<div>
 				<h3 className='font-bold text-gray-400 text-xl'>Edit Server</h3>
 				<p className='text-gray-400 text-sm'>Edit this server&apos;s details</p>
-				<form onSubmit={handleSubmit} className='my-8 flex flex-col gap-4'>
+				<form
+					onSubmit={handleSubmit}
+					onKeyDown={(e) => handleSubmitKeysDown(e, handleSubmit)}
+					className='my-8 flex flex-col gap-4'
+				>
 					<div className='flex flex-col gap-2'>
 						<label
 							htmlFor='serverName'
