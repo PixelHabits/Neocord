@@ -4,18 +4,14 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import type { Server } from '../../../types/index.ts';
 import { CreateServerForm } from '../../CreateServerForm/CreateServerForm.tsx';
 import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
-import { servers } from '../mockServers.ts';
-
-function getInitials(serverName: string) {
-	const titleArr = serverName.split(' ');
-	return titleArr
-		.map((title) => title?.charAt(0)?.toUpperCase() ?? '')
-		.join('');
-}
+import { useStore } from '../../../store/store.ts';
+import { getInitials } from '../../../utils/index.ts';
 
 export const ServerLayout = () => {
 	const { serverId } = useParams();
 	const navigate = useNavigate();
+
+	const { getServers, servers } = useStore();
 
 	useEffect(() => {
 		if (serverId) {
@@ -24,6 +20,10 @@ export const ServerLayout = () => {
 			navigate(`/servers/${servers[0]?.id}`);
 		}
 	}, [serverId, navigate]);
+
+	useEffect(() => {
+		getServers();
+	}, [getServers]);
 
 	return (
 		<div className='flex h-[calc(100vh-6rem)] w-full'>

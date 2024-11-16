@@ -10,16 +10,20 @@ export const ServerPage = () => {
 	const [showSettings, setShowSettings] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const { getServer, setCurrentServer, currentServer, currentChannel } =
-		useStore();
+	const {
+		getServer,
+		getServers,
+		setCurrentServer,
+		currentServer,
+		currentChannel,
+	} = useStore();
 
 	useEffect(() => {
 		const fetchServer = async () => {
 			setIsLoading(true);
 			if (serverId) {
 				try {
-					await getServer(Number(serverId));
-					console.log('server fetched');
+					await Promise.all([getServer(Number(serverId)), getServers()]);
 				} catch (error) {
 					console.error('Failed to fetch server', error);
 				} finally {
