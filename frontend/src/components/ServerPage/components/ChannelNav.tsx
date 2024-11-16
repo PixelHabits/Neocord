@@ -138,7 +138,7 @@ export const ChannelNav = ({
 					{user?.id === server?.owner?.id && (
 						<button
 							type='button'
-							className='w-1/2 h-12 cursor-pointer rounded-md bg-gray-600 px-2 py-1 text-sm hover:bg-gray-700'
+							className='h-12 w-1/2 cursor-pointer rounded-md bg-gray-600 px-2 py-1 text-sm hover:bg-gray-700'
 							onClick={onShowSettings}
 						>
 							Edit Server

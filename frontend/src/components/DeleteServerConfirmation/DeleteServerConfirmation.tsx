@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
-import { useState } from 'react';
 
 export const DeleteServerConfirmation = ({
 	onCloseSettings,
