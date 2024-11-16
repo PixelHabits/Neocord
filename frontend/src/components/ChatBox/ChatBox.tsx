@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './ChatBox.css';
 import { BiSend } from 'react-icons/bi';
-import type { Message } from '../../types/index.ts';
+
 import { useStore } from '../../store/store.ts';
 import { MessageItem } from './components/MessageItem.tsx';
 
@@ -68,9 +68,17 @@ export const ChatBox = () => {
 		<>
 			<div className='h-[calc(100vh-200px)] overflow-y-auto p-4'>
 				<div className='flex flex-col gap-4'>
-					{messages.map((msg) => (
-						<MessageItem message={msg} key={msg.id} />
-					))}
+					{messages.length > 0 ? (
+						messages.map((msg) => <MessageItem message={msg} key={msg.id} />)
+					) : (
+						<div className='flex flex-col items-center justify-center h-full text-gray-400'>
+							<h3 className='text-xl font-bold mb-2'>
+								Welcome to #{currentChannel?.name}!
+							</h3>
+							<p>This is the beginning of this channel.</p>
+							<p className='text-sm'>Be the first to send a message!</p>
+						</div>
+					)}
 				</div>
 			</div>
 			<form

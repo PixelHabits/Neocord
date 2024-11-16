@@ -15,7 +15,7 @@ export const ChannelNav = ({
 	onShowSettings: () => void;
 	onDeleteChannel: (channelId: number) => void;
 }) => {
-	const { setCurrentChannel, getChannelMessages, deleteChannel } = useStore();
+	const { setCurrentChannel, getChannelMessages } = useStore();
 	const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
 
 	const handleChannelSelect = async (channel: Channel) => {
