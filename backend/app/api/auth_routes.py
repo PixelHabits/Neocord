@@ -32,14 +32,19 @@ def login():
 		user = User.query.filter(User.email == form.data['email']).first()
 		login_user(user)
 		return user.to_dict()
-	return form.errors, 401
+	return {
+		'errors': {
+			'message': 'Validation error',
+			**{k: v[0] for k, v in form.errors.items()},
+		}
+	}, 401
 
 
 @auth_routes.route('/logout')
 def logout():
 	"""Logs a user out."""
 	logout_user()
-	return {'message': 'User logged out'}
+	return {'message': 'User logged out'}, 200
 
 
 @auth_routes.route('/signup', methods=['POST'])
@@ -57,7 +62,12 @@ def sign_up():
 		db.session.commit()
 		login_user(user)
 		return user.to_dict()
-	return form.errors, 401
+	return {
+		'errors': {
+			'message': 'Validation error',
+			**{k: v[0] for k, v in form.errors.items()},
+		}
+	}, 401
 
 
 @auth_routes.route('/unauthorized')

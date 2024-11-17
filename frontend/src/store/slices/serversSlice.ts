@@ -1,39 +1,20 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { Server, ServerDetails } from '../../types/index.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
-export interface ServersState {
-	servers: Server[];
-	currentServer: ServerDetails | null;
-}
+import type {
+	ApiError,
+	Server,
+	ServerDetails,
+	ServersActions,
+	ServersState,
+	StoreState,
+} from '../../types/index.ts';
 
-export interface ServersActions {
-	getServers: () => Promise<void>;
-	getServer: (serverId: number) => Promise<void>;
-	createServer: (server: { name: string; description: string }) => Promise<
-		Record<string, string> | undefined
-	>;
-	updateServer: (
-		serverId: number,
-		updates: { name?: string; description?: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteServer: (
-		serverId: number,
-	) => Promise<Record<string, string> | undefined>;
-	joinServer: (serverId: number) => Promise<Record<string, string> | undefined>;
-	leaveServer: (
-		serverId: number,
-	) => Promise<Record<string, string> | undefined>;
-	setCurrentServer: (server: ServerDetails | null) => void;
-}
-
-export type ServersSlice = ServersState & ServersActions;
-type StoreState = ServersSlice & CsrfSlice;
+interface ServersSliceState extends ServersState, ServersActions {}
 
 export const createServersSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	ServersSlice
+	ServersSliceState
 > = (set, get, store: StoreApi<StoreState>) => ({
 	servers: [],
 	currentServer: null,
@@ -47,13 +28,13 @@ export const createServersSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const servers = await response.json();
+			const servers = (await response.json()) as Server[];
 			set({ servers }, false, 'servers/getServers');
 		}
 	},
 
 	getServer: async (serverId) => {
-		const response = await fetch(`/api/servers/${serverId}`, {
+		const response = await fetch(`/api/servers/${String(serverId)}`, {
 			credentials: 'include',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
@@ -61,12 +42,12 @@ export const createServersSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const serverDetails = await response.json();
+			const serverDetails = (await response.json()) as ServerDetails;
 			set({ currentServer: serverDetails }, false, 'servers/getServer');
 		}
 	},
 
-	createServer: async (serverData) => {
+	createServer: async (serverData): Promise<ApiError | undefined> => {
 		const response = await fetch('/api/servers/', {
 			method: 'POST',
 			headers: {
@@ -78,11 +59,10 @@ export const createServersSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const newServerDetails = await response.json();
+			const newServerDetails = (await response.json()) as ServerDetails;
 
-			// Fetch the complete server details after creation
 			const serverResponse = await fetch(
-				`/api/servers/${newServerDetails.id}`,
+				`/api/servers/${String(newServerDetails.id)}`,
 				{
 					credentials: 'include',
 					headers: {
@@ -92,7 +72,8 @@ export const createServersSlice: StateCreator<
 			);
 
 			if (serverResponse.ok) {
-				const fullServerDetails = await serverResponse.json();
+				const fullServerDetails =
+					(await serverResponse.json()) as ServerDetails;
 				const newServer: Server = {
 					id: fullServerDetails.id,
 					name: fullServerDetails.name,
@@ -113,15 +94,17 @@ export const createServersSlice: StateCreator<
 			}
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
-	updateServer: async (serverId, updates) => {
-		const response = await fetch(`/api/servers/${serverId}`, {
+	updateServer: async (serverId, updates): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/servers/${String(serverId)}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -132,7 +115,7 @@ export const createServersSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const updatedServerDetails = await response.json();
+			const updatedServerDetails = (await response.json()) as ServerDetails;
 			const updatedServer: Server = {
 				id: updatedServerDetails.id,
 				name: updatedServerDetails.name,
@@ -157,15 +140,17 @@ export const createServersSlice: StateCreator<
 			return undefined;
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
-	deleteServer: async (serverId) => {
-		const response = await fetch(`/api/servers/${serverId}`, {
+	deleteServer: async (serverId): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/servers/${String(serverId)}`, {
 			method: 'DELETE',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
@@ -186,15 +171,17 @@ export const createServersSlice: StateCreator<
 			return undefined;
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
-	joinServer: async (serverId) => {
-		const response = await fetch(`/api/servers/${serverId}/members`, {
+	joinServer: async (serverId): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/servers/${String(serverId)}/members`, {
 			method: 'POST',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
@@ -203,18 +190,16 @@ export const createServersSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			await response.json();
-
 			// Get the updated server details after joining
 			await get().getServer(serverId);
 
 			// Get the basic server info to add to servers list if not already present
-			const serverResponse = await fetch(`/api/servers/${serverId}`, {
+			const serverResponse = await fetch(`/api/servers/${String(serverId)}`, {
 				credentials: 'include',
 			});
 
 			if (serverResponse.ok) {
-				const serverDetails = await serverResponse.json();
+				const serverDetails = (await serverResponse.json()) as ServerDetails;
 				set(
 					(state) => ({
 						servers: state.servers.some((s) => s.id === serverId)
@@ -233,19 +218,21 @@ export const createServersSlice: StateCreator<
 					false,
 					'servers/joinServer',
 				);
+				return undefined;
 			}
-			return undefined;
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
-	leaveServer: async (serverId) => {
-		const response = await fetch(`/api/servers/${serverId}/members`, {
+	leaveServer: async (serverId): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/servers/${String(serverId)}/members`, {
 			method: 'DELETE',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
@@ -266,11 +253,13 @@ export const createServersSlice: StateCreator<
 			return undefined;
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
 	setCurrentServer: (server) => {

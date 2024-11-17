@@ -1,21 +1,13 @@
 import type { StateCreator } from 'zustand';
+import type { CsrfActions, CsrfState, StoreState } from '../../types/index.ts';
 
-export interface CsrfState {
-	csrfToken: string;
-}
-
-export interface CsrfActions {
-	initializeCsrfToken: () => Promise<void>;
-	refreshCsrfToken: () => void;
-}
-
-export type CsrfSlice = CsrfState & CsrfActions;
+interface CsrfSliceState extends CsrfState, CsrfActions {}
 
 export const createCsrfSlice: StateCreator<
-	CsrfSlice,
+	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	CsrfSlice
+	CsrfSliceState
 > = (set, get) => ({
 	csrfToken: '',
 
@@ -28,13 +20,18 @@ export const createCsrfSlice: StateCreator<
 			const token = response.headers.get('X-CSRFToken') ?? '';
 			set({ csrfToken: token }, false, 'csrf/initializeCsrfToken');
 
+			// Create a non-async wrapper function with error handling
+			const refreshToken = () => {
+				get()
+					.refreshCsrfToken()
+					.catch(() => {
+						// Handle any errors silently or log them if needed
+						set({ csrfToken: '' }, false, 'csrf/refreshError');
+					});
+			};
+
 			// Set up auto-refresh before token expires (50 minutes)
-			setTimeout(
-				() => {
-					get().refreshCsrfToken();
-				},
-				50 * 60 * 1000,
-			); // 50 minutes
+			setTimeout(refreshToken, 50 * 60 * 1000);
 		}
 	},
 

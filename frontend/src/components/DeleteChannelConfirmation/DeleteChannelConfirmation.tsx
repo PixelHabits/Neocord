@@ -28,7 +28,7 @@ export const DeleteChannelConfirmation = ({
 					type='button'
 					className='cursor-pointer rounded-md bg-red-500 p-2 text-white'
 					onClick={() => {
-						onDeleteChannel(currentChannel?.id || 0);
+						onDeleteChannel(currentChannel?.id ?? 0);
 						closeModal();
 					}}
 				>

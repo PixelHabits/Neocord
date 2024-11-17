@@ -2,6 +2,7 @@ import { cn } from '@repo/ui';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/store.ts';
 import { LoginFormModal } from '../LoginFormModal/LoginFormModal.tsx';
 import { SignupFormModal } from '../SignupFormModal/SignupFormModal.tsx';
@@ -11,6 +12,7 @@ function ProfileButton({ className }: { className?: string }) {
 	const [showMenu, setShowMenu] = useState(false);
 	const user = useStore((state) => state.user);
 	const logout = useStore((state) => state.logout);
+	const navigate = useNavigate();
 	const ulRef = useRef<HTMLUListElement>(null);
 
 	const toggleMenu = (e: React.MouseEvent) => {
@@ -34,10 +36,13 @@ function ProfileButton({ className }: { className?: string }) {
 
 	const closeMenu = () => setShowMenu(false);
 
-	const handleLogout = (e: React.MouseEvent) => {
+	const handleLogout = async (e: React.MouseEvent) => {
 		e.preventDefault();
-		logout();
-		closeMenu();
+		const success = await logout();
+		if (success) {
+			closeMenu();
+			navigate('/');
+		}
 	};
 
 	return (

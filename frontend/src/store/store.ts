@@ -1,38 +1,57 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import {
-	type ChannelsSlice,
-	createChannelsSlice,
-} from './slices/channelsSlice.ts';
-import { type CsrfSlice, createCsrfSlice } from './slices/csrfSlice.ts';
-import {
-	type MessagesSlice,
-	createMessagesSlice,
-} from './slices/messagesSlice.ts';
-import {
-	type ServersSlice,
-	createServersSlice,
-} from './slices/serversSlice.ts';
-import {
-	type SessionSlice,
-	createSessionSlice,
-} from './slices/sessionSlice.ts';
+import type { StoreState } from '../types/index.ts';
+import { createChannelsSlice } from './slices/channelsSlice.ts';
+import { createCsrfSlice } from './slices/csrfSlice.ts';
+import { createMessagesSlice } from './slices/messagesSlice.ts';
+import { createServersSlice } from './slices/serversSlice.ts';
+import { createSessionSlice } from './slices/sessionSlice.ts';
 
-export type StoreState = SessionSlice &
-	ServersSlice &
-	ChannelsSlice &
-	MessagesSlice &
-	CsrfSlice;
+type StateValues = Pick<
+	StoreState,
+	| 'user'
+	| 'csrfToken'
+	| 'servers'
+	| 'currentServer'
+	| 'currentChannel'
+	| 'messages'
+	| 'threads'
+	| 'currentMessage'
+	| 'currentThread'
+>;
+
+// Initial state values only
+const initialStateValues: StateValues = {
+	user: null,
+	csrfToken: '',
+	servers: [],
+	currentServer: null,
+	currentChannel: null,
+	messages: {},
+	threads: {},
+	currentMessage: null,
+	currentThread: null,
+};
 
 export const useStore = create<StoreState>()(
 	devtools(
 		persist(
-			(...a) => ({
-				...createSessionSlice(...a),
-				...createServersSlice(...a),
-				...createChannelsSlice(...a),
-				...createMessagesSlice(...a),
-				...createCsrfSlice(...a),
+			(set, get, store) => ({
+				...createSessionSlice(set, get, store),
+				...createServersSlice(set, get, store),
+				...createChannelsSlice(set, get, store),
+				...createMessagesSlice(set, get, store),
+				...createCsrfSlice(set, get, store),
+				reset: () => {
+					set(
+						(state) => ({
+							...state,
+							...initialStateValues,
+						}),
+						true,
+						'store/reset',
+					);
+				},
 			}),
 			{
 				name: 'app-storage',

@@ -32,16 +32,16 @@ export const EditServerSidebar = ({
 	useEffect(() => {
 		if (currentChannel) {
 			setChannelFormData({
-				name: currentChannel?.name,
-				visibility: currentChannel?.visibility.toUpperCase(),
+				name: currentChannel.name,
+				visibility: currentChannel.visibility.toUpperCase(),
 			});
 		}
 	}, [currentChannel]);
 
-	const handleSubmit = (e: FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		setIsLoading(true);
 		e.preventDefault();
-		updateServer(server.id, { ...formData });
+		await updateServer(server.id, { ...formData });
 		setIsLoading(false);
 	};
 
@@ -74,10 +74,13 @@ export const EditServerSidebar = ({
 		}
 	};
 
-	const handleChannelSubmit = (e: FormEvent) => {
+	const handleChannelSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
-		updateChannel(currentChannel?.id || 0, { ...channelFormData });
+		await updateChannel(currentChannel?.id ?? 0, {
+			name: channelFormData.name,
+			visibility: channelFormData.visibility as 'PUBLIC' | 'PRIVATE',
+		});
 		setIsLoading(false);
 	};
 

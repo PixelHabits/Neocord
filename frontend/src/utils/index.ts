@@ -8,9 +8,7 @@ import type React from 'react';
  */
 export function getInitials(serverName: string): string {
 	const titleArr = serverName.split(' ');
-	return titleArr
-		.map((title) => title?.charAt(0)?.toUpperCase() ?? '')
-		.join('');
+	return titleArr.map((title) => title.charAt(0).toUpperCase()).join('');
 }
 
 /**

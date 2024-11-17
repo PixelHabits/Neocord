@@ -54,7 +54,12 @@ def update_channel(id):
 					}
 				}, 401
 			return {'errors': {'message': 'Channel not found'}}, 404
-		return {'errors': form.errors}, 400
+		return {
+			'errors': {
+				'message': 'Validation error',
+				**{k: v[0] for k, v in form.errors.items()},
+			}
+		}, 400
 	return {'errors': {'message': 'Unauthorized'}}, 401
 
 

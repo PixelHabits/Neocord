@@ -38,4 +38,7 @@ useStore
 				</div>
 			</StrictMode>,
 		);
+	})
+	.catch((error: unknown) => {
+		throw new Error(`Failed to initialize CSRF token: ${String(error)}`);
 	});

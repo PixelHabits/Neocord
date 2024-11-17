@@ -1,32 +1,30 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { User } from '../../types/index.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
+import type {
+	ApiError,
+	SessionActions,
+	SessionState,
+	StoreState,
+	User,
+} from '../../types/index.ts';
 
-export interface SessionState {
-	user: User | null;
+interface SessionSliceState extends SessionState, SessionActions {}
+
+interface LoginCredentials {
+	email: string;
+	password: string;
 }
 
-export interface SessionActions {
-	authenticate: () => Promise<void>;
-	login: (credentials: { email: string; password: string }) => Promise<
-		Record<string, string> | undefined
-	>;
-	signup: (user: {
-		email: string;
-		password: string;
-		username: string;
-	}) => Promise<Record<string, string> | undefined>;
-	logout: () => Promise<void>;
+interface SignupData {
+	email: string;
+	username: string;
+	password: string;
 }
-
-export type SessionSlice = SessionState & SessionActions;
-type StoreState = SessionSlice & CsrfSlice;
 
 export const createSessionSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	SessionSlice
+	SessionSliceState
 > = (set, _get, store: StoreApi<StoreState>) => ({
 	user: null,
 
@@ -38,14 +36,16 @@ export const createSessionSlice: StateCreator<
 			},
 		});
 		if (response.ok) {
-			const data = await response.json();
-			if (!data.errors) {
+			const data = (await response.json()) as User;
+			if (!('errors' in data)) {
 				set({ user: data }, false, 'session/authenticate');
 			}
 		}
 	},
 
-	login: async (credentials) => {
+	login: async (
+		credentials: LoginCredentials,
+	): Promise<ApiError | undefined> => {
 		const response = await fetch('/api/auth/login', {
 			method: 'POST',
 			headers: {
@@ -57,17 +57,24 @@ export const createSessionSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const data = await response.json();
+			const data = (await response.json()) as User;
 			set({ user: data }, false, 'session/login');
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		if (response.status < 500) {
+			const errorData = (await response.json()) as ApiError;
+			return errorData;
+		}
+
+		return {
+			errors: {
+				message: 'Something went wrong. Please try again',
+			},
+		} as ApiError;
 	},
 
-	signup: async (user) => {
+	signup: async (userData: SignupData): Promise<ApiError | undefined> => {
 		const response = await fetch('/api/auth/signup', {
 			method: 'POST',
 			headers: {
@@ -75,27 +82,44 @@ export const createSessionSlice: StateCreator<
 				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
-			body: JSON.stringify(user),
+			body: JSON.stringify(userData),
 		});
 
 		if (response.ok) {
-			const data = await response.json();
+			const data = (await response.json()) as User;
 			set({ user: data }, false, 'session/signup');
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		if (response.status < 500) {
+			const errorData = (await response.json()) as ApiError;
+			return errorData;
+		}
+
+		return {
+			errors: {
+				message: 'Something went wrong. Please try again',
+			},
+		};
 	},
 
-	logout: async () => {
-		await fetch('/api/auth/logout', {
+	logout: async (): Promise<boolean> => {
+		const response = await fetch('/api/auth/logout', {
+			method: 'GET',
 			credentials: 'include',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
+
+		if (!response.ok) {
+			return false;
+		}
+
 		set({ user: null }, false, 'session/logout');
+		store.getState().reset();
+
+		await store.getState().initializeCsrfToken();
+		return true;
 	},
 });

@@ -1,39 +1,27 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { Channel } from '../../types/index.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
-import type { ServersSlice } from './serversSlice.ts';
-export interface ChannelsState {
-	currentChannel: Channel | null;
-}
+import type {
+	ApiError,
+	Channel,
+	ChannelsActions,
+	ChannelsState,
+	StoreState,
+} from '../../types/index.ts';
 
-export interface ChannelsActions {
-	createChannel: (
-		serverId: number,
-		channel: { name: string; visibility: string },
-	) => Promise<Record<string, string> | undefined>;
-	updateChannel: (
-		channelId: number,
-		updates: { name?: string; visibility?: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteChannel: (
-		channelId: number,
-	) => Promise<Record<string, string> | undefined>;
-	setCurrentChannel: (channel: Channel | null) => void;
-}
-
-export type ChannelsSlice = ChannelsState & ChannelsActions;
-type StoreState = ChannelsSlice & ServersSlice & CsrfSlice;
+interface ChannelsSliceState extends ChannelsState, ChannelsActions {}
 
 export const createChannelsSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	ChannelsSlice
+	ChannelsSliceState
 > = (set, _get, store: StoreApi<StoreState>) => ({
 	currentChannel: null,
 
-	createChannel: async (serverId, channelData) => {
-		const response = await fetch(`/api/servers/${serverId}/channels`, {
+	createChannel: async (
+		serverId,
+		channelData,
+	): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/servers/${String(serverId)}/channels`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -44,21 +32,23 @@ export const createChannelsSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const newChannel = await response.json();
+			const newChannel = (await response.json()) as Channel;
 			await store.getState().getServer(serverId);
 			set({ currentChannel: newChannel }, false, 'channels/createChannel');
 			return undefined;
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
-	updateChannel: async (channelId, updates) => {
-		const response = await fetch(`/api/channels/${channelId}`, {
+	updateChannel: async (channelId, updates): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/channels/${String(channelId)}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -69,7 +59,7 @@ export const createChannelsSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const updatedChannel = await response.json();
+			const updatedChannel = (await response.json()) as Channel;
 			const currentServer = store.getState().currentServer;
 			if (currentServer?.id) {
 				await store.getState().getServer(currentServer.id);
@@ -88,15 +78,17 @@ export const createChannelsSlice: StateCreator<
 			return undefined;
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
-	deleteChannel: async (channelId) => {
-		const response = await fetch(`/api/channels/${channelId}`, {
+	deleteChannel: async (channelId): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/channels/${String(channelId)}`, {
 			method: 'DELETE',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
@@ -123,11 +115,13 @@ export const createChannelsSlice: StateCreator<
 			return undefined;
 		}
 
-		const errorData = await response.json();
+		const errorData = (await response.json()) as ApiError;
 		return {
-			server:
-				errorData.errors?.message || 'Something went wrong. Please try again',
-		};
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
 	setCurrentChannel: (channel) => {

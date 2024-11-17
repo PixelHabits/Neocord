@@ -1,44 +1,21 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { Message, Thread } from '../../types/index.ts';
-import type { ChannelsSlice } from './channelsSlice.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
-import type { ServersSlice } from './serversSlice.ts';
-export interface MessagesState {
-	messages: Record<number, Message[]>; // channelId -> messages[]
-	threads: Record<number, Thread>; // messageId -> thread
-	currentMessage: Message | null;
-	currentThread: Thread | null;
-}
+import type {
+	ApiError,
+	Message,
+	MessagesActions,
+	MessagesState,
+	Reaction,
+	StoreState,
+} from '../../types/index.ts';
 
-export interface MessagesActions {
-	getChannelMessages: (channelId: number) => Promise<void>;
-	getMessage: (messageId: number) => Promise<void>;
-	createMessage: (
-		channelId: number,
-		message: { body: string },
-		parentMessageId?: number,
-	) => Promise<Record<string, string> | undefined>;
-	updateMessage: (
-		messageId: number,
-		updates: { body: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteMessage: (messageId: number) => Promise<void>;
-	addReaction: (
-		messageId: number,
-		reaction: { emoji: string },
-	) => Promise<Record<string, string> | undefined>;
-	removeReaction: (messageId: number, reactionId: number) => Promise<void>;
-	setCurrentMessage: (message: Message | null) => void;
-	setCurrentThread: (thread: Thread | null) => void;
-}
+interface MessagesSliceState extends MessagesState, MessagesActions {}
 
-export type MessagesSlice = MessagesState & MessagesActions;
-
+// Helper functions for state updates
 const updateMessageInState = (
-	state: MessagesState,
+	state: Pick<MessagesSliceState, 'messages' | 'currentMessage'>,
 	messageId: number,
 	updater: (message: Message) => Message,
-): Partial<MessagesState> => {
+): Partial<MessagesSliceState> => {
 	const channelIdStr = Object.keys(state.messages).find((channelId) =>
 		state.messages[Number(channelId)]?.some((msg) => msg.id === messageId),
 	);
@@ -65,13 +42,13 @@ const updateMessageInState = (
 };
 
 const getCreateMessageState = (
-	state: MessagesState,
+	state: Pick<MessagesSliceState, 'messages' | 'threads' | 'currentThread'>,
 	channelId: number,
 	newMessage: Message,
 	parentMessageId?: number,
-): Partial<MessagesState> => {
+): Partial<MessagesSliceState> => {
 	if (parentMessageId && newMessage.thread) {
-		const thread = newMessage.thread as Thread;
+		const thread = newMessage.thread;
 		return {
 			threads: { ...state.threads, [parentMessageId]: thread },
 			currentThread:
@@ -88,9 +65,9 @@ const getCreateMessageState = (
 };
 
 const getDeleteMessageState = (
-	state: MessagesState,
+	state: Pick<MessagesSliceState, 'messages' | 'threads' | 'currentMessage'>,
 	messageId: number,
-): Partial<MessagesState> => ({
+): Partial<MessagesSliceState> => ({
 	currentMessage:
 		state.currentMessage?.id === messageId ? null : state.currentMessage,
 	threads: Object.fromEntries(
@@ -104,12 +81,11 @@ const getDeleteMessageState = (
 	),
 });
 
-type StoreState = MessagesSlice & ServersSlice & ChannelsSlice & CsrfSlice;
 export const createMessagesSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	MessagesSlice
+	MessagesSliceState
 > = (set, get, store: StoreApi<StoreState>) => ({
 	messages: {},
 	threads: {},
@@ -117,15 +93,18 @@ export const createMessagesSlice: StateCreator<
 	currentThread: null,
 
 	getChannelMessages: async (channelId) => {
-		const response = await fetch(`/api/channels/${channelId}/messages`, {
-			credentials: 'include',
-			headers: {
-				'X-CSRFToken': store.getState().csrfToken,
+		const response = await fetch(
+			`/api/channels/${String(channelId)}/messages`,
+			{
+				credentials: 'include',
+				headers: {
+					'X-CSRFToken': store.getState().csrfToken,
+				},
 			},
-		});
+		);
 
 		if (response.ok) {
-			const messages = await response.json();
+			const messages = (await response.json()) as Message[];
 			set(
 				{ messages: { ...get().messages, [channelId]: messages } },
 				false,
@@ -135,7 +114,7 @@ export const createMessagesSlice: StateCreator<
 	},
 
 	getMessage: async (messageId) => {
-		const response = await fetch(`/api/messages/${messageId}`, {
+		const response = await fetch(`/api/messages/${String(messageId)}`, {
 			credentials: 'include',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
@@ -143,7 +122,7 @@ export const createMessagesSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const message = await response.json();
+			const message = (await response.json()) as Message;
 			set(
 				(state) => ({
 					...updateMessageInState(state, messageId, () => message),
@@ -159,8 +138,12 @@ export const createMessagesSlice: StateCreator<
 		}
 	},
 
-	createMessage: async (channelId, messageData, parentMessageId) => {
-		const url = `/api/channels/${channelId}/messages${parentMessageId ? `?parent_message_id=${parentMessageId}` : ''}`;
+	createMessage: async (
+		channelId,
+		messageData,
+		parentMessageId,
+	): Promise<ApiError | undefined> => {
+		const url = `/api/channels/${String(channelId)}/messages${parentMessageId ? `?parent_message_id=${String(parentMessageId)}` : ''}`;
 
 		const response = await fetch(url, {
 			method: 'POST',
@@ -173,23 +156,27 @@ export const createMessagesSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const newMessage = await response.json();
+			const newMessage = (await response.json()) as Message;
 			set(
 				(state) =>
 					getCreateMessageState(state, channelId, newMessage, parentMessageId),
 				false,
 				'messages/createMessage',
 			);
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		const errorData = (await response.json()) as ApiError;
+		return {
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
-	updateMessage: async (messageId, updates) => {
-		const response = await fetch(`/api/messages/${messageId}`, {
+	updateMessage: async (messageId, updates): Promise<ApiError | undefined> => {
+		const response = await fetch(`/api/messages/${String(messageId)}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -200,22 +187,26 @@ export const createMessagesSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const updatedMessage = await response.json();
+			const updatedMessage = (await response.json()) as Message;
 			set(
 				(state) => updateMessageInState(state, messageId, () => updatedMessage),
 				false,
 				'messages/updateMessage',
 			);
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		const errorData = (await response.json()) as ApiError;
+		return {
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
 	deleteMessage: async (messageId) => {
-		const response = await fetch(`/api/messages/${messageId}`, {
+		const response = await fetch(`/api/messages/${String(messageId)}`, {
 			method: 'DELETE',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
@@ -232,41 +223,49 @@ export const createMessagesSlice: StateCreator<
 		}
 	},
 
-	addReaction: async (messageId, reactionData) => {
-		const response = await fetch(`/api/messages/${messageId}/reactions`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': store.getState().csrfToken,
+	addReaction: async (
+		messageId,
+		reactionData,
+	): Promise<ApiError | undefined> => {
+		const response = await fetch(
+			`/api/messages/${String(messageId)}/reactions`,
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': store.getState().csrfToken,
+				},
+				credentials: 'include',
+				body: JSON.stringify(reactionData),
 			},
-			credentials: 'include',
-			body: JSON.stringify(reactionData),
-		});
+		);
 
 		if (response.ok) {
-			const newReaction = await response.json();
+			const newReaction = (await response.json()) as Reaction;
 			set(
 				(state) =>
 					updateMessageInState(state, messageId, (message) => ({
 						...message,
-						reactions: message.reactions
-							? [...message.reactions, newReaction]
-							: [newReaction],
+						reactions: [...message.reactions, newReaction],
 					})),
 				false,
 				'messages/addReaction',
 			);
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		const errorData = (await response.json()) as ApiError;
+		return {
+			errors: {
+				message:
+					errorData.errors.message || 'Something went wrong. Please try again',
+			},
+		} satisfies ApiError;
 	},
 
 	removeReaction: async (messageId, reactionId) => {
 		const response = await fetch(
-			`/api/messages/${messageId}/reactions/${reactionId}`,
+			`/api/messages/${String(messageId)}/reactions/${String(reactionId)}`,
 			{
 				method: 'DELETE',
 				headers: {
@@ -281,9 +280,7 @@ export const createMessagesSlice: StateCreator<
 				(state) =>
 					updateMessageInState(state, messageId, (message) => ({
 						...message,
-						reactions: message.reactions
-							? message.reactions.filter((r) => r.id !== reactionId)
-							: [],
+						reactions: message.reactions.filter((r) => r.id !== reactionId),
 					})),
 				false,
 				'messages/removeReaction',
