@@ -54,13 +54,13 @@ A modern real-time communication platform built with a focus on performance, dev
 
 ```
 neocord/
-│── frontend/     # React application
-│── backend/      # Flask API
+│── frontend/                   # React application
+│── backend/                    # Flask API
 │── packages/
-│   ├── ui/          # Shared UI components
-│   └── config/      # Shared configurations
-│── terraform/       # Infrastructure as Code
-└── docker/          # Docker configurations
+│   ├── ui/                     # Shared UI components
+│   └── typescript-config/      # Shared TypeScript configurations
+│── terraform/                  # Infrastructure as Code
+│── docker/                     # Docker configurations
 ```
 
 ## 💻 Development Workflow
