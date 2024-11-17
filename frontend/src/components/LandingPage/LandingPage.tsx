@@ -39,6 +39,7 @@ export const LandingPage = () => {
 			{user ? (
 				servers.length === 0 ? (
 					<OpenModalButton
+						className='mt-2 cursor-pointer rounded-md border-1 border-gray-300 bg-blue-500 p-4 text-white text-xl transition-all duration-300 hover:bg-indigo-500'
 						modalComponent={<CreateServerForm />}
 						buttonText='Create a server'
 					/>
