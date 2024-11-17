@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './ChatBox.css';
 import { BiSend } from 'react-icons/bi';
 
@@ -41,9 +41,9 @@ export const ChatBox = () => {
 		fetchMessages();
 	}, [currentChannel?.id, getChannelMessages]);
 
-	const scrollToBottom = () => {
+	const scrollToBottom = useCallback(() => {
 		chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-	};
+	}, []);
 
 	useEffect(() => {
 		scrollToBottom();
@@ -80,8 +80,8 @@ export const ChatBox = () => {
 
 	return (
 		<>
-			<div className='flex flex-col h-screen max-h-screen overflow-hidden'>
-				<div className='flex-1 overflow-y-auto flex flex-col gap-4'>
+			<div className='flex h-screen max-h-screen flex-col overflow-hidden'>
+				<div className='flex flex-1 flex-col gap-4 overflow-y-auto'>
 					{messages.length > 0 ? (
 						<>
 							{messages.map((msg) => (
@@ -102,7 +102,7 @@ export const ChatBox = () => {
 			</div>
 			<form
 				onSubmit={handleSubmitMessage}
-				className='relative flex-shrink-0 flex items-center justify-center p-2'
+				className='relative flex flex-shrink-0 items-center justify-center p-2'
 			>
 				<textarea
 					className='w-full resize-none rounded-md bg-neutral-800 p-2 text-neutral-100 focus:outline-none'

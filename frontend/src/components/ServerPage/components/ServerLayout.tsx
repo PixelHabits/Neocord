@@ -54,12 +54,12 @@ export const ServerLayout = () => {
 				<OpenModalButton
 					modalComponent={<CreateServerForm />}
 					buttonText={<BiPlusCircle size={48} />}
-					className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400 mb-4'
+					className='mb-4 flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400'
 				/>
 			</aside>
 
 			{/* Render the information for the selected server (channels, messages within the channels, and the sidebar) */}
-			<div className='w-full flex'>
+			<div className='flex w-full'>
 				<Outlet />
 			</div>
 		</section>

@@ -61,7 +61,7 @@ export const ServerPage = () => {
 	}
 
 	return (
-		<div className='h-full w-full flex'>
+		<div className='flex h-full w-full'>
 			<ChannelNav
 				server={currentServer}
 				onShowSettings={handleShowSettings}
@@ -72,10 +72,10 @@ export const ServerPage = () => {
 				<div
 					className={`${
 						showSettings ? 'col-span-4' : 'col-span-5'
-					} flex w-full flex-col bg-gray-700 transition-all duration-300 overflow-hidden h-full`}
+					} flex h-full w-full flex-col overflow-hidden bg-gray-700 transition-all duration-300`}
 				>
 					{currentServer.channels?.length > 0 && currentChannel ? (
-						<div className='flex flex-col w-full h-full'>
+						<div className='flex h-full w-full flex-col'>
 							<ChatBox />
 						</div>
 					) : (
