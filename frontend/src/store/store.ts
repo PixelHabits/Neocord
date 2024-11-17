@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import type { StoreState } from '../types/index.ts';
+import type { ApiError, StoreState } from '../types/index.ts';
 import { createChannelsSlice } from './slices/channelsSlice.ts';
 import { createCsrfSlice } from './slices/csrfSlice.ts';
 import { createMessagesSlice } from './slices/messagesSlice.ts';
@@ -11,33 +11,63 @@ import { createSessionSlice } from './slices/sessionSlice.ts';
 const initialState: StoreState = {
 	// Session
 	user: null,
-	authenticate: async () => undefined,
-	login: async () => undefined,
-	signup: async () => undefined,
-	logout: async () => undefined,
+	authenticate: () => Promise.resolve(),
+	login: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	signup: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	logout: () => Promise.resolve(),
 
 	// CSRF
 	csrfToken: '',
-	initializeCsrfToken: async () => undefined,
-	refreshCsrfToken: () => undefined,
+	initializeCsrfToken: () => Promise.resolve(),
+	refreshCsrfToken: () => Promise.resolve(),
 
 	// Servers
 	servers: [],
 	currentServer: null,
-	getServers: async () => undefined,
-	getServer: async () => undefined,
-	createServer: async () => undefined,
-	updateServer: async () => undefined,
-	deleteServer: async () => undefined,
-	joinServer: async () => undefined,
-	leaveServer: async () => undefined,
+	getServers: () => Promise.resolve(),
+	getServer: () => Promise.resolve(),
+	createServer: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	updateServer: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	deleteServer: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	joinServer: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	leaveServer: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
 	setCurrentServer: () => undefined,
 
 	// Channels
 	currentChannel: null,
-	createChannel: async () => undefined,
-	updateChannel: async () => undefined,
-	deleteChannel: async () => undefined,
+	createChannel: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	updateChannel: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	deleteChannel: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
 	setCurrentChannel: () => undefined,
 
 	// Messages
@@ -45,13 +75,22 @@ const initialState: StoreState = {
 	threads: {},
 	currentMessage: null,
 	currentThread: null,
-	getChannelMessages: async () => undefined,
-	getMessage: async () => undefined,
-	createMessage: async () => undefined,
-	updateMessage: async () => undefined,
-	deleteMessage: async () => undefined,
-	addReaction: async () => undefined,
-	removeReaction: async () => undefined,
+	getChannelMessages: () => Promise.resolve(),
+	getMessage: () => Promise.resolve(),
+	createMessage: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	updateMessage: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	deleteMessage: () => Promise.resolve(),
+	addReaction: () =>
+		Promise.resolve({
+			errors: { message: 'Not implemented' },
+		} satisfies ApiError),
+	removeReaction: () => Promise.resolve(),
 	setCurrentMessage: () => undefined,
 	setCurrentThread: () => undefined,
 
@@ -68,7 +107,9 @@ export const useStore = create<StoreState>()(
 				...createChannelsSlice(set, get, store),
 				...createMessagesSlice(set, get, store),
 				...createCsrfSlice(set, get, store),
-				reset: () => set(initialState, true, 'store/reset'),
+				reset: () => {
+					set(initialState, true, 'store/reset');
+				},
 			}),
 			{
 				name: 'app-storage',

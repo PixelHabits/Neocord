@@ -1,11 +1,12 @@
 import type { NavigateFunction } from 'react-router-dom';
 import type {
-	User,
-	Server,
-	ServerDetails,
+	ApiError,
 	Channel,
 	Message,
+	Server,
+	ServerDetails,
 	Thread,
+	User,
 } from './index.ts';
 
 // Base State
@@ -23,12 +24,12 @@ export interface SessionActions {
 	login: (credentials: {
 		email: string;
 		password: string;
-	}) => Promise<Record<string, string> | undefined>;
-	signup: (user: {
+	}) => Promise<ApiError | undefined>;
+	signup: (userData: {
 		email: string;
-		password: string;
 		username: string;
-	}) => Promise<Record<string, string> | undefined>;
+		password: string;
+	}) => Promise<ApiError | undefined>;
 	logout: (navigate: NavigateFunction) => Promise<void>;
 }
 
@@ -41,7 +42,7 @@ export interface CsrfState {
 
 export interface CsrfActions {
 	initializeCsrfToken: () => Promise<void>;
-	refreshCsrfToken: () => void;
+	refreshCsrfToken: () => Promise<void>;
 }
 
 export interface CsrfSlice extends CsrfState, CsrfActions {}
@@ -55,21 +56,17 @@ export interface ServersState {
 export interface ServersActions {
 	getServers: () => Promise<void>;
 	getServer: (serverId: number) => Promise<void>;
-	createServer: (server: {
+	createServer: (serverData: {
 		name: string;
 		description: string;
-	}) => Promise<Record<string, string> | undefined>;
+	}) => Promise<ApiError | undefined>;
 	updateServer: (
 		serverId: number,
 		updates: { name?: string; description?: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteServer: (
-		serverId: number,
-	) => Promise<Record<string, string> | undefined>;
-	joinServer: (serverId: number) => Promise<Record<string, string> | undefined>;
-	leaveServer: (
-		serverId: number,
-	) => Promise<Record<string, string> | undefined>;
+	) => Promise<ApiError | undefined>;
+	deleteServer: (serverId: number) => Promise<ApiError | undefined>;
+	joinServer: (serverId: number) => Promise<ApiError | undefined>;
+	leaveServer: (serverId: number) => Promise<ApiError | undefined>;
 	setCurrentServer: (server: ServerDetails | null) => void;
 }
 
@@ -83,15 +80,19 @@ export interface ChannelsState {
 export interface ChannelsActions {
 	createChannel: (
 		serverId: number,
-		channel: { name: string; visibility: string },
-	) => Promise<Record<string, string> | undefined>;
+		channelData: {
+			name: string;
+			visibility: 'PUBLIC' | 'PRIVATE';
+		},
+	) => Promise<ApiError | undefined>;
 	updateChannel: (
 		channelId: number,
-		updates: { name?: string; visibility?: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteChannel: (
-		channelId: number,
-	) => Promise<Record<string, string> | undefined>;
+		updates: {
+			name?: string;
+			visibility?: 'PUBLIC' | 'PRIVATE';
+		},
+	) => Promise<ApiError | undefined>;
+	deleteChannel: (channelId: number) => Promise<ApiError | undefined>;
 	setCurrentChannel: (channel: Channel | null) => void;
 }
 
@@ -112,16 +113,16 @@ export interface MessagesActions {
 		channelId: number,
 		message: { body: string },
 		parentMessageId?: number,
-	) => Promise<Record<string, string> | undefined>;
+	) => Promise<ApiError | undefined>;
 	updateMessage: (
 		messageId: number,
 		updates: { body: string },
-	) => Promise<Record<string, string> | undefined>;
+	) => Promise<ApiError | undefined>;
 	deleteMessage: (messageId: number) => Promise<void>;
 	addReaction: (
 		messageId: number,
 		reaction: { emoji: string },
-	) => Promise<Record<string, string> | undefined>;
+	) => Promise<ApiError | undefined>;
 	removeReaction: (messageId: number, reactionId: number) => Promise<void>;
 	setCurrentMessage: (message: Message | null) => void;
 	setCurrentThread: (thread: Thread | null) => void;

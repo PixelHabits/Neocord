@@ -1,20 +1,20 @@
 import type {
 	BaseState,
-	SessionState,
-	SessionActions,
-	SessionSlice,
-	CsrfState,
-	CsrfActions,
-	CsrfSlice,
-	ServersState,
-	ServersActions,
-	ServersSlice,
-	ChannelsState,
 	ChannelsActions,
 	ChannelsSlice,
-	MessagesState,
+	ChannelsState,
+	CsrfActions,
+	CsrfSlice,
+	CsrfState,
 	MessagesActions,
 	MessagesSlice,
+	MessagesState,
+	ServersActions,
+	ServersSlice,
+	ServersState,
+	SessionActions,
+	SessionSlice,
+	SessionState,
 	StoreState,
 } from './state.ts';
 
@@ -43,8 +43,8 @@ export interface Server {
 	id: number;
 	name: string;
 	description: string;
-	createdAt?: string;
-	updatedAt?: string;
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface ServerDetails extends Server {
@@ -54,18 +54,16 @@ export interface ServerDetails extends Server {
 }
 
 export interface Message {
-	id: number;
 	body: string;
 	channelId: number;
-	userId: number;
 	createdAt: string;
-	updatedAt: string;
-	user?: User;
-	reactions?: Reaction[];
+	id: number;
+	reactions: Reaction[];
 	replyCount: number;
-	thread?: {
-		messages: Message[];
-	} | null;
+	thread: Thread | null;
+	updatedAt: string;
+	userId: number;
+	user?: User;
 }
 
 export interface Reaction {
@@ -83,13 +81,10 @@ export interface Thread {
 
 // API types
 export interface ApiError {
-	message: string;
-	field?: string;
-}
-
-export interface ApiResponse<T> {
-	data?: T;
-	errors?: Record<string, string>;
+	errors: {
+		message: string;
+		[key: string]: string;
+	};
 }
 
 // Re-export store types explicitly

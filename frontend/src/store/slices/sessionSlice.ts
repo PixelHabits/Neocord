@@ -1,11 +1,25 @@
+import type { NavigateFunction } from 'react-router-dom';
 import type { StateCreator, StoreApi } from 'zustand';
 import type {
+	ApiError,
 	SessionActions,
 	SessionState,
 	StoreState,
+	User,
 } from '../../types/index.ts';
 
 interface SessionSliceState extends SessionState, SessionActions {}
+
+interface LoginCredentials {
+	email: string;
+	password: string;
+}
+
+interface SignupData {
+	email: string;
+	username: string;
+	password: string;
+}
 
 export const createSessionSlice: StateCreator<
 	StoreState,
@@ -23,14 +37,16 @@ export const createSessionSlice: StateCreator<
 			},
 		});
 		if (response.ok) {
-			const data = await response.json();
-			if (!data.errors) {
+			const data = (await response.json()) as User;
+			if (!('errors' in data)) {
 				set({ user: data }, false, 'session/authenticate');
 			}
 		}
 	},
 
-	login: async (credentials) => {
+	login: async (
+		credentials: LoginCredentials,
+	): Promise<ApiError | undefined> => {
 		const response = await fetch('/api/auth/login', {
 			method: 'POST',
 			headers: {
@@ -42,17 +58,24 @@ export const createSessionSlice: StateCreator<
 		});
 
 		if (response.ok) {
-			const data = await response.json();
+			const data = (await response.json()) as User;
 			set({ user: data }, false, 'session/login');
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		if (response.status < 500) {
+			const errorData = (await response.json()) as ApiError;
+			return errorData;
+		}
+
+		return {
+			errors: {
+				message: 'Something went wrong. Please try again',
+			},
+		} as ApiError;
 	},
 
-	signup: async (user) => {
+	signup: async (userData: SignupData): Promise<ApiError | undefined> => {
 		const response = await fetch('/api/auth/signup', {
 			method: 'POST',
 			headers: {
@@ -60,21 +83,28 @@ export const createSessionSlice: StateCreator<
 				'X-CSRFToken': store.getState().csrfToken,
 			},
 			credentials: 'include',
-			body: JSON.stringify(user),
+			body: JSON.stringify(userData),
 		});
 
 		if (response.ok) {
-			const data = await response.json();
+			const data = (await response.json()) as User;
 			set({ user: data }, false, 'session/signup');
-		} else if (response.status < 500) {
-			const errorMessages = await response.json();
-			return errorMessages;
-		} else {
-			return { server: 'Something went wrong. Please try again' };
+			return undefined;
 		}
+
+		if (response.status < 500) {
+			const errorData = (await response.json()) as ApiError;
+			return errorData;
+		}
+
+		return {
+			errors: {
+				message: 'Something went wrong. Please try again',
+			},
+		};
 	},
 
-	logout: async (navigate) => {
+	logout: async (navigate: NavigateFunction) => {
 		await fetch('/api/auth/logout', {
 			credentials: 'include',
 			headers: {
