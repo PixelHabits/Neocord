@@ -28,7 +28,7 @@ export const ServerLayout = () => {
 	}, [getServers]);
 
 	return (
-		<div className='flex h-[calc(100vh-6rem)] w-full'>
+		<div className='flex h-full w-full'>
 			<aside className='relative flex flex-col items-center justify-between gap-4 px-4'>
 				{/* TODO: Add server tooltips (to be implemented later) */}
 				<div className='flex flex-col gap-4'>

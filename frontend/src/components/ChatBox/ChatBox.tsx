@@ -70,7 +70,7 @@ export const ChatBox = () => {
 
 	return (
 		<>
-			<div className='h-[calc(100vh-200px)] overflow-y-auto p-4'>
+			<div className='h-full overflow-y-auto p-4'>
 				<div className='flex flex-col gap-4'>
 					{messages.length > 0 ? (
 						messages.map((msg) => <MessageItem message={msg} key={msg.id} />)
