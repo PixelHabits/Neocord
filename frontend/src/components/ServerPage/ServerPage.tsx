@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useStore } from '../../store/store.ts';
 import { ChatBox } from '../ChatBox/ChatBox.tsx';
@@ -9,7 +9,7 @@ export const ServerPage = () => {
 	const { serverId } = useParams();
 	const [showSettings, setShowSettings] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
-
+	const initialChannelSet = useRef(false);
 	const {
 		getServer,
 		getServers,
@@ -26,20 +26,36 @@ export const ServerPage = () => {
 				try {
 					await Promise.all([getServer(Number(serverId)), getServers()]);
 				} catch (error) {
-					alert((error as Error).message); //avoid console.log
-					// console.error('Failed to fetch server', error);
+					alert((error as Error).message);
 				} finally {
 					setIsLoading(false);
 				}
 			}
 		};
 		fetchServer();
+		initialChannelSet.current = false;
 	}, [serverId, getServer, getServers]);
+
+	useEffect(() => {
+		if (
+			currentServer?.channels &&
+			currentServer.channels.length > 0 &&
+			!currentChannel &&
+			!initialChannelSet.current
+		) {
+			const firstChannel = currentServer.channels[0];
+			if (firstChannel) {
+				setCurrentChannel(firstChannel);
+				initialChannelSet.current = true;
+			}
+		}
+	}, [currentServer?.channels, currentChannel, setCurrentChannel]);
 
 	const handleShowSettings = () => {
 		setShowSettings(!showSettings);
 	};
 
+	// fix this
 	const handleDeleteChannel = async (channelId: number) => {
 		try {
 			await deleteChannel(channelId);

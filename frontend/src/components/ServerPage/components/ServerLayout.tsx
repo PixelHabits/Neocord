@@ -37,7 +37,9 @@ export const ServerLayout = () => {
 							type='button'
 							key={server.id}
 							className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-gray-500 p-1'
-							onClick={() => navigate(`/servers/${server.id}`)}
+							onClick={() => {
+								navigate(`/servers/${server.id}`);
+							}}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter' || e.key === ' ') {
 									navigate(`/servers/${server.id}`);
