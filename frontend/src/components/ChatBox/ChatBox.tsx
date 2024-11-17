@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './ChatBox.css';
 import { BiSend } from 'react-icons/bi';
 
@@ -10,6 +10,8 @@ export const ChatBox = () => {
 	const [messageInput, setMessageInput] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	// This will be used at the bottom of the chat to auto scroll to the latest message
+	const chatEndRef = useRef<HTMLDivElement>(null);
 
 	const { currentChannel } = useStore();
 	const {
@@ -38,6 +40,14 @@ export const ChatBox = () => {
 		};
 		fetchMessages();
 	}, [currentChannel?.id, getChannelMessages]);
+
+	const scrollToBottom = () => {
+		chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages, scrollToBottom]);
 
 	const handleSubmitMessage = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -73,7 +83,12 @@ export const ChatBox = () => {
 			<div className='flex flex-col h-screen max-h-screen overflow-hidden'>
 				<div className='flex-1 overflow-y-auto flex flex-col gap-4'>
 					{messages.length > 0 ? (
-						messages.map((msg) => <MessageItem message={msg} key={msg.id} />)
+						<>
+							{messages.map((msg) => (
+								<MessageItem message={msg} key={msg.id} />
+							))}
+							<div ref={chatEndRef} />
+						</>
 					) : (
 						<div className='flex h-full flex-1 flex-col items-center justify-center text-gray-400'>
 							<h3 className='mb-2 font-bold text-xl'>
