@@ -70,8 +70,8 @@ export const ChatBox = () => {
 
 	return (
 		<>
-			<div className='h-full overflow-y-auto p-4'>
-				<div className='flex flex-col gap-4'>
+			<div className='flex flex-col border border-red-600 h-full overflow-hidden p-4'>
+				<div className='flex-grow max-h-3xl overflow-y-auto flex flex-col gap-4'>
 					{messages.length > 0 ? (
 						messages.map((msg) => <MessageItem message={msg} key={msg.id} />)
 					) : (
@@ -87,7 +87,7 @@ export const ChatBox = () => {
 			</div>
 			<form
 				onSubmit={handleSubmitMessage}
-				className='relative flex items-center justify-center p-2'
+				className='relative flex-shrink flex items-center justify-center p-2'
 			>
 				<textarea
 					className='w-full resize-none rounded-md bg-neutral-800 p-2 text-neutral-100 focus:outline-none'

@@ -72,7 +72,7 @@ export const ServerPage = () => {
 				<div
 					className={`${
 						showSettings ? 'col-span-4' : 'col-span-5'
-					} flex w-full flex-col rounded-tr-3xl bg-gray-700 transition-all duration-300`}
+					} flex w-full flex-col bg-gray-700 transition-all duration-300`}
 				>
 					{currentServer.channels?.length > 0 && currentChannel ? (
 						<ChatBox />
