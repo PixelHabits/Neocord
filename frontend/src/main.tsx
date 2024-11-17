@@ -32,7 +32,7 @@ useStore
 		root.render(
 			<StrictMode>
 				<div className='min-h-screen overflow-x-hidden bg-background'>
-					<div className='h-full overflow-x-hidden'>
+					<div className='h-screen overflow-x-hidden'>
 						<RouterProvider router={router} />
 					</div>
 				</div>
