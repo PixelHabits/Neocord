@@ -25,6 +25,13 @@ RUN bun run --cwd frontend build
 # Backend stage
 FROM ghcr.io/astral-sh/uv-py:3.13-slim
 
+# Build arguments
+ARG FLASK_APP
+ARG FLASK_ENV
+ARG DATABASE_URL
+ARG SCHEMA
+ARG SECRET_KEY
+
 # Create a non-privileged user
 ARG UID=10001
 RUN adduser \
@@ -38,16 +45,9 @@ RUN adduser \
 
 WORKDIR /app
 
-# Set environment variables
+# Non-sensitive build-time configuration
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV FLASK_APP=app
-ENV FLASK_ENV=production
-
-# Database configuration
-ENV DATABASE_URL=${DATABASE_URL}
-ENV SCHEMA=${SCHEMA}
-ENV SECRET_KEY=${SECRET_KEY}
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
