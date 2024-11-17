@@ -20,6 +20,8 @@ dependencies = [
     "sqlalchemy>=2.0.36",
     "alembic>=1.14.0",
     "greenlet>=3.1.1",
+    "psycopg2-binary>=2.9.10",
+
     # Server
     "gunicorn>=23.0.0",
 
