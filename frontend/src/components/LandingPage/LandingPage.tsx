@@ -2,6 +2,7 @@ import './LandingPage.css';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/store.ts';
+import { CreateServerForm } from '../CreateServerForm/CreateServerForm.tsx';
 import { LoginFormModal } from '../LoginFormModal/LoginFormModal.tsx';
 import { OpenModalButton } from '../OpenModalButton/OpenModalButton.tsx';
 import { SignupFormModal } from '../SignupFormModal/SignupFormModal.tsx';
@@ -36,15 +37,22 @@ export const LandingPage = () => {
 				every day and hang out more often.
 			</p>
 			{user ? (
-				<div>
-					<button
-						className='mt-2 cursor-pointer rounded-md border-1 border-gray-300 bg-blue-500 p-4 text-white text-xl transition-all duration-300 hover:bg-indigo-500'
-						type='button'
-						onClick={handleNavigateToServers}
-					>
-						Go to your servers!
-					</button>
-				</div>
+				servers.length === 0 ? (
+					<OpenModalButton
+						modalComponent={<CreateServerForm />}
+						buttonText='Create a server'
+					/>
+				) : (
+					<div>
+						<button
+							className='mt-2 cursor-pointer rounded-md border-1 border-gray-300 bg-blue-500 p-4 text-white text-xl transition-all duration-300 hover:bg-indigo-500'
+							type='button'
+							onClick={handleNavigateToServers}
+						>
+							Go to your servers!
+						</button>
+					</div>
+				)
 			) : (
 				<div
 					id='landing-page-get-started-button-container'
