@@ -47,8 +47,8 @@ export const ChannelNav = ({
 	}
 
 	return (
-		<nav className='relative flex w-72 max-w-72 flex-col gap-1 overflow-y-auto rounded-tl-3xl bg-gray-600'>
-			<div className='flex items-center justify-between px-6 py-4'>
+		<nav className='relative flex w-72 max-w-72 flex-col gap-1 overflow-y-auto rounded-tl-xl bg-gray-600'>
+			<div className='flex items-center justify-between px-6 py-3'>
 				<h2 className='font-bold text-2xl '>Channels</h2>
 				<OpenModalButton
 					modalComponent={<CreateChannelForm />}

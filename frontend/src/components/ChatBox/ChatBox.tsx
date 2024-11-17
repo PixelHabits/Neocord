@@ -70,12 +70,12 @@ export const ChatBox = () => {
 
 	return (
 		<>
-			<div className='flex flex-col border border-red-600 h-full overflow-hidden p-4'>
-				<div className='flex-grow max-h-3xl overflow-y-auto flex flex-col gap-4'>
+			<div className='flex flex-col h-screen max-h-screen overflow-hidden'>
+				<div className='flex-1 overflow-y-auto flex flex-col gap-4'>
 					{messages.length > 0 ? (
 						messages.map((msg) => <MessageItem message={msg} key={msg.id} />)
 					) : (
-						<div className='flex h-full flex-col items-center justify-center text-gray-400'>
+						<div className='flex h-full flex-1 flex-col items-center justify-center text-gray-400'>
 							<h3 className='mb-2 font-bold text-xl'>
 								Welcome to #{currentChannel?.name}!
 							</h3>
@@ -87,7 +87,7 @@ export const ChatBox = () => {
 			</div>
 			<form
 				onSubmit={handleSubmitMessage}
-				className='relative flex-shrink flex items-center justify-center p-2'
+				className='relative flex-shrink-0 flex items-center justify-center p-2'
 			>
 				<textarea
 					className='w-full resize-none rounded-md bg-neutral-800 p-2 text-neutral-100 focus:outline-none'

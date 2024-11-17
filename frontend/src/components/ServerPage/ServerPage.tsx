@@ -61,23 +61,25 @@ export const ServerPage = () => {
 	}
 
 	return (
-		<div className='flex w-full'>
+		<div className='h-full w-full flex'>
 			<ChannelNav
 				server={currentServer}
 				onShowSettings={handleShowSettings}
 				onDeleteChannel={handleDeleteChannel}
 			/>
 
-			<section className='grid h-full w-full grid-cols-5'>
+			<main className='grid w-full grid-cols-5'>
 				<div
 					className={`${
 						showSettings ? 'col-span-4' : 'col-span-5'
-					} flex w-full flex-col bg-gray-700 transition-all duration-300`}
+					} flex w-full flex-col bg-gray-700 transition-all duration-300 overflow-hidden h-full`}
 				>
 					{currentServer.channels?.length > 0 && currentChannel ? (
-						<ChatBox />
+						<div className='flex flex-col w-full h-full'>
+							<ChatBox />
+						</div>
 					) : (
-						<div className='flex h-full flex-col items-center justify-center text-gray-400'>
+						<div className='flex h-full w-full flex-col items-center justify-center text-gray-400'>
 							<h3 className='mb-2 font-bold text-xl'>
 								Welcome to {currentServer.name}!
 							</h3>
@@ -93,7 +95,7 @@ export const ServerPage = () => {
 						onShowSettings={setShowSettings}
 					/>
 				)}
-			</section>
+			</main>
 		</div>
 	);
 };

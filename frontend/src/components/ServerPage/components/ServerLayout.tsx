@@ -28,8 +28,8 @@ export const ServerLayout = () => {
 	}, [getServers]);
 
 	return (
-		<div className='flex h-full w-full'>
-			<aside className='relative flex flex-col items-center justify-between gap-4 px-4'>
+		<section className='flex h-full w-full'>
+			<aside className='relative flex flex-col items-center justify-between gap-4 px-2'>
 				{/* TODO: Add server tooltips (to be implemented later) */}
 				<div className='flex flex-col gap-4'>
 					{servers.map((server: Server) => (
@@ -54,12 +54,14 @@ export const ServerLayout = () => {
 				<OpenModalButton
 					modalComponent={<CreateServerForm />}
 					buttonText={<BiPlusCircle size={48} />}
-					className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400'
+					className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-md bg-gray-700 text-4xl text-gray-400 mb-4'
 				/>
 			</aside>
 
 			{/* Render the information for the selected server (channels, messages within the channels, and the sidebar) */}
-			<Outlet />
-		</div>
+			<div className='w-full flex'>
+				<Outlet />
+			</div>
+		</section>
 	);
 };
