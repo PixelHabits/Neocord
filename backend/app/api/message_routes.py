@@ -66,7 +66,7 @@ def delete_message(id):
 
 	db.session.delete(message)
 	db.session.commit()
-	return {'message': 'Message deleted successfully'}
+	return {'message': 'Message deleted successfully'}, 200
 
 
 @message_routes.route('/<int:message_id>/reactions')

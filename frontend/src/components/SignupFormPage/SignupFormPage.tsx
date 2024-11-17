@@ -2,6 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/store.ts';
+import type { ApiError } from '../../types/index.ts';
 
 function SignupFormPage() {
 	const navigate = useNavigate();
@@ -11,17 +12,33 @@ function SignupFormPage() {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
-	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [errors, setErrors] = useState<ApiError>({
+		errors: {
+			message: '',
+		},
+	});
+
+	const {
+		message,
+		email: emailError,
+		username: usernameError,
+		password: passwordError,
+		confirmPassword: confirmPasswordError,
+	} = errors.errors;
 
 	if (user) return <Navigate to='/' replace={true} />;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setErrors({ errors: { message: '' } });
 
 		if (password !== confirmPassword) {
 			return setErrors({
-				confirmPassword:
-					'Confirm Password field must be the same as the Password field',
+				errors: {
+					message: '',
+					confirmPassword:
+						'Confirm Password field must be the same as the Password field',
+				},
 			});
 		}
 
@@ -41,7 +58,7 @@ function SignupFormPage() {
 	return (
 		<>
 			<h1>Sign Up</h1>
-			{errors.server && <p>{errors.server}</p>}
+			{message && <p className='mt-2 text-red-500 text-sm'>{message}</p>}
 			<form onSubmit={handleSubmit}>
 				<label>
 					Email
@@ -52,7 +69,7 @@ function SignupFormPage() {
 						required={true}
 					/>
 				</label>
-				{errors.email && <p>{errors.email}</p>}
+				{emailError && <p className='text-red-500 text-sm'>{emailError}</p>}
 				<label>
 					Username
 					<input
@@ -62,7 +79,9 @@ function SignupFormPage() {
 						required={true}
 					/>
 				</label>
-				{errors.username && <p>{errors.username}</p>}
+				{usernameError && (
+					<p className='text-red-500 text-sm'>{usernameError}</p>
+				)}
 				<label>
 					Password
 					<input
@@ -72,7 +91,9 @@ function SignupFormPage() {
 						required={true}
 					/>
 				</label>
-				{errors.password && <p>{errors.password}</p>}
+				{passwordError && (
+					<p className='text-red-500 text-sm'>{passwordError}</p>
+				)}
 				<label>
 					Confirm Password
 					<input
@@ -82,7 +103,9 @@ function SignupFormPage() {
 						required={true}
 					/>
 				</label>
-				{errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+				{confirmPasswordError && (
+					<p className='text-red-500 text-sm'>{confirmPasswordError}</p>
+				)}
 				<button type='submit'>Sign Up</button>
 			</form>
 		</>

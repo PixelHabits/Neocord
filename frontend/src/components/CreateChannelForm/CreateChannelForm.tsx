@@ -2,6 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
+import type { ApiError } from '../../types/index.ts';
 import { handleSubmitKeysDown } from '../../utils/index.ts';
 
 const formatChannelName = (name: string) => {
@@ -13,28 +14,38 @@ export const CreateChannelForm = () => {
 	const { createChannel, currentServer } = useStore();
 	const [channelName, setChannelName] = useState('');
 	const [visibility, setVisibility] = useState<'PUBLIC' | 'PRIVATE'>('PUBLIC');
-	const [error, setError] = useState<Record<string, string>>({});
+	const [errors, setErrors] = useState<ApiError>({
+		errors: {
+			message: '',
+		},
+	});
 	const [isLoading, setIsLoading] = useState(false);
+
+	// Destructure errors for cleaner JSX
+	const { message, name: nameError } = errors.errors;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setError({});
+		setErrors({ errors: { message: '' } });
 
 		if (!(channelName.trim() && currentServer)) {
-			setError({ name: 'Channel name is required' });
+			setErrors({
+				errors: {
+					message: '',
+					name: 'Channel name is required',
+				},
+			});
 			return;
 		}
 
 		setIsLoading(true);
-		const result = await createChannel(currentServer.id, {
+		const serverResponse = await createChannel(currentServer.id, {
 			name: formatChannelName(channelName),
 			visibility,
 		});
 
-		if (result) {
-			setError({
-				server: result.server ?? 'An error occurred',
-			});
+		if (serverResponse) {
+			setErrors(serverResponse);
 		} else {
 			closeModal();
 		}
@@ -45,7 +56,9 @@ export const CreateChannelForm = () => {
 		<form
 			onSubmit={handleSubmit}
 			className='flex flex-col gap-4 p-6'
-			onKeyDown={(e) => handleSubmitKeysDown(e, handleSubmit)}
+			onKeyDown={(e) => {
+				handleSubmitKeysDown(e, handleSubmit);
+			}}
 		>
 			<h2 className='font-bold text-2xl'>Create Channel</h2>
 			<div className='flex flex-col gap-2'>
@@ -56,12 +69,14 @@ export const CreateChannelForm = () => {
 					type='text'
 					id='channelName'
 					value={channelName}
-					onChange={(e) => setChannelName(e.target.value)}
+					onChange={(e) => {
+						setChannelName(e.target.value);
+					}}
 					className='rounded-md bg-gray-700 p-2 text-white'
 					placeholder='new-channel'
 					required={true}
 				/>
-				{error.name && <p className='text-red-500 text-sm'>{error.name}</p>}
+				{nameError && <p className='text-red-500 text-sm'>{nameError}</p>}
 			</div>
 			<div className='flex flex-col gap-2'>
 				<label htmlFor='visibility' className='font-semibold text-sm'>
@@ -70,15 +85,16 @@ export const CreateChannelForm = () => {
 				<select
 					id='visibility'
 					value={visibility}
-					onChange={(e) =>
-						setVisibility(e.target.value as 'PUBLIC' | 'PRIVATE')
-					}
+					onChange={(e) => {
+						setVisibility(e.target.value as 'PUBLIC' | 'PRIVATE');
+					}}
 					className='rounded-md bg-gray-700 p-2 text-white'
 				>
 					<option value='PUBLIC'>Public</option>
 					<option value='PRIVATE'>Private</option>
 				</select>
 			</div>
+			{message && <p className='text-red-500 text-sm'>{message}</p>}
 			<button
 				type='submit'
 				disabled={isLoading}
@@ -86,7 +102,6 @@ export const CreateChannelForm = () => {
 			>
 				Create Channel
 			</button>
-			{error.server && <p className='text-red-500 text-sm'>{error.server}</p>}
 		</form>
 	);
 };

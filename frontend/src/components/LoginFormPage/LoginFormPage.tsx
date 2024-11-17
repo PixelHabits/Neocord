@@ -2,6 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/store.ts';
+import type { ApiError } from '../../types/index.ts';
 import './LoginForm.css';
 
 function LoginFormPage() {
@@ -10,12 +11,19 @@ function LoginFormPage() {
 	const user = useStore((state) => state.user);
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [errors, setErrors] = useState<ApiError>({
+		errors: {
+			message: '',
+		},
+	});
+
+	const { message, email: emailError, password: passwordError } = errors.errors;
 
 	if (user) return <Navigate to='/' replace={true} />;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setErrors({ errors: { message: '' } });
 
 		const serverResponse = await login({
 			email,
@@ -32,8 +40,7 @@ function LoginFormPage() {
 	return (
 		<div>
 			<h1 className='text-4xl'>Log In</h1>
-			{Object.keys(errors).length > 0 &&
-				Object.keys(errors).map((key) => <p key={key}>{errors[key]}</p>)}
+			{message && <p className='mt-2 text-red-500 text-sm'>{message}</p>}
 			<form onSubmit={handleSubmit}>
 				<label>
 					Email
@@ -44,7 +51,7 @@ function LoginFormPage() {
 						required={true}
 					/>
 				</label>
-				{errors.email && <p>{errors.email}</p>}
+				{emailError && <p className='text-red-500 text-sm'>{emailError}</p>}
 				<label>
 					Password
 					<input
@@ -54,7 +61,9 @@ function LoginFormPage() {
 						required={true}
 					/>
 				</label>
-				{errors.password && <p>{errors.password}</p>}
+				{passwordError && (
+					<p className='text-red-500 text-sm'>{passwordError}</p>
+				)}
 				<button type='submit'>Log In</button>
 			</form>
 		</div>

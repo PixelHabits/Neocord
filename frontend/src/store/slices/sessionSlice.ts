@@ -1,4 +1,3 @@
-import type { NavigateFunction } from 'react-router-dom';
 import type { StateCreator, StoreApi } from 'zustand';
 import type {
 	ApiError,
@@ -104,14 +103,23 @@ export const createSessionSlice: StateCreator<
 		};
 	},
 
-	logout: async (navigate: NavigateFunction) => {
-		await fetch('/api/auth/logout', {
+	logout: async (): Promise<boolean> => {
+		const response = await fetch('/api/auth/logout', {
+			method: 'GET',
 			credentials: 'include',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
+
+		if (!response.ok) {
+			return false;
+		}
+
+		set({ user: null }, false, 'session/logout');
 		store.getState().reset();
-		navigate('/');
+
+		await store.getState().initializeCsrfToken();
+		return true;
 	},
 });

@@ -1,4 +1,3 @@
-import type { NavigateFunction } from 'react-router-dom';
 import type {
 	ApiError,
 	Channel,
@@ -30,7 +29,7 @@ export interface SessionActions {
 		username: string;
 		password: string;
 	}) => Promise<ApiError | undefined>;
-	logout: (navigate: NavigateFunction) => Promise<void>;
+	logout: () => Promise<boolean>;
 }
 
 export interface SessionSlice extends SessionState, SessionActions {}

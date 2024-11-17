@@ -2,31 +2,42 @@ import type React from 'react';
 import { useState } from 'react';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
+import type { ApiError } from '../../types/index.ts';
 import './SignupForm.css';
 
-interface SignupErrors {
-	email?: string;
-	username?: string;
-	password?: string;
-	confirmPassword?: string;
-	server?: string;
-}
 function SignupFormModal() {
 	const signup = useStore((state) => state.signup);
 	const [email, setEmail] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
-	const [errors, setErrors] = useState<SignupErrors>({});
+	const [errors, setErrors] = useState<ApiError>({
+		errors: {
+			message: '',
+		},
+	});
 	const { closeModal } = useModal();
+
+	// Destructure errors for cleaner JSX
+	const {
+		message,
+		email: emailError,
+		username: usernameError,
+		password: passwordError,
+		confirmPassword: confirmPasswordError,
+	} = errors.errors;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setErrors({ errors: { message: '' } });
 
 		if (password !== confirmPassword) {
 			return setErrors({
-				confirmPassword:
-					'Confirm Password field must be the same as the Password field',
+				errors: {
+					message: '',
+					confirmPassword:
+						'Confirm Password field must be the same as the Password field',
+				},
 			});
 		}
 
@@ -46,7 +57,7 @@ function SignupFormModal() {
 	return (
 		<div className='flex flex-col items-center justify-center'>
 			<h1 className='text-4xl'>Sign Up</h1>
-			{errors.server && <p>{errors.server}</p>}
+			{message && <p className='mt-2 text-red-500 text-sm'>{message}</p>}
 			<form onSubmit={handleSubmit}>
 				<label>
 					Email
@@ -58,7 +69,7 @@ function SignupFormModal() {
 						required={true}
 					/>
 				</label>
-				{errors.email && <p>{errors.email}</p>}
+				{emailError && <p className='text-red-500 text-sm'>{emailError}</p>}
 				<label>
 					Username
 					<input
@@ -69,7 +80,9 @@ function SignupFormModal() {
 						required={true}
 					/>
 				</label>
-				{errors.username && <p>{errors.username}</p>}
+				{usernameError && (
+					<p className='text-red-500 text-sm'>{usernameError}</p>
+				)}
 				<label>
 					Password
 					<input
@@ -80,7 +93,9 @@ function SignupFormModal() {
 						required={true}
 					/>
 				</label>
-				{errors.password && <p>{errors.password}</p>}
+				{passwordError && (
+					<p className='text-red-500 text-sm'>{passwordError}</p>
+				)}
 				<label>
 					Confirm Password
 					<input
@@ -91,7 +106,9 @@ function SignupFormModal() {
 						required={true}
 					/>
 				</label>
-				{errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+				{confirmPasswordError && (
+					<p className='text-red-500 text-sm'>{confirmPasswordError}</p>
+				)}
 				<button
 					className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900'
 					type='submit'

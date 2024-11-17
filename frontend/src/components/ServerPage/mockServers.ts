@@ -97,6 +97,8 @@ export const messages: Message[] = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
+			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
+			id: 1,
 			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
@@ -132,6 +134,8 @@ export const messages: Message[] = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
+			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
+			id: 1,
 			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
@@ -167,6 +171,8 @@ export const messages: Message[] = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
+			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
+			id: 1,
 			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
@@ -202,6 +208,8 @@ export const messages: Message[] = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
+			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
+			id: 1,
 			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
@@ -237,6 +245,8 @@ export const messages: Message[] = [
 		reactions: [],
 		replyCount: 0,
 		thread: {
+			createdAt: 'Wed, 13 Nov 2024 21:08:24 GMT',
+			id: 1,
 			messages: [],
 		},
 		updatedAt: 'Wed, 13 Nov 2024 21:08:24 GMT',

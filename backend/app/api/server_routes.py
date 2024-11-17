@@ -39,7 +39,12 @@ def create_new_server():
 			db.session.add(server)
 			db.session.commit()
 			return server.to_dict(), 201
-		return None
+		return {
+			'errors': {
+				'message': 'Validation error',
+				**{k: v[0] for k, v in form.errors.items()},
+			}
+		}, 400
 	return {'errors': {'message': 'Unauthorized'}}, 401
 
 
@@ -75,7 +80,7 @@ def update_server(id):
 					return {
 						'errors': {'message': 'User must be the owner of the server'}
 					}, 401
-			return None
+			return {'errors': {'message': 'Server member not found'}}, 404
 		return {'errors': {'message': 'Server not found'}}, 404
 	return {'errors': {'message': 'Unauthorized'}}, 401
 
@@ -96,7 +101,7 @@ def delete_server(id):
 					return {
 						'errors': {'message': 'User must be the owner of the server'}
 					}, 401
-			return None
+			return {'errors': {'message': 'Server member not found'}}, 404
 		return {'errors': {'message': 'Server not found'}}, 404
 	return {'errors': {'message': 'Unauthorized'}}, 401
 
@@ -155,7 +160,7 @@ def get_server_channels(id):
 				return {
 					'errors': {'message': 'User is not a member of the server'}
 				}, 401
-		return None
+		return {'errors': {'message': 'Server not found'}}, 404
 	return {'errors': {'message': 'Unauthorized'}}, 401
 
 
@@ -185,6 +190,6 @@ def create_server_channel(id):
 								'message': 'User must be the owner of the server'
 							}
 						}, 401
-			return None
+			return {'errors': {'message': 'Server member not found'}}, 404
 		return {'errors': {'message': 'Server not found'}}, 404
 	return {'errors': {'message': 'Unauthorized'}}, 401

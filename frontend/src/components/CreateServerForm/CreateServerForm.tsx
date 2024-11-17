@@ -3,6 +3,7 @@ import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
+import type { ApiError } from '../../types/index.ts';
 import { handleSubmitKeysDown } from '../../utils/index.ts';
 
 export const CreateServerForm = () => {
@@ -11,10 +12,16 @@ export const CreateServerForm = () => {
 		name: '',
 		description: '',
 	});
-	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [errors, setErrors] = useState<ApiError>({
+		errors: {
+			message: '',
+		},
+	});
 
 	const { closeModal } = useModal();
 	const { createServer, currentServer } = useStore();
+
+	const { message, name: nameError } = errors.errors;
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -28,29 +35,31 @@ export const CreateServerForm = () => {
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		setErrors({});
+		setErrors({ errors: { message: '' } });
 
 		if (!formData.name) {
-			setErrors({ name: 'Server name is required' });
+			setErrors({
+				errors: {
+					message: '',
+					name: 'Server name is required',
+				},
+			});
 			return;
 		}
 
-		const result = await createServer(formData);
+		const serverResponse = await createServer(formData);
 
-		if (result) {
-			// Error case
-			setErrors({
-				server: result.server ?? 'An error occurred',
-			});
+		if (serverResponse) {
+			setErrors(serverResponse);
 		} else {
-			// Success case
 			closeModal();
 			setFormData({ name: '', description: '' });
 			if (currentServer?.id) {
-				navigate(`/servers/${currentServer.id}`);
+				navigate(`/servers/${String(currentServer.id)}`);
 			}
 		}
 	};
+
 	return (
 		<div className='flex flex-col gap-4 rounded-lg bg-background p-4'>
 			<div className='flex items-center justify-between'>
@@ -69,7 +78,9 @@ export const CreateServerForm = () => {
 			<form
 				className='flex flex-col gap-2 space-y-4'
 				onSubmit={handleSubmit}
-				onKeyDown={(e) => handleSubmitKeysDown(e, handleSubmit)}
+				onKeyDown={(e) => {
+					handleSubmitKeysDown(e, handleSubmit);
+				}}
 			>
 				<div className='flex flex-col gap-2'>
 					<label htmlFor='server-name' className='font-bold text-gray-400'>
@@ -83,8 +94,8 @@ export const CreateServerForm = () => {
 						value={formData.name}
 						onChange={handleChange}
 					/>
-					{errors.name && (
-						<span className='text-red-500 text-sm'>{errors.name}</span>
+					{nameError && (
+						<span className='text-red-500 text-sm'>{nameError}</span>
 					)}
 				</div>
 				<div className='flex flex-col gap-2'>
@@ -102,6 +113,7 @@ export const CreateServerForm = () => {
 						onChange={handleChange}
 					/>
 				</div>
+				{message && <span className='text-red-500 text-sm'>{message}</span>}
 				<div className='flex justify-end'>
 					<button
 						type='submit'
@@ -110,9 +122,6 @@ export const CreateServerForm = () => {
 						Create
 					</button>
 				</div>
-				{errors.server && (
-					<span className='text-red-500 text-sm'>{errors.server}</span>
-				)}
 			</form>
 		</div>
 	);

@@ -3,22 +3,25 @@ import { useState } from 'react';
 import { useModal } from '../../context/useModal.ts';
 import { useStore } from '../../store/store.ts';
 import './LoginForm.css';
-
-interface LoginErrors {
-	email?: string;
-	password?: string;
-	server?: string;
-}
+import type { ApiError } from '../../types/index.ts';
 
 function LoginFormModal() {
 	const login = useStore((state) => state.login);
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [errors, setErrors] = useState<LoginErrors>({});
+	const [errors, setErrors] = useState<ApiError>({
+		errors: {
+			message: '',
+		},
+	});
 	const { closeModal } = useModal();
+
+	// Destructure errors for cleaner JSX
+	const { message, email: emailError, password: passwordError } = errors.errors;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setErrors({ errors: { message: '' } });
 
 		const serverResponse = await login({
 			email,
@@ -34,12 +37,24 @@ function LoginFormModal() {
 
 	const handleDemoUser = async (e: React.MouseEvent) => {
 		e.preventDefault();
-		await login({ email: 'demo@aa.io', password: 'password' }).then(closeModal);
+		setErrors({ errors: { message: '' } });
+
+		const serverResponse = await login({
+			email: 'demo@aa.io',
+			password: 'password',
+		});
+
+		if (serverResponse) {
+			setErrors(serverResponse);
+		} else {
+			closeModal();
+		}
 	};
 
 	return (
 		<div className='flex flex-col items-center justify-center'>
 			<h1 className='text-4xl'>Log In</h1>
+			{message && <p className='mt-2 text-red-500 text-sm'>{message}</p>}
 			<form onSubmit={handleSubmit}>
 				<label>
 					Email:
@@ -51,7 +66,7 @@ function LoginFormModal() {
 						required={true}
 					/>
 				</label>
-				{errors.email && <p>{errors.email}</p>}
+				{emailError && <p className='text-red-500 text-sm'>{emailError}</p>}
 				<label>
 					Password:
 					<input
@@ -62,7 +77,9 @@ function LoginFormModal() {
 						required={true}
 					/>
 				</label>
-				{errors.password && <p>{errors.password}</p>}
+				{passwordError && (
+					<p className='text-red-500 text-sm'>{passwordError}</p>
+				)}
 				<button
 					className='mt-4 w-full cursor-pointer rounded-md border-1 border-gray-300 bg-neutral-800 p-2 text-white hover:bg-neutral-900'
 					type='button'
