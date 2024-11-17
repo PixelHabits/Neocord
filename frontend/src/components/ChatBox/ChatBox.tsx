@@ -47,7 +47,7 @@ export const ChatBox = () => {
 
 	useEffect(() => {
 		scrollToBottom();
-	}, [messages, scrollToBottom]);
+	}, [scrollToBottom]);
 
 	const handleSubmitMessage = async (e: React.FormEvent) => {
 		e.preventDefault();
