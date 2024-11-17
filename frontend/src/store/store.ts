@@ -38,9 +38,6 @@ export const useStore = create<StoreState>()(
 				name: 'app-storage',
 				partialize: (state) => ({
 					user: state.user,
-					currentServer: state.currentServer,
-					currentChannel: state.currentChannel,
-					currentMessage: state.currentMessage,
 				}),
 			},
 		),
