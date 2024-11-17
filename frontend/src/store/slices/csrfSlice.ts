@@ -1,21 +1,13 @@
 import type { StateCreator } from 'zustand';
+import type { StoreState, CsrfState, CsrfActions } from '../../types/index.ts';
 
-export interface CsrfState {
-	csrfToken: string;
-}
-
-export interface CsrfActions {
-	initializeCsrfToken: () => Promise<void>;
-	refreshCsrfToken: () => void;
-}
-
-export type CsrfSlice = CsrfState & CsrfActions;
+interface CsrfSliceState extends CsrfState, CsrfActions {}
 
 export const createCsrfSlice: StateCreator<
-	CsrfSlice,
+	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	CsrfSlice
+	CsrfSliceState
 > = (set, get) => ({
 	csrfToken: '',
 

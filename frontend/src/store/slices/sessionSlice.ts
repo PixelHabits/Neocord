@@ -1,32 +1,17 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { User } from '../../types/index.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
+import type {
+	SessionActions,
+	SessionState,
+	StoreState,
+} from '../../types/index.ts';
 
-export interface SessionState {
-	user: User | null;
-}
-
-export interface SessionActions {
-	authenticate: () => Promise<void>;
-	login: (credentials: { email: string; password: string }) => Promise<
-		Record<string, string> | undefined
-	>;
-	signup: (user: {
-		email: string;
-		password: string;
-		username: string;
-	}) => Promise<Record<string, string> | undefined>;
-	logout: () => Promise<void>;
-}
-
-export type SessionSlice = SessionState & SessionActions;
-type StoreState = SessionSlice & CsrfSlice;
+interface SessionSliceState extends SessionState, SessionActions {}
 
 export const createSessionSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	SessionSlice
+	SessionSliceState
 > = (set, _get, store: StoreApi<StoreState>) => ({
 	user: null,
 
@@ -89,13 +74,14 @@ export const createSessionSlice: StateCreator<
 		}
 	},
 
-	logout: async () => {
+	logout: async (navigate) => {
 		await fetch('/api/auth/logout', {
 			credentials: 'include',
 			headers: {
 				'X-CSRFToken': store.getState().csrfToken,
 			},
 		});
-		set({ user: null }, false, 'session/logout');
+		store.getState().reset();
+		navigate('/');
 	},
 });

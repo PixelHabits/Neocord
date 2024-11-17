@@ -1,34 +1,17 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { Channel } from '../../types/index.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
-import type { ServersSlice } from './serversSlice.ts';
-export interface ChannelsState {
-	currentChannel: Channel | null;
-}
+import type {
+	StoreState,
+	ChannelsState,
+	ChannelsActions,
+} from '../../types/index.ts';
 
-export interface ChannelsActions {
-	createChannel: (
-		serverId: number,
-		channel: { name: string; visibility: string },
-	) => Promise<Record<string, string> | undefined>;
-	updateChannel: (
-		channelId: number,
-		updates: { name?: string; visibility?: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteChannel: (
-		channelId: number,
-	) => Promise<Record<string, string> | undefined>;
-	setCurrentChannel: (channel: Channel | null) => void;
-}
-
-export type ChannelsSlice = ChannelsState & ChannelsActions;
-type StoreState = ChannelsSlice & ServersSlice & CsrfSlice;
+interface ChannelsSliceState extends ChannelsState, ChannelsActions {}
 
 export const createChannelsSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	ChannelsSlice
+	ChannelsSliceState
 > = (set, _get, store: StoreApi<StoreState>) => ({
 	currentChannel: null,
 

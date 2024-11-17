@@ -1,39 +1,18 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { Server, ServerDetails } from '../../types/index.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
-export interface ServersState {
-	servers: Server[];
-	currentServer: ServerDetails | null;
-}
+import type {
+	StoreState,
+	ServersState,
+	ServersActions,
+	Server,
+} from '../../types/index.ts';
 
-export interface ServersActions {
-	getServers: () => Promise<void>;
-	getServer: (serverId: number) => Promise<void>;
-	createServer: (server: { name: string; description: string }) => Promise<
-		Record<string, string> | undefined
-	>;
-	updateServer: (
-		serverId: number,
-		updates: { name?: string; description?: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteServer: (
-		serverId: number,
-	) => Promise<Record<string, string> | undefined>;
-	joinServer: (serverId: number) => Promise<Record<string, string> | undefined>;
-	leaveServer: (
-		serverId: number,
-	) => Promise<Record<string, string> | undefined>;
-	setCurrentServer: (server: ServerDetails | null) => void;
-}
-
-export type ServersSlice = ServersState & ServersActions;
-type StoreState = ServersSlice & CsrfSlice;
+interface ServersSliceState extends ServersState, ServersActions {}
 
 export const createServersSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	ServersSlice
+	ServersSliceState
 > = (set, get, store: StoreApi<StoreState>) => ({
 	servers: [],
 	currentServer: null,

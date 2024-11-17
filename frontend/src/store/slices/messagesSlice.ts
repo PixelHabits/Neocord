@@ -1,44 +1,20 @@
 import type { StateCreator, StoreApi } from 'zustand';
-import type { Message, Thread } from '../../types/index.ts';
-import type { ChannelsSlice } from './channelsSlice.ts';
-import type { CsrfSlice } from './csrfSlice.ts';
-import type { ServersSlice } from './serversSlice.ts';
-export interface MessagesState {
-	messages: Record<number, Message[]>; // channelId -> messages[]
-	threads: Record<number, Thread>; // messageId -> thread
-	currentMessage: Message | null;
-	currentThread: Thread | null;
-}
+import type {
+	Message,
+	StoreState,
+	Thread,
+	MessagesState,
+	MessagesActions,
+} from '../../types/index.ts';
 
-export interface MessagesActions {
-	getChannelMessages: (channelId: number) => Promise<void>;
-	getMessage: (messageId: number) => Promise<void>;
-	createMessage: (
-		channelId: number,
-		message: { body: string },
-		parentMessageId?: number,
-	) => Promise<Record<string, string> | undefined>;
-	updateMessage: (
-		messageId: number,
-		updates: { body: string },
-	) => Promise<Record<string, string> | undefined>;
-	deleteMessage: (messageId: number) => Promise<void>;
-	addReaction: (
-		messageId: number,
-		reaction: { emoji: string },
-	) => Promise<Record<string, string> | undefined>;
-	removeReaction: (messageId: number, reactionId: number) => Promise<void>;
-	setCurrentMessage: (message: Message | null) => void;
-	setCurrentThread: (thread: Thread | null) => void;
-}
+interface MessagesSliceState extends MessagesState, MessagesActions {}
 
-export type MessagesSlice = MessagesState & MessagesActions;
-
+// Helper functions for state updates
 const updateMessageInState = (
-	state: MessagesState,
+	state: Pick<MessagesSliceState, 'messages' | 'currentMessage'>,
 	messageId: number,
 	updater: (message: Message) => Message,
-): Partial<MessagesState> => {
+): Partial<MessagesSliceState> => {
 	const channelIdStr = Object.keys(state.messages).find((channelId) =>
 		state.messages[Number(channelId)]?.some((msg) => msg.id === messageId),
 	);
@@ -65,11 +41,11 @@ const updateMessageInState = (
 };
 
 const getCreateMessageState = (
-	state: MessagesState,
+	state: Pick<MessagesSliceState, 'messages' | 'threads' | 'currentThread'>,
 	channelId: number,
 	newMessage: Message,
 	parentMessageId?: number,
-): Partial<MessagesState> => {
+): Partial<MessagesSliceState> => {
 	if (parentMessageId && newMessage.thread) {
 		const thread = newMessage.thread as Thread;
 		return {
@@ -88,9 +64,9 @@ const getCreateMessageState = (
 };
 
 const getDeleteMessageState = (
-	state: MessagesState,
+	state: Pick<MessagesSliceState, 'messages' | 'threads' | 'currentMessage'>,
 	messageId: number,
-): Partial<MessagesState> => ({
+): Partial<MessagesSliceState> => ({
 	currentMessage:
 		state.currentMessage?.id === messageId ? null : state.currentMessage,
 	threads: Object.fromEntries(
@@ -104,12 +80,11 @@ const getDeleteMessageState = (
 	),
 });
 
-type StoreState = MessagesSlice & ServersSlice & ChannelsSlice & CsrfSlice;
 export const createMessagesSlice: StateCreator<
 	StoreState,
 	[['zustand/devtools', never]],
 	[],
-	MessagesSlice
+	MessagesSliceState
 > = (set, get, store: StoreApi<StoreState>) => ({
 	messages: {},
 	threads: {},

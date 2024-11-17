@@ -1,3 +1,24 @@
+import type {
+	BaseState,
+	SessionState,
+	SessionActions,
+	SessionSlice,
+	CsrfState,
+	CsrfActions,
+	CsrfSlice,
+	ServersState,
+	ServersActions,
+	ServersSlice,
+	ChannelsState,
+	ChannelsActions,
+	ChannelsSlice,
+	MessagesState,
+	MessagesActions,
+	MessagesSlice,
+	StoreState,
+} from './state.ts';
+
+// Domain models
 export interface User {
 	id: number;
 	email: string;
@@ -60,6 +81,7 @@ export interface Thread {
 	createdAt: string;
 }
 
+// API types
 export interface ApiError {
 	message: string;
 	field?: string;
@@ -69,3 +91,24 @@ export interface ApiResponse<T> {
 	data?: T;
 	errors?: Record<string, string>;
 }
+
+// Re-export store types explicitly
+export type {
+	BaseState,
+	SessionState,
+	SessionActions,
+	SessionSlice,
+	CsrfState,
+	CsrfActions,
+	CsrfSlice,
+	ServersState,
+	ServersActions,
+	ServersSlice,
+	ChannelsState,
+	ChannelsActions,
+	ChannelsSlice,
+	MessagesState,
+	MessagesActions,
+	MessagesSlice,
+	StoreState,
+};
