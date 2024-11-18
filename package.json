@@ -3,6 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
+		"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 -n ./scripts/changelog.js",
 		"clean": "turbo run clean",
 		"_clean": "git clean -fX node_modules .turbo",
 		"dev": "turbo run dev",
@@ -21,6 +22,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"conventional-changelog-cli": "^5.0.0",
+		"conventional-changelog-config-spec": "^2.1.0",
 		"lefthook": "^1.8.2",
 		"turbo": "^2.3.0",
 		"typescript": "~5.6.3"
