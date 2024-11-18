@@ -3,7 +3,7 @@
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .db import SCHEMA, db, environment
+from .db import SCHEMA, add_prefix_for_prod, db, environment
 
 
 class User(db.Model, UserMixin):
@@ -24,7 +24,10 @@ class User(db.Model, UserMixin):
 	)
 
 	servers = db.relationship(
-		'Server', secondary='server_members', back_populates='members', viewonly=True
+		'Server',
+		secondary=add_prefix_for_prod('server_members'),
+		back_populates='members',
+		viewonly=True,
 	)
 	messages = db.relationship(
 		'Message', back_populates='user', cascade='all, delete-orphan'
