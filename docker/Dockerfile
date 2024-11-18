@@ -2,7 +2,7 @@
 
 # Frontend build stage
 FROM oven/bun:1 as frontend-builder
-WORKDIR /app
+WORKDIR /neocord
 
 # Copy root level package files for better caching
 COPY package.json bun.lockb ./
@@ -39,7 +39,7 @@ RUN echo "FLASK_APP: ${FLASK_APP}" && \
     echo "DATABASE_URL: ${DATABASE_URL}" && \
     echo "SCHEMA: ${SCHEMA}"
 
-WORKDIR /app/backend
+WORKDIR /neocord
 
 # Non-sensitive build-time configuration
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -56,21 +56,22 @@ RUN apk add --no-cache \
     musl-dev \
     postgresql-client
 
-# Copy dependency files first for better caching
-COPY backend/pyproject.toml backend/uv.lock ./
+# Copy dependency files for backend
+COPY backend/pyproject.toml backend/uv.lock backend/
 
 # Install dependencies using uv with caching
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen
+    cd backend && uv sync --frozen
 
-# Copy backend source code
-COPY backend/ .
+# Copy all source code maintaining directory structure
+COPY backend/ backend/
+COPY packages/ packages/
 
-# Create the directory structure and copy built frontend
-RUN mkdir -p ../../frontend/dist
-COPY --from=frontend-builder /app/frontend/dist ../../frontend/dist
+# Copy built frontend from builder stage
+COPY --from=frontend-builder /neocord/frontend/dist frontend/dist
 
-# Run migrations and start Flask
-CMD uv run flask db upgrade && \
+# Run migrations and start Flask from backend directory
+CMD cd backend && \
+    uv run flask db upgrade && \
     uv run flask seed all && \
     uv run gunicorn app:app
