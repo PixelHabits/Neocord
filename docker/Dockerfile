@@ -39,7 +39,7 @@ RUN echo "FLASK_APP: ${FLASK_APP}" && \
     echo "DATABASE_URL: ${DATABASE_URL}" && \
     echo "SCHEMA: ${SCHEMA}"
 
-WORKDIR /app
+WORKDIR /app/backend
 
 # Non-sensitive build-time configuration
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -66,8 +66,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Copy backend source code
 COPY backend/ .
 
-# Copy built frontend from frontend-builder stage
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+# Create the directory structure and copy built frontend
+RUN mkdir -p ../../frontend/dist
+COPY --from=frontend-builder /app/frontend/dist ../../frontend/dist
 
 # Run migrations and start Flask
 CMD uv run flask db upgrade && \
