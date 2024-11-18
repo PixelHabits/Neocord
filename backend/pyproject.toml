@@ -42,6 +42,9 @@ dependencies = [
     # Misc
     "python-editor>=1.0.4",
     "six>=1.16.0",
+
+    # Database Drivers
+    "psycopg2-binary>=2.9.9",
 ]
 
 [dependency-groups]
