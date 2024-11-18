@@ -14,7 +14,12 @@ server_routes = Blueprint('server', __name__)
 def index():
 	"""Get all servers for the current user."""
 	if current_user.is_authenticated:
-		servers = Server.query.filter(ServerMember.user_id == current_user.id).all()
+		print(current_user.id, ServerMember.user_id)
+		servers = (
+			Server.query.join(ServerMember)
+			.filter(ServerMember.user_id == current_user.id)
+			.all()
+		)
 		return [server.to_dict_basic() for server in servers], 200
 	return {'errors': {'message': 'Unauthorized'}}, 401
 
