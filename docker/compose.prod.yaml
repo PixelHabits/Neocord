@@ -1,0 +1,36 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        - FLASK_APP=app
+        - FLASK_ENV=production
+        - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+        - SCHEMA=${SCHEMA}
+        - SECRET_KEY=${SECRET_KEY}
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - SCHEMA=${SCHEMA}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  db:
+    extends:
+      file: compose.base.yaml
+      service: db
+
+volumes:
+  postgres-data:

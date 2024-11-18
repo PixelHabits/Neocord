@@ -1,0 +1,50 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        FLASK_APP: app
+        FLASK_ENV: development
+        DATABASE_URL: postgresql://postgres:password@db:5432/neocord
+        SCHEMA: neocord_schema
+        SECRET_KEY: dev
+    ports:
+      - "8000:8000"
+    environment:
+      FLASK_APP: app
+      FLASK_ENV: development
+      DATABASE_URL: postgresql://postgres:password@db:5432/neocord
+      SCHEMA: neocord_schema
+      SECRET_KEY: dev
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./backend
+          target: /app
+          ignore:
+            - "**/__pycache__/"
+            - "**/*.pyc"
+        - action: sync
+          path: ./frontend/dist
+          target: /app/frontend/dist
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: neocord
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
