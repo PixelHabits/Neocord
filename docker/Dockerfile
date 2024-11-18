@@ -7,13 +7,14 @@ WORKDIR /app
 # Copy root level package files for better caching
 COPY package.json bun.lockb ./
 
-# Copy frontend and shared package files
+# Copy all package.json files to ensure workspace resolution
+COPY backend/package.json backend/
 COPY frontend/package.json frontend/
 COPY packages/ui/package.json packages/ui/
 COPY packages/typescript-config/package.json packages/typescript-config/
 
-# Install dependencies
-RUN bun install --frozen-lockfile
+# Install dependencies (skip backend scripts)
+RUN bun install --frozen-lockfile --ignore-scripts
 
 # Copy source code
 COPY frontend/ frontend/
@@ -23,7 +24,7 @@ COPY packages/ packages/
 RUN bun run --cwd frontend build
 
 # Backend stage
-FROM ghcr.io/astral-sh/uv-py:3.13-slim
+FROM ghcr.io/astral-sh/uv:python3.13-alpine
 
 # Build arguments
 ARG FLASK_APP
@@ -32,48 +33,43 @@ ARG DATABASE_URL
 ARG SCHEMA
 ARG SECRET_KEY
 
-# Create a non-privileged user
-ARG UID=10001
-RUN adduser \
-  --disabled-password \
-  --gecos "" \
-  --home "/nonexistent" \
-  --shell "/sbin/nologin" \
-  --no-create-home \
-  --uid "${UID}" \
-  appuser
+# Debug: Print build arguments
+RUN echo "FLASK_APP: ${FLASK_APP}" && \
+    echo "FLASK_ENV: ${FLASK_ENV}" && \
+    echo "DATABASE_URL: ${DATABASE_URL}" && \
+    echo "SCHEMA: ${SCHEMA}"
 
 WORKDIR /app
 
 # Non-sensitive build-time configuration
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV FLASK_APP=${FLASK_APP}
+ENV FLASK_ENV=${FLASK_ENV}
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-  postgresql-client \
-  build-essential \
-  python3-dev \
-  libpq-dev \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+    build-base \
+    postgresql-dev \
+    gcc \
+    python3-dev \
+    musl-dev \
+    postgresql-client
 
 # Copy dependency files first for better caching
 COPY backend/pyproject.toml backend/uv.lock ./
 
 # Install dependencies using uv with caching
 RUN --mount=type=cache,target=/root/.cache/uv \
-  uv sync --frozen-lockfile
+    uv sync --frozen
 
-# Copy backend source
+# Copy backend source code
 COPY backend/ .
 
 # Copy built frontend from frontend-builder stage
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
-# Switch to non-root user
-USER appuser
-
 # Run migrations and start Flask
 CMD uv run flask db upgrade && \
-  uv run flask seed all && \
-  uv run gunicorn app:app
+    uv run flask seed all && \
+    uv run gunicorn app:app

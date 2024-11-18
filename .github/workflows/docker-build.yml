@@ -1,0 +1,72 @@
+name: Docker Build & Test
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+env:
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+  SCHEMA: ${{ secrets.SCHEMA }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build and tag images
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        push: false
+        build-args: |
+          FLASK_APP=app
+          FLASK_ENV=production
+          DATABASE_URL=${{ env.DATABASE_URL }}
+          SCHEMA=${{ env.SCHEMA }}
+          SECRET_KEY=${{ env.SECRET_KEY }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        tags: app:test
+
+    - name: Start Docker Compose
+      run: |
+        docker compose -f docker/compose.prod.yaml up -d
+
+    - name: Wait for database
+      run: |
+        timeout 30s bash -c 'until docker compose -f docker/compose.prod.yaml exec -T db pg_isready -U postgres; do sleep 2; done'
+
+    - name: Wait for web service
+      run: |
+        timeout 30s bash -c 'until curl --silent --fail --insecure https://localhost/ > /dev/null; do sleep 2; echo "Waiting for web service..."; done'
+
+    - name: Verify application
+      run: |
+        # Check if frontend is served
+        curl --fail --insecure https://localhost/ | grep -q "<html" || exit 1
+        
+        # Check if API is accessible
+        curl --fail --insecure https://localhost/api/docs > /dev/null || exit 1
+
+    - name: Show container status
+      if: always()
+      run: |
+        docker compose -f docker/compose.prod.yaml ps
+        docker compose -f docker/compose.prod.yaml logs
+
+    - name: Cleanup
+      if: always()
+      run: |
+        docker compose -f docker/compose.prod.yaml down -v
+        docker image rm app:test
