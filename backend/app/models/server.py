@@ -1,6 +1,6 @@
 """Module for the Server model."""
 
-from .db import SCHEMA, db, environment
+from .db import SCHEMA, add_prefix_for_prod, db, environment
 
 
 class Server(db.Model):
@@ -21,7 +21,10 @@ class Server(db.Model):
 
 	# Relationships
 	members = db.relationship(
-		'User', secondary='server_members', back_populates='servers', viewonly=True
+		'User',
+		secondary=add_prefix_for_prod('server_members'),
+		back_populates='servers',
+		viewonly=True,
 	)
 	server_members = db.relationship(
 		'ServerMember',
