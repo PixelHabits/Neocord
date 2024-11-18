@@ -24,7 +24,7 @@ COPY packages/ packages/
 RUN bun run --cwd frontend build
 
 # Backend stage
-FROM ghcr.io/astral-sh/uv:python3.13-alpine
+FROM ghcr.io/astral-sh/uv:python3.9-alpine
 
 # Build arguments
 ARG FLASK_APP
