@@ -17,10 +17,8 @@ export const ChannelNav = ({
 	onShowSettings: () => void;
 	onDeleteChannel: (channelId: number) => void;
 }) => {
-	const { setCurrentChannel } = useStore();
-	const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
-
-	const { user, currentChannel } = useStore();
+	const { setCurrentChannel, user, currentChannel } = useStore();
+	const [selectedChannel, setSelectedChannel] = useState(currentChannel);
 
 	const handleChannelSelect = (channel: Channel) => {
 		try {
@@ -33,17 +31,14 @@ export const ChannelNav = ({
 	};
 
 	useEffect(() => {
-		if (currentChannel) {
-			setSelectedChannel(currentChannel);
-		} else {
-			const firstChannel = server.channels.find(
-				(channel) => channel.visibility === 'public',
-			);
-			if (firstChannel) {
-				setSelectedChannel(firstChannel);
-			}
+		const firstChannel = server.channels.find(
+			(channel) => channel.visibility === 'public',
+		);
+		if (firstChannel) {
+			setSelectedChannel(firstChannel);
+			setCurrentChannel(firstChannel);
 		}
-	}, [server.channels, currentChannel]);
+	}, [server.channels, setCurrentChannel]);
 
 	if (!server) {
 		<section className='relative flex w-72 max-w-72 flex-col gap-4 overflow-y-auto rounded-tl-lg bg-gray-600'>
