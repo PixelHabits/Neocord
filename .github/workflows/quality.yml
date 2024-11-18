@@ -1,0 +1,62 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["dev", "main"]
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  quality:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # JavaScript/TypeScript Quality Checks
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: Run Biome
+        id: biome
+        run: biome ci --reporter=github .
+        continue-on-error: true  # Allow the workflow to continue even if Biome fails
+
+      # Python Quality Checks
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install Ruff
+        run: uv tool install ruff
+
+      - name: Run Ruff Format Check
+        id: ruff_format
+        run: ruff format --check backend/
+        continue-on-error: true  # Allow the workflow to continue even if format check fails
+
+      - name: Run Ruff Lint
+        id: ruff_lint
+        run: ruff check --output-format=github backend/
+        continue-on-error: true  # Allow the workflow to continue even if lint fails
+
+      # Final status check
+      - name: Check for failures
+        if: always()
+        run: |
+          if [ "${{ steps.biome.outcome }}" == "failure" ] || \
+             [ "${{ steps.ruff_format.outcome }}" == "failure" ] || \
+             [ "${{ steps.ruff_lint.outcome }}" == "failure" ]; then
+            echo "One or more quality checks failed:"
+            [ "${{ steps.biome.outcome }}" == "failure" ] && echo "- Biome check failed"
+            [ "${{ steps.ruff_format.outcome }}" == "failure" ] && echo "- Ruff format check failed"
+            [ "${{ steps.ruff_lint.outcome }}" == "failure" ] && echo "- Ruff lint check failed"
+            exit 1
+          fi

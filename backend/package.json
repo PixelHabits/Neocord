@@ -1,0 +1,23 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"engines": {
+		"python": ">=3.13"
+	},
+	"scripts": {
+		"build": "uv sync && uv build",
+		"clean": "git clean -fX .venv .ruff_cache app/__pycache__ app/api/__pycache__ app/forms/__pycache__ app/models/__pycache__ app/seeds/__pycache__ migrations/__pycache__ migrations/versions/__pycache__",
+		"db:reset": "git clean -fX instance && uv run flask db upgrade && uv run flask seed all",
+		"db:setup": "uv run flask db upgrade && uv run flask seed all",
+		"dev": "uv sync && uv run flask run --debug",
+		"format": "uv run ruff format .",
+		"install": "uv sync",
+		"lint": "uv run ruff check",
+		"migrate": "uv run flask db upgrade",
+		"migrate:add": "uv run flask db migrate -m",
+		"seed": "uv run flask seed all",
+		"start": "uv run flask run"
+	}
+}

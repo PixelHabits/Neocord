@@ -1,0 +1,19 @@
+pre-commit:
+  parallel: true
+  commands:
+    ruff-format:
+      glob: "**/*.py"
+      run: cd backend && bunx ruff format $(echo {staged_files} | sed 's/backend\///g')
+      stage_fixed: true
+    biome-format:
+      run: bunx @biomejs/biome format --write --files-ignore-unknown=true --no-errors-on-unmatched {staged_files}
+      stage_fixed: true
+
+pre-push:
+  parallel: true
+  commands:
+    ruff-check:
+      glob: "**/*.py"
+      run: cd backend && bunx ruff check $(echo {push_files} | sed 's/backend\///g')
+    biome-check:
+      run: bunx @biomejs/biome check --files-ignore-unknown=true --no-errors-on-unmatched {push_files}

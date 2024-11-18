@@ -1,0 +1,28 @@
+.profile-dropdown {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	right: 4px;
+}
+#modal-content {
+	display: flex;
+	flex-direction: column;
+	width: 500px;
+	padding: 20px;
+	border-radius: 10px;
+}
+
+#profile-dropdown-not-logged-in > :first-child {
+	border-bottom: 1px solid;
+	border-color: var(--color-gray-600);
+	width: 6rem;
+	padding-bottom: 0.5rem;
+}
+
+#profile-dropdown-not-logged-in > :last-child {
+	width: 6rem;
+	padding-top: 0.5rem;
+}
