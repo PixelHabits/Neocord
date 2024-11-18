@@ -1,7 +1,12 @@
+import EmojiPicker from 'emoji-picker-react';
+import { useModal } from '../../../context/useModal.ts';
 import { useStore } from '../../../store/store.ts';
 import type { Message } from '../../../types/index.ts';
+import { OpenModalButton } from '../../OpenModalButton/OpenModalButton.tsx';
+
 export const MessageItem = ({ message }: { message: Message }) => {
 	const { removeReaction, addReaction } = useStore();
+	const { closeModal } = useModal();
 
 	const handleRemoveReactionClick = (messageId: number, reactionId: number) => {
 		removeReaction(messageId, reactionId);
@@ -12,7 +17,18 @@ export const MessageItem = ({ message }: { message: Message }) => {
 		reaction: { emoji: string },
 	) => {
 		addReaction(messageId, reaction);
+		closeModal();
 	};
+
+	const emojiPickerModal = (
+		<div className='p-4'>
+			<EmojiPicker
+				onEmojiClick={(emoji) => {
+					handleAddReactionClick(message.id, emoji);
+				}}
+			/>
+		</div>
+	);
 
 	return (
 		<div>
@@ -39,13 +55,11 @@ export const MessageItem = ({ message }: { message: Message }) => {
 							</div>
 						);
 					})}
-					<button
+					<OpenModalButton
+						buttonText='+'
+						modalComponent={emojiPickerModal}
 						className='mt-2 w-fit rounded-md bg-neutral-700/80 px-2 py-1 text-xs hover:cursor-pointer hover:bg-neutral-700/90'
-						type='button'
-						onClick={() => handleAddReactionClick(message.id, { emoji: '👍' })}
-					>
-						+
-					</button>
+					/>
 				</div>
 				{/* <button onClick={() => handleDeleteMessage(msg.id)}>Delete</button> */}
 			</div>
