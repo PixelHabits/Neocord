@@ -43,10 +43,6 @@ jobs:
       run: |
         docker compose -f docker/compose.prod.yaml up -d
 
-    - name: Wait for database
-      run: |
-        timeout 30s bash -c 'until docker compose -f docker/compose.prod.yaml exec -T db pg_isready -U postgres; do sleep 2; done'
-
     - name: Wait for web service
       run: |
         timeout 30s bash -c 'until curl --silent --fail --insecure https://localhost/ > /dev/null; do sleep 2; echo "Waiting for web service..."; done'
