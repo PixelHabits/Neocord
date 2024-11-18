@@ -6,17 +6,17 @@ services:
       args:
         FLASK_APP: app
         FLASK_ENV: development
-        DATABASE_URL: postgresql://postgres:password@db:5432/neocord
-        SCHEMA: neocord_schema
-        SECRET_KEY: dev
+        DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:password@db:5432/neocord}
+        SCHEMA: ${SCHEMA:-neocord_schema}
+        SECRET_KEY: ${SECRET_KEY:-dev}
     ports:
       - "8000:8000"
     environment:
       FLASK_APP: app
       FLASK_ENV: development
-      DATABASE_URL: postgresql://postgres:password@db:5432/neocord
-      SCHEMA: neocord_schema
-      SECRET_KEY: dev
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:password@db:5432/neocord}
+      SCHEMA: ${SCHEMA:-neocord_schema}
+      SECRET_KEY: ${SECRET_KEY:-dev}
     develop:
       watch:
         - action: sync+restart
@@ -45,6 +45,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
   postgres-data:
