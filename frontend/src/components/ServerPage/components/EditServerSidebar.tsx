@@ -89,9 +89,18 @@ export const EditServerSidebar = ({
 	}
 
 	return (
-		<div className='col-span-1 m-4 flex h-full w-[calc(100%-2rem)] flex-col justify-between space-y-4 self-center justify-self-center rounded-r-lg bg-gray-700 p-4'>
-			<div>
-				<h3 className='font-bold text-gray-400 text-xl'>Edit Server</h3>
+		<div
+			id='edit-server-sidebar'
+			className='relative col-span-1 m-4 flex h-[calc(100vh-200px)] max-h-[calc(100vh-200px)] w-[calc(100%-2rem)] flex-col self-center justify-self-center rounded-r-lg bg-gray-700 p-4'
+		>
+			{/* Main scrollable content */}
+			<div
+				id='edit-server-sidebar-content'
+				className='flex flex-col space-y-4 overflow-y-auto'
+			>
+				<div>
+					<h3 className='font-bold text-gray-400 text-xl'>Edit Server</h3>
+				</div>
 				<p className='text-gray-400 text-sm'>Edit this server&apos;s details</p>
 				<form
 					onSubmit={handleSubmit}
@@ -178,24 +187,23 @@ export const EditServerSidebar = ({
 						</button>
 					</div>
 				</form>
-			</div>
 
-			{/* Members */}
-			<div className='flex flex-col gap-2'>
-				<h3 className='font-bold text-gray-400 text-xl'>
-					Members: {currentServer?.members.length}
-				</h3>
-				{currentServer?.members.map((member) => (
-					<div className='text-gray-400 text-md' key={member.user.id}>
-						{member.user.isOwner
-							? `${member.user.username} (Owner)`
-							: member.user.username}
-					</div>
-				))}
+				{/* Members */}
+				<div className='flex flex-col gap-2'>
+					<h3 className='font-bold text-gray-400 text-xl'>
+						Members: {currentServer?.members.length}
+					</h3>
+					{currentServer?.members.map((member) => (
+						<div className='text-gray-400 text-md' key={member.user.id}>
+							{member.user.isOwner
+								? `${member.user.username} (Owner)`
+								: member.user.username}
+						</div>
+					))}
+				</div>
 			</div>
-
 			{/* Danger Zone: Delete Server */}
-			<div className='flex flex-col gap-2'>
+			<div className='sticky right-0 bottom-0 left-0 mt-4 flex flex-col gap-2 border-gray-600 border-t bg-gray-700 p-4'>
 				<h3 className='font-bold text-gray-400 text-xl'>Danger Zone</h3>
 				<p className='text-gray-400 text-sm'>
 					Delete this server and all of its channels
