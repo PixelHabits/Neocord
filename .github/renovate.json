@@ -7,36 +7,23 @@
 		":maintainLockFilesWeekly",
 		"customManagers:biomeVersions"
 	],
-	"baseBranches": [
-		"dev"
-	],
-	"labels": [
-		"dependencies"
-	],
-	"assignees": [
-		"@PixelHabits"
-	],
+	"baseBranches": ["dev"],
+	"labels": ["Dependencies"],
+	"assignees": ["@PixelHabits"],
 	"semanticCommits": "enabled",
 	"semanticCommitType": "Chore",
 	"semanticCommitScope": "Deps",
 	"timezone": "America/New_York",
-	"schedule": [
-		"after 4am and before 7am"
-	],
+	"schedule": ["after 4am and before 7am"],
 	"packageRules": [
 		{
 			"description": "Disable updates for internal packages",
 			"enabled": false,
-			"matchPackageNames": [
-				"/^@repo//"
-			]
+			"matchPackageNames": ["/^@repo//"]
 		},
 		{
 			"description": "Group and auto-merge non-major updates",
-			"matchUpdateTypes": [
-				"minor",
-				"patch"
-			],
+			"matchUpdateTypes": ["minor", "patch"],
 			"matchCurrentVersion": "!/^0/",
 			"groupName": "Non-Major Dependencies",
 			"automerge": true
@@ -49,9 +36,11 @@
 		"automerge": true
 	},
 	"vulnerabilityAlerts": {
-		"labels": [
-			"security"
-		],
+		"labels": ["security"],
 		"automerge": false
-	}
+	},
+	"pre-commit": {
+		"enabled": true
+	},
+	"binarySource": "install"
 }
