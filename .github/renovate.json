@@ -8,7 +8,7 @@
 		"customManagers:biomeVersions"
 	],
 	"baseBranches": ["dev"],
-	"labels": ["dependencies"],
+	"labels": ["Dependencies"],
 	"assignees": ["@PixelHabits"],
 	"semanticCommits": "enabled",
 	"semanticCommitType": "Chore",
@@ -18,8 +18,8 @@
 	"packageRules": [
 		{
 			"description": "Disable updates for internal packages",
-			"matchPackagePatterns": ["^@repo/"],
-			"enabled": false
+			"enabled": false,
+			"matchPackageNames": ["/^@repo//"]
 		},
 		{
 			"description": "Group and auto-merge non-major updates",
@@ -38,5 +38,9 @@
 	"vulnerabilityAlerts": {
 		"labels": ["security"],
 		"automerge": false
-	}
+	},
+	"pre-commit": {
+		"enabled": true
+	},
+	"binarySource": "install"
 }
